@@ -1,15 +1,14 @@
 package com.jakeapp.core.services.futures;
 
-import java.io.FileNotFoundException;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.core.domain.JakeObject;
 import com.jakeapp.core.domain.LogAction;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
+import org.apache.log4j.Logger;
+
+import java.io.FileNotFoundException;
+import java.util.List;
 
 /**
  * Announces a <code>List</code> of <code>JakeObject</code>s. 

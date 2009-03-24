@@ -119,9 +119,7 @@ public class LogEntrySerializer {
 	}
 
 	private String serialize(JakeObjectLogEntry logEntry, Project project) {
-
 		StringBuffer sb = prepareSerializedString(logEntry, project);
-
 
 		sb.append(SEPERATOR);
 		if (logEntry.getBelongsTo() instanceof FileObject) {
@@ -135,9 +133,7 @@ public class LogEntrySerializer {
 		} else
 			throw new UnsupportedOperationException();
 
-
 		sb.append(SEPERATOR).append(logEntry.getBelongsTo().getUuid().toString());
-
 		sb.append(SEPERATOR).append(logEntry.getComment());
 		sb.append(SEPERATOR).append(logEntry.getChecksum());
 
@@ -201,9 +197,7 @@ public class LogEntrySerializer {
 
 
 	private String serialize(ProjectLogEntry logEntry) {
-
 		Project project = logEntry.getProject();
-
 		StringBuffer sb = new StringBuffer(500);
 
 		sb.append(SEPERATOR).append(project.getProjectId());
@@ -212,9 +206,7 @@ public class LogEntrySerializer {
 		sb.append(SEPERATOR).append(logEntry.getMember().getProtocolType().ordinal());
 		sb.append(SEPERATOR).append(logEntry.getMember().getUserId());
 		sb.append(SEPERATOR).append(logEntry.getUuid().toString());
-
 		sb.append(SEPERATOR).append(project.getName());
-
 		sb.append(SEPERATOR);
 
 		return sb.toString();
@@ -358,10 +350,6 @@ public class LogEntrySerializer {
 
 		// get message parts
 		String[] parts = input.split(SEPERATOR_REGEX);
-
-//		for (String part : parts) {
-//			log.trace("part = " + part);
-//		}
 
 		// stop on error
 		if (parts.length < 6)
