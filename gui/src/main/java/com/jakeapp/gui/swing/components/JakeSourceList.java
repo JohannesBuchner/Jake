@@ -338,12 +338,17 @@ public class JakeSourceList extends JakeGuiComponent
 			projectSourceListModel.addCategory(invitedProjectsCategory);
 		}
 
-		projectSourceListModel
-						.addItemToCategory(new SourceListItem(""), invitedProjectsCategory);
-		while (invitedProjectsCategory.getItemCount() > 1) {
+		try {
 			projectSourceListModel
-							.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
+							.addItemToCategory(new SourceListItem(""), invitedProjectsCategory);
+			while (invitedProjectsCategory.getItemCount() > 1) {
+				projectSourceListModel
+								.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
+			}
+		} catch (Exception ex) {
+			log.warn("Tree update failed. block needs recoding!" + ex.getMessage());
 		}
+
 		List<Invitation> invitations = new ArrayList<Invitation>();
 		if (JakeContext.isCoreInitialized()) {
 			try {
@@ -569,18 +574,18 @@ public class JakeSourceList extends JakeGuiComponent
 	}
 
 	@Override public void taskStarted(IJakeTask worker) {
-		if (worker instanceof GetMyProjectsTask) {
-			updateSourceList();
-		}
+		//if (worker instanceof GetMyProjectsTask) {
+		//	updateSourceList();
+		//}
 	}
 
 	@Override public void taskUpdated(IJakeTask worker) {
 	}
 
 	@Override public void taskFinished(IJakeTask worker) {
-		if (worker instanceof GetMyProjectsTask) {
-			updateSourceList();
-		}
+		//	if (worker instanceof GetMyProjectsTask) {
+		//		updateSourceList();
+		//	}
 	}
 
 	@Override public void setContextViewPanel(JakeMainView.ContextPanelEnum panel) {
