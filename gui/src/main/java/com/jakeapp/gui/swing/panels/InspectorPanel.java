@@ -227,7 +227,7 @@ public class InspectorPanel extends JXPanel
 		try {
 			this.eventsTable.updateUI();
 		} catch (Exception ignored) {
-			log.warn(ignored);
+//			log.warn(ignored);
 		}
 	}
 
