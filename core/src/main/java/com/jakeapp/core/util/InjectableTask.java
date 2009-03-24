@@ -84,13 +84,13 @@ public abstract class InjectableTask<T> implements Runnable {
 	public T getResult() throws Exception {
 		while (true) {
 			try {
+				
 				// HACK TODO EVIL Timeout !?
-
-				int timeout = 40;
+				int timeout = 60;
 
 				// if we are in the event dispatching (gui) thread, only accept short tasks.
 				if(SwingUtilities.isEventDispatchThread()) {
-					timeout = 2;
+					timeout = 5;
 				}
 
 				this.s.tryAcquire(timeout, TimeUnit.SECONDS);

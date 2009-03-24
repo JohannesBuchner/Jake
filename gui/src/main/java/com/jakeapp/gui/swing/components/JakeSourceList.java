@@ -319,7 +319,7 @@ public class JakeSourceList extends JakeGuiComponent
 	/**
 	 * Updates the SourceList (project list)
 	 */
-	private void updateSourceList() {
+	private synchronized void updateSourceList() {
 		setWaiting(sourceList.getComponent(),
 						JakeExecutor.isTaskRunning(GetMyProjectsTask.class));
 
@@ -338,12 +338,17 @@ public class JakeSourceList extends JakeGuiComponent
 			projectSourceListModel.addCategory(invitedProjectsCategory);
 		}
 
-		projectSourceListModel
-						.addItemToCategory(new SourceListItem(""), invitedProjectsCategory);
-		while (invitedProjectsCategory.getItemCount() > 1) {
+		try {
 			projectSourceListModel
-							.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
+							.addItemToCategory(new SourceListItem(""), invitedProjectsCategory);
+			while (invitedProjectsCategory.getItemCount() > 1) {
+				projectSourceListModel
+								.removeItemFromCategoryAtIndex(invitedProjectsCategory, 0);
+			}
+		} catch (Exception ex) {
+			log.warn("Tree update failed. block needs recoding!" + ex.getMessage());
 		}
+
 		List<Invitation> invitations = new ArrayList<Invitation>();
 		if (JakeContext.isCoreInitialized()) {
 			try {
@@ -421,9 +426,13 @@ public class JakeSourceList extends JakeGuiComponent
 		projectSourceListModel.removeItemFromCategoryAtIndex(myProjectsCategory, 0);
 
 
+		try {
 		if (getSourceList() != null && projectSLI != null) {
 			log.trace("setting selected item: " + projectSLI);
 			getSourceList().setSelectedItem(projectSLI);
+		}
+		}catch(Exception ex) {
+			log.warn("Error restoring selection!", ex);
 		}
 
 		sourceList.addSourceListSelectionListener(projectSelectionListener);
@@ -432,6 +441,11 @@ public class JakeSourceList extends JakeGuiComponent
 			log.trace("selected project not found, selecting null");
 			JakeContext.setProject(null);
 		}
+
+		// TODO: needs to clean the cache, or it throws fixes like
+		// "Exception in thread "AWT-EventQueue-0" java.lang.ArrayIndexOutOfBoundsException: 1 >= 1"
+		// TODO: does this work?
+		this.getSourceList().getTree().invalidate();
 	}
 
 	private static void setWaiting(JComponent c, boolean on) {

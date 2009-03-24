@@ -2,13 +2,13 @@ package com.jakeapp.gui.swing.worker;
 
 import com.jakeapp.gui.swing.callbacks.TaskChangedCallback;
 import com.jakeapp.gui.swing.dialogs.debugging.ActiveTasks;
-import com.jakeapp.gui.swing.xcore.EventCore;
 import com.jakeapp.gui.swing.worker.tasks.IJakeTask;
+import com.jakeapp.gui.swing.xcore.EventCore;
 import org.apache.log4j.Logger;
 
 import javax.swing.*;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -22,8 +22,8 @@ public class JakeExecutor extends ThreadPoolExecutor {
 	private static final Logger log = Logger.getLogger(JakeExecutor.class);
 	private static JakeExecutor instance;
 
-	private LinkedHashMap<Integer, IJakeTask> runningTasks =
-					new LinkedHashMap<Integer, IJakeTask>();
+	private final ConcurrentHashMap<Integer, IJakeTask> runningTasks =
+					new ConcurrentHashMap<Integer, IJakeTask>();
 
 	public static JakeExecutor getInstance() {
 		if (instance == null) {
@@ -59,7 +59,8 @@ public class JakeExecutor extends ThreadPoolExecutor {
 		fireTasksChanged(task, TaskChangedCallback.TaskOps.Finished);
 	}
 
-	private static void fireTasksChanged(final IJakeTask task, final TaskChangedCallback.TaskOps op) {
+	private static void fireTasksChanged(final IJakeTask task,
+					final TaskChangedCallback.TaskOps op) {
 		// make call threadsave!
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -68,16 +69,16 @@ public class JakeExecutor extends ThreadPoolExecutor {
 				// FIXME: use new interface TaskChanged
 				ActiveTasks.tasksUpdated();
 			}
-		});	
+		});
 	}
 
-	public static LinkedHashMap<Integer, IJakeTask> getTasks() {
+	public static Map<Integer, IJakeTask> getTasks() {
 		return getInstance().runningTasks;
 	}
 
 	public static boolean isTaskRunning(Class aclass) {
-		for(IJakeTask task : getInstance().runningTasks.values()) {
-			if(task.getClass().equals(aclass)) {
+		for (IJakeTask task : getInstance().runningTasks.values()) {
+			if (task.getClass().equals(aclass)) {
 				return true;
 			}
 		}
@@ -86,19 +87,21 @@ public class JakeExecutor extends ThreadPoolExecutor {
 	}
 
 	public static boolean hasTasksRunning() {
-		return getInstance().runningTasks.size() > 0;
+		return countTasksRunning() > 0;
 	}
 
 	/**
 	 * Get Task on top of executor
+	 *
 	 * @return
 	 */
 	public static IJakeTask getLatestTask() {
-		IJakeTask last = null;
-		for (Map.Entry<Integer, IJakeTask> entry : getInstance().runningTasks.entrySet()) {
-			last = entry.getValue();
-		}
-		return last;
+
+		// HACK: make this less ugly!
+		//synchronized (getInstance().runningTasks) {
+			return (IJakeTask) getInstance().runningTasks.values().toArray()[getInstance()
+							.runningTasks.size() - 1];
+		//}
 	}
 
 	public static int countTasksRunning() {

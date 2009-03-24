@@ -38,7 +38,7 @@ public class ProjectsFileServicesImpl implements IProjectsFileServices {
 		if (this.fileServices.containsKey(project.getProjectId()))
 			return this.fileServices.get(project.getProjectId());
 
-		log.info("Starting fss for project " + project);
+		log.debug("Starting fss for project " + project);
 		IFSService fss;
 		try {
 			fss = new FSService();

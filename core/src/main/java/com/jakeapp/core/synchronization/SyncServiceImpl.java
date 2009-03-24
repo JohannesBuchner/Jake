@@ -128,8 +128,8 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	public void announce(JakeObject jo, LogAction action, String commitMsg)
 			throws FileNotFoundException, InvalidFilenameException,
 			NotAReadableFileException {
-		NoteObject note = null;
-		FileObject fo = null;
+		NoteObject note;
+		FileObject fo;
 		LogEntry<JakeObject> le;
 		User user;
 
@@ -139,21 +139,9 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		// we need an UUID for the object
 		jo = completeIncomingObjectSafe(jo);
 
-		//TODO this call is not neccessary
-		//it deletes jo.getProject.getUser() and prevents the JakeObject
-		//from being written to the log.
-		//jo = completeIncomingObjectSafe(jo);
-		
-		/*
-		 * if (isNoteObject(jo)) { note =
-		 * completeIncomingObjectOrNew((NoteObject) jo); } else { fo =
-		 * completeIncomingObjectOrNew((FileObject) jo); }
-		 */
-
 		switch (action) {
 			case JAKE_OBJECT_NEW_VERSION:
 				user = getMyProjectMember(jo.getProject());
-				
 				le = new JakeObjectNewVersionLogEntry(jo, user, commitMsg, null, true);
 				break;
 
@@ -436,11 +424,12 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 					.getRelPath());
 			}catch(NoSuchJakeObjectException e) {
 				if(join.getUuid() != null) {
-					log.debug("logentry dump:  -------");
-					for(LogEntry<? extends ILogable> le : db.getUnprocessedAwareLogEntryDao(join).getAll(true)) {
-						log.debug(le);
-					}
-					log.debug("logentry dump done ----");
+					// produced nullpointerexceptions!
+					//log.debug("logentry dump:  -------");
+					//for(LogEntry<? extends ILogable> le : db.getUnprocessedAwareLogEntryDao(join).getAll(true)) {
+					//	log.debug(le);
+					//}
+					//log.debug("logentry dump done ----");
 					if(db.getUnprocessedAwareLogEntryDao(join).getDeleteState(join, true) != null) {
 						// log.debug("found " + join + " in the log. accepting the uuid");
 						return join;
@@ -463,7 +452,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 	@Transactional
 	public Attributed<FileObject> getJakeObjectSyncStatus(FileObject foin)
 			throws InvalidFilenameException, IOException {
-		log.debug("get JakeObjectStatus for " + foin);
+		log.trace("get JakeObjectStatus for " + foin);
 		if (foin == null) {
 			throw new IllegalArgumentException("FileObject is null!");
 		}
@@ -560,7 +549,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 		Project p = noin.getProject();
 		ILogEntryDao led = db.getUnprocessedAwareLogEntryDao(p);
 		
-		log.debug("getting attributed note for " + noin + " in " + p);
+		log.trace("getting attributed note for " + noin + " in " + p);
 
 		// this is very similar, but slightly different to the FileObject code
 		// compare and edit them side-by-side
@@ -616,7 +605,7 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 
 		no.setProject(p);
 		
-		log.debug("got attributed note for " + noin + " in " + no.getProject());
+		log.trace("got attributed note for " + noin + " in " + no.getProject());
 		return new Attributed<NoteObject>(no, lastle, led.getLock(no),
 				objectExistsLocally, !checksumEqualToLastNewVersionLogEntry,
 				hasUnprocessedLogEntries, lastProcessedLogAction, lastModificationDate,

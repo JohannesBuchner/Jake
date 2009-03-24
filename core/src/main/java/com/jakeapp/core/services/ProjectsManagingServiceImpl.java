@@ -371,7 +371,7 @@ public class ProjectsManagingServiceImpl implements
 	 * @param p The project, in whos root folder to create a database in.
 	 */
 	private void createProjectDatabase(Project p) {
-		log.info("Create project database: " + p);
+		log.debug("Create project database: " + p);
 
 		// this should to all the magic
 		this.getApplicationContextFactory().getApplicationContextThread(p);
@@ -383,7 +383,7 @@ public class ProjectsManagingServiceImpl implements
 	@Override
 	public boolean startProject(Project project)
 			throws IllegalArgumentException, FileNotFoundException, ProjectException {
-		log.info("start project: " + project);
+		log.debug("start project: " + project);
 
 		// Check preconditions
 		if (project == null)
@@ -780,7 +780,7 @@ public class ProjectsManagingServiceImpl implements
 		User member;
 		User id;
 
-		log.info("invite project: " + project + " userid: " + userid + " msgservice: "
+		log.debug("invite project: " + project + " userid: " + userid + " msgservice: "
 				+ project.getMessageService());
 
 		id = project.getMessageService().getUserId(userid);
@@ -1028,7 +1028,7 @@ public class ProjectsManagingServiceImpl implements
 			log.debug("Must be online to get uninvited users.", e);
 		}
 
-		log.info("getUninvitedPeople returns " + result.size() + " results");
+		log.debug("getUninvitedPeople returns " + result.size() + " results");
 
 		return result;
 	}
