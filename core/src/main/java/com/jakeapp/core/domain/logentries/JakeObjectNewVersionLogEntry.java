@@ -21,6 +21,7 @@ public class JakeObjectNewVersionLogEntry extends JakeObjectLogEntry {
 
 	public JakeObjectNewVersionLogEntry(JakeObject belongsTo, User member, String comment, String checksum, Boolean processed) {
         super(LogAction.JAKE_OBJECT_NEW_VERSION, belongsTo, member, comment, checksum, processed);
+		this.setObjectuuid(belongsTo.getUuid().toString());
     }
 
 
