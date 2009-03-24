@@ -436,11 +436,12 @@ public class SyncServiceImpl extends FriendlySyncService implements IInternalSyn
 					.getRelPath());
 			}catch(NoSuchJakeObjectException e) {
 				if(join.getUuid() != null) {
-					log.debug("logentry dump:  -------");
-					for(LogEntry<? extends ILogable> le : db.getUnprocessedAwareLogEntryDao(join).getAll(true)) {
-						log.debug(le);
-					}
-					log.debug("logentry dump done ----");
+					// produced nullpointerexceptions!
+					//log.debug("logentry dump:  -------");
+					//for(LogEntry<? extends ILogable> le : db.getUnprocessedAwareLogEntryDao(join).getAll(true)) {
+					//	log.debug(le);
+					//}
+					//log.debug("logentry dump done ----");
 					if(db.getUnprocessedAwareLogEntryDao(join).getDeleteState(join, true) != null) {
 						// log.debug("found " + join + " in the log. accepting the uuid");
 						return join;

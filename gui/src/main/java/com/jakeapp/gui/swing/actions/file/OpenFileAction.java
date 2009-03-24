@@ -35,7 +35,7 @@ public class OpenFileAction extends FileAction {
 						getString("openMenuItem.text");
 
 		// append "..." if we need to download the file first
-		if(isSingleFileSelected() && getSelectedFileAttributed().isOnlyRemote()) {
+		if (isSingleFileSelected() && getSelectedFileAttributed().isOnlyRemote()) {
 			actionStr += "...";
 		}
 
@@ -54,25 +54,23 @@ public class OpenFileAction extends FileAction {
 
 	/**
 	 * Launches the File. Starts a download if file is remote only.
+	 *
 	 * @param fo
 	 */
 	public static void launchFile(FileObject fo) {
-
-		if(fo == null) {
+		if (fo == null) {
 			log.warn("Cannot launch: fileObject is null");
 		}
 
-		// detect if there is a soft lock set
-		final Attributed<FileObject> aFo = JakeMainApp.getCore()
-						.getAttributed(fo);
+		final Attributed<FileObject> aFo = JakeMainApp.getCore().getAttributed(fo);
 
-
+		// download first or direct launch?
 		if (aFo.isOnlyRemote()) {
 			JakeExecutor.exec(new PullAndLaunchJakeObjectsTask(
 							Arrays.asList((JakeObject) aFo.getJakeObject())));
+		} else {
+			launchFileDontTryPull(fo);
 		}
-
-		launchFileDontTryPull(fo);
 	}
 
 	public static void launchFileDontTryPull(FileObject fo) {
