@@ -18,6 +18,7 @@ help:
 
 # starting #
 
+
 # @start    : start gui with simple install (no dependency system)
 start: install
 	cd gui; ${MVN} exec:java
