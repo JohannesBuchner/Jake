@@ -1,6 +1,6 @@
 package com.jakeapp.core.dao;
 
-import com.jakeapp.core.DarkMagic;
+
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.JakeObject;
 import org.apache.log4j.Logger;
@@ -73,7 +73,6 @@ public abstract class HibernateJakeObjectDao<T extends JakeObject> extends
 		return sess().createQuery("FROM " + getTableByType()).list();
 	}
 
-	@DarkMagic
 	private String getTableByType() {
 		ParameterizedType parameterizedType = (ParameterizedType) this.getClass()
 				.getGenericSuperclass();
