@@ -58,38 +58,33 @@
             <artifactId>aspectjrt</artifactId>
             <version>1.6.2</version>
         </dependency>
-        <!-- all stuff needed for hibernate follows now: -->
-        <!--<dependency>-->
-        <!--<groupId>javax.persistence</groupId>-->
-        <!--<artifactId>persistence-api</artifactId>-->
-        <!--<version>${jpa.version}</version>-->
-        <!-- FIXME -->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <!--<version>3.3.1.GA</version>-->
-            <version>${hibernate-core.version}</version>
-        </dependency>
+
         <!-- spring hibernate support -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-commons-annotations-->
+            <!--</artifactId>-->
+            <!--<version>${hibernate-commons-annotations.version}-->
+            <!--</version>-->
+        <!--</dependency>-->
+        <!--<dependency>-->
+            <!--<groupId>org.hibernate</groupId>-->
+            <!--<artifactId>hibernate-annotations</artifactId>-->
+            <!--<version>${hibernate-annotations.version}-->
+            <!--</version>-->
+        <!--</dependency>-->
+
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-commons-annotations
-            </artifactId>
-            <version>${hibernate-commons-annotations.version}
-            </version>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-annotations</artifactId>
-            <version>${hibernate-annotations.version}
-            </version>
-        </dependency>
+    <groupId>cglib</groupId>
+    <artifactId>cglib-nodep</artifactId>
+    <version>2.2</version>
+</dependency> 
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager
@@ -147,6 +142,22 @@
             <artifactId>core-dao-interfaces</artifactId>
             <version>1.0</version>
         </dependency>
+
+
+
+        <dependency>
+            <groupId>com.jakeapp.jake</groupId>
+            <artifactId>core-dao-hibernate-impl</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.jakeapp.jake</groupId>
+            <artifactId>core-dao-hibernate-threading</artifactId>
+            <version>1.0</version>
+        </dependency>
+
 
     </dependencies>
     <repositories>
@@ -208,7 +219,6 @@
         </hibernate-annotations.version>
         <hibernate-commons-annotations.version>3.3.0.ga
         </hibernate-commons-annotations.version>
-        <hibernate-core.version>3.3.1.GA</hibernate-core.version>
 
         <maven-javadoc-plugin.version>2.5</maven-javadoc-plugin.version>
         <junit.version>4.4</junit.version>
