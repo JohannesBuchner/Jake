@@ -1,7 +1,5 @@
 package com.jakeapp.core.domain;
 
-import com.jakeapp.core.services.MsgService;
-
 import javax.persistence.*;
 import java.io.File;
 import java.util.UUID;
@@ -34,7 +32,7 @@ public class Project implements ILogable {
 	private File rootPath;
 	private Account credentials;
 
-	private transient MsgService messageService;
+	private transient IMsgService messageService;
 	
 	private transient boolean started;
 	private transient boolean open;
@@ -52,7 +50,7 @@ public class Project implements ILogable {
 	 * @param rootPath	 the root path of the project, i.e.
 	 *                   the  path of the project folder.
 	 */
-	public Project(String name, UUID projectId, MsgService msgService, File rootPath) {
+	public Project(String name, UUID projectId, IMsgService msgService, File rootPath) {
 		this.setName(name);
 		this.setProjectId(projectId);
 		this.setRootPath(rootPath);
@@ -109,7 +107,7 @@ public class Project implements ILogable {
 	 */
 	@Column(name = "PROTOCOL", nullable = false)
 	@Transient
-	public MsgService getMessageService() {
+	public IMsgService getMessageService() {
 		return this.messageService;
 	}
 
@@ -119,7 +117,7 @@ public class Project implements ILogable {
 	 *
 	 * @param messageService	the MsgService connected with the project.
 	 */
-	public void setMessageService(MsgService messageService) {
+	public void setMessageService(IMsgService messageService) {
 		this.messageService = messageService;
 	}
 

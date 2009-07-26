@@ -5,8 +5,8 @@ import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.IMsgService;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.UserFormatException;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.exceptions.TimeoutException;
@@ -26,7 +26,7 @@ import java.util.Map.Entry;
  * <p/>
  * Does not know anything about Projects.
  */
-public abstract class MsgService<T extends User> {
+public abstract class MsgService<T extends User> implements IMsgService<T> {
 
 	private static final Logger log = Logger.getLogger(MsgService.class);
 
@@ -226,16 +226,6 @@ public abstract class MsgService<T extends User> {
 		return this.userId;
 	}
 
-	/**
-	 * Get a UserId Instance from this Messaging-Service
-	 *
-	 * @param userId the String representation of the userId
-	 * @return a &lt;T extends UserId&gt; Object
-	 * @throws com.jakeapp.core.domain.exceptions.UserFormatException if the format of the input is not valid for this
-	 *                               Messaging-Service
-	 */
-	public abstract T getUserId(String userId) throws UserFormatException;
-
 
 	protected void setUserId(T userId) {
 		this.userId = userId;
@@ -249,14 +239,6 @@ public abstract class MsgService<T extends User> {
 	public ProtocolType getProtocolType() {
 		return this.protocolType;
 	}
-
-	/**
-	 * Creates an account for the Service, with the specified
-	 * ServiceCredentials. You have to have setCredentials first.
-	 *
-	 * @throws NetworkException
-	 */
-	public abstract void createAccount() throws NetworkException;
 
 
 	public final boolean isPasswordSaved() {

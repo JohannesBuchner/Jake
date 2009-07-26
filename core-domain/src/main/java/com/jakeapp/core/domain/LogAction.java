@@ -1,7 +1,5 @@
 package com.jakeapp.core.domain;
 
-import org.jivesoftware.smackx.workgroup.packet.UserID;
-
 import java.io.Serializable;
 
 
@@ -66,7 +64,7 @@ public enum LogAction implements Serializable {
 	/**
 	 * The user adding this {@link com.jakeapp.core.domain.logentries.LogEntry} states that the user adding it
 	 * trusts incoming changes from the user in belongsTo <br/>
-	 * belongsTo: {@link UserID} <br/>
+	 * belongsTo: {@link org.jivesoftware.smackx.workgroup.packet.UserID} <br/>
 	 * important LogEntry attributes: none
 	 */
 	START_TRUSTING_PROJECTMEMBER,
@@ -74,7 +72,7 @@ public enum LogAction implements Serializable {
 	/**
 	 * The user adding this {@link com.jakeapp.core.domain.logentries.LogEntry} states that the user adding it does
 	 * not trust incoming changes from the user in belongsTo anymore<br/>
-	 * belongsTo: {@link UserID} <br/>
+	 * belongsTo: {@link org.jivesoftware.smackx.workgroup.packet.UserID} <br/>
 	 * important LogEntry attributes: none
 	 */
 	STOP_TRUSTING_PROJECTMEMBER,
@@ -85,7 +83,7 @@ public enum LogAction implements Serializable {
 	 * The user adding this automatically
 	 * starts trusting users when they appear to be trusted by the user and 
 	 * stops trusting users when they appear to be trusted by the user<br/>
-	 * belongsTo: {@link UserID} <br/>
+	 * belongsTo: {@link org.jivesoftware.smackx.workgroup.packet.UserID} <br/>
 	 * important LogEntry attributes: none
 	 */
 	FOLLOW_TRUSTING_PROJECTMEMBER,
