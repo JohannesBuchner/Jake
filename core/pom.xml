@@ -16,17 +16,17 @@
 		<dependency>
 			<groupId>com.jakeapp.jake</groupId>
 			<artifactId>ics</artifactId>
-			<version>1.0</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jakeapp.jake</groupId>
 			<artifactId>ics-xmpp</artifactId>
-			<version>1.0</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jakeapp.jake</groupId>
 			<artifactId>fss</artifactId>
-			<version>1.0</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -132,7 +132,7 @@
 		<dependency>
 			<groupId>com.jakeapp</groupId>
 			<artifactId>availablelater</artifactId>
-			<version>1.0</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<repositories>
@@ -166,7 +166,6 @@
 				<version>2.0.2</version>
 				<configuration>
 					<source>1.6</source>
-					ƒ
 					<target>1.6</target>
 				</configuration>
 			</plugin>

@@ -1,0 +1,12 @@
+.jake/
+.settings/
+target/
+.classpath
+.project
+core/fulljake.log
+core/jake.log
+*.iml
+*.ipr
+*.iws
+*jake.log
+*.swp
