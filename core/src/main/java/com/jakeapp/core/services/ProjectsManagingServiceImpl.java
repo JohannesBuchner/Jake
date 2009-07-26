@@ -220,29 +220,29 @@ public class ProjectsManagingServiceImpl implements
 		return this.invitationDao.getAll(user.getUserId());
 	}
 
-	private Project initProject(Project p) throws NoSuchProjectException,
+	private Project initProject(Project project) throws NoSuchProjectException,
 			NotADirectoryException, FileNotFoundException, ProjectException {
-		log.debug("initialising project " + p);
+		log.debug("initialising project " + project);
 
-		p.setOpen(true);
+		project.setOpen(true);
 
-		log.debug("Init Project: " + p + " with credentials: " + p.getCredentials());
-		if (p.getMessageService() == null)
-			p.setMessageService(msgServiceFactory.getOrCreate(p.getCredentials()));
+		log.debug("Init Project: " + project + " with credentials: " + project.getCredentials());
+		if (project.getMessageService() == null)
+			project.setMessageService(msgServiceFactory.getOrCreate(project.getCredentials()));
 
-		if (p.getCredentials() != p.getMessageService().getServiceCredentials()) {
-			p.setCredentials(p.getMessageService().getServiceCredentials());
-			this.getProjectDao().update(p);
+		if (project.getCredentials() != project.getMessageService().getServiceCredentials()) {
+			project.setCredentials(project.getMessageService().getServiceCredentials());
+			this.getProjectDao().update(project);
 		}
 
 		try {
-			this.getProjectsFileServices().startForProject(p);
+			this.getProjectsFileServices().startForProject(project);
 		} catch (IOException e) {
 			log.debug("starting fss failed", e);
 		}
 
 
-		if (!p.getUserId().equals(p.getMessageService().getUserId()))
+		if (!project.getUserId().equals(project.getMessageService().getUserId()))
 			throw new IllegalStateException();
 
 		/*
@@ -250,14 +250,14 @@ public class ProjectsManagingServiceImpl implements
 		 * the database was started the last time the user manipulated it and must be
 		 * restarted here.
 		 */
-		if (p.isStarted() && !isActive(p)) {
-			p.setStarted(false);
-			this.startProject(p);
-			setActive(p);
+		if (project.isStarted() && !isActive(project)) {
+			project.setStarted(false);
+			this.startProject(project);
+			setActive(project);
 		}
 
-		log.debug("initialising project done for " + p);
-		return p;
+		log.debug("initialising project done for " + project);
+		return project;
 	}
 
 
@@ -485,6 +485,7 @@ public class ProjectsManagingServiceImpl implements
 	public Project openProject(Project project) throws IllegalArgumentException,
 			InvalidProjectException, IOException, NotADirectoryException {
 		if (project != null && project.getMessageService() != null && project.getCredentials() == null)
+			throw new IllegalArgumentException("This should not happen, please fixme!");
 			project.setCredentials(project.getMessageService().getServiceCredentials());
 
 		// add Project to the global database
@@ -918,7 +919,7 @@ public class ProjectsManagingServiceImpl implements
 	public UserInfo getProjectUserInfo(Project project, User user) {
 		TrustState state;
 		com.jakeapp.jake.ics.UserId backendUser;
-		MsgService msgService;
+		IMsgService msgService;
 		ICService ics;
 		String nickname = "", firstname = "", lastname = "";
 		VisibilityStatus visibilityStatus = VisibilityStatus.OFFLINE;
@@ -991,7 +992,7 @@ public class ProjectsManagingServiceImpl implements
 		if (project == null || project.getMessageService() == null)
 			throw new NoSuchProjectException();
 
-		MsgService msgService;
+		IMsgService msgService;
 		ICService ics;
 		IUsersService usersService;
 		Iterable<com.jakeapp.jake.ics.UserId> possibleBackendUsers;

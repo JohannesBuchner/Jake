@@ -106,7 +106,7 @@ public class XMPPMsgService extends MsgService<User> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected ICService getMainIcs() {
+	public ICService getMainIcs() {
 		return this.mainIcs;
 	}
 
@@ -114,7 +114,7 @@ public class XMPPMsgService extends MsgService<User> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected XmppUserId getMainUserId() {
+	public XmppUserId getMainUserId() {
 		return new XmppUserId(new XmppUserId(this.getServiceCredentials().getUserId())
 				.getUserIdWithOutResource()
 				+ "/Jake");

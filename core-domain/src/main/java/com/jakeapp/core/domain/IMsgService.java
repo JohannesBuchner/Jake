@@ -6,6 +6,10 @@ import com.jakeapp.core.services.VisibilityStatus;
 import com.jakeapp.core.services.ICSManager;
 import com.jakeapp.core.services.IProjectInvitationListener;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
+import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.jake.ics.status.ILoginStateListener;
+import com.jakeapp.jake.ics.status.IOnlineStatusListener;
+import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
 
 /**
  * @author Dominik Dorn
@@ -47,6 +51,32 @@ public interface IMsgService<T extends User> {
 	void createAccount() throws NetworkException;
 
 	boolean isPasswordSaved();
+
+	public  ICService getMainIcs();
+
+	public com.jakeapp.jake.ics.UserId getMainUserId();
+
+
+		/**
+	 * Activates a specific subsystem (=project)
+	 * Caled via startServing (start a project)
+	 *
+	 * @param ics
+	 * @param receiveListener
+	 * @param lsl
+	 * @param onlineStatusListener
+	 * @param name
+	 * @throws NetworkException
+	 */
+	public void activateSubsystem(ICService ics,
+					IMessageReceiveListener receiveListener, ILoginStateListener lsl,
+					IOnlineStatusListener onlineStatusListener, String name)
+					throws NetworkException;
+
+	public void deactivateSubsystem(ICService ics) throws NetworkException;
+
+	public Account getServiceCredentials();
+
 
 
 	void registerInvitationListener(IProjectInvitationListener il);

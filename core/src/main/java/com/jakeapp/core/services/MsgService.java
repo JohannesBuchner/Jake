@@ -80,7 +80,7 @@ public abstract class MsgService<T extends User> implements IMsgService<T> {
 	/**
 	 * @return {@link com.jakeapp.core.domain.Account} if they are already set.
 	 */
-	protected Account getServiceCredentials() {
+	public Account getServiceCredentials() {
 		return this.account;
 	}
 
@@ -260,9 +260,9 @@ public abstract class MsgService<T extends User> implements IMsgService<T> {
 	 *
 	 * @return
 	 */
-	abstract protected ICService getMainIcs();
+	abstract public ICService getMainIcs();
 
-	abstract protected com.jakeapp.jake.ics.UserId getMainUserId();
+	abstract public com.jakeapp.jake.ics.UserId getMainUserId();
 
 	/**
 	 * Updates the Subsystems of our main ICService.
@@ -281,17 +281,7 @@ public abstract class MsgService<T extends User> implements IMsgService<T> {
 		log.debug("main ics is logged in? " + getVisibilityStatus());
 	}
 
-	/**
-	 * Activates a specific subsystem (=project)
-	 * Caled via startServing (start a project)
-	 *
-	 * @param ics
-	 * @param receiveListener
-	 * @param lsl
-	 * @param onlineStatusListener
-	 * @param name
-	 * @throws NetworkException
-	 */
+
 	public void activateSubsystem(ICService ics,
 					IMessageReceiveListener receiveListener, ILoginStateListener lsl,
 					IOnlineStatusListener onlineStatusListener, String name)
