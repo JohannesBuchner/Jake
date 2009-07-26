@@ -1,6 +1,5 @@
 package com.jakeapp.core.util;
 
-import com.jakeapp.core.DarkMagic;
 import org.apache.log4j.Logger;
 
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.concurrent.Semaphore;
  * @author johannes
  * @see InjectableTask
  */
-@DarkMagic
+//@DarkMagic
 public class ThreadBroker implements Runnable {
 	private static final Logger log = Logger.getLogger(ThreadBroker.class);
 	private final List<InjectableTask<?>> tasks =

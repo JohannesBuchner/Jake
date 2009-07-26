@@ -19,7 +19,7 @@ import com.jakeapp.core.DarkMagic;
  * 
  * @author johannes
  */
-@DarkMagic
+//@DarkMagic
 public class SpringThreadBroker extends ThreadBroker {
 
 	private static final Logger log = Logger.getLogger(SpringThreadBroker.class);
