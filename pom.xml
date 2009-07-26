@@ -19,6 +19,8 @@
         <module>commander</module>
     <module>core-dao-interfaces</module>
     <module>core-domain</module>
+    <module>core-dao-hibernate-impl</module>
+    <module>core-dao-hibernate-threading</module>
   </modules>
     <developers>
         <developer>
