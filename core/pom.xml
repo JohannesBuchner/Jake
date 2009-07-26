@@ -140,6 +140,14 @@
             <artifactId>core-domain</artifactId>
             <version>1.0</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>com.jakeapp.jake</groupId>
+            <artifactId>core-dao-interfaces</artifactId>
+            <version>1.0</version>
+        </dependency>
+
     </dependencies>
     <repositories>
         <repository>

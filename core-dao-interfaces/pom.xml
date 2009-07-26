@@ -8,9 +8,14 @@
   </parent>
   <groupId>com.jakeapp.jake</groupId>
   <artifactId>core-dao-interfaces</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <name>core-dao-interfaces: DAO interface definitions</name>
-  <url>http://maven.apache.org</url>
+  <url>http://jakeapp.com</url>
   <dependencies>
+      <dependency>
+          <groupId>com.jakeapp.jake</groupId>
+          <artifactId>core-domain</artifactId>
+          <version>1.0</version>
+      </dependency>
   </dependencies>
 </project>
