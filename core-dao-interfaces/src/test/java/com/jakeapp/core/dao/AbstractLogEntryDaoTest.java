@@ -1,9 +1,9 @@
 package com.jakeapp.core.dao;
 
-import java.io.File;
-import java.util.List;
-import java.util.UUID;
-
+import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
+import com.jakeapp.core.domain.logentries.*;
+import com.jakeapp.core.services.XMPPMsgService;
 import org.apache.log4j.Logger;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -13,19 +13,17 @@ import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.*;
-import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
-import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.services.XMPPMsgService;
+import java.io.File;
+import java.util.List;
+import java.util.UUID;
 
-@ContextConfiguration(locations = { "/com/jakeapp/core/dao/jake_core_test_hibernateLocal_context.xml" })
-public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
+@ContextConfiguration // local
+public abstract class AbstractLogEntryDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
-	private static Logger log = Logger.getLogger(HibernateLogEntryDaoTest.class);
+	private static Logger log = Logger.getLogger(AbstractLogEntryDaoTest.class);
 
 	private HibernateTemplate hibernateTemplate;
 
@@ -73,7 +71,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 	@Transactional
 	@Test
 	public void testCreate() {
-		MsgService msgService = new XMPPMsgService();
+		IMsgService msgService = new XMPPMsgService();
 		File file = new File(System.getProperty("user.dir"));
 
 
@@ -92,7 +90,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 	@Transactional
 	@Test
 	public void testGetAll_xxx() {
-		MsgService msgService = new XMPPMsgService();
+		IMsgService msgService = new XMPPMsgService();
 		File file = new File(System.getProperty("user.dir"));
 
 
@@ -129,7 +127,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 	@Transactional
 	@Test
 	public void testGetAll_TagLogEntry() throws InvalidTagNameException {
-		MsgService msgService = new XMPPMsgService();
+		IMsgService msgService = new XMPPMsgService();
 		File file = new File(System.getProperty("user.dir"));
 
 
@@ -157,7 +155,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 	@Transactional
 	@Test
 	public void testGetAll_NoteObjectLogEntry() throws InvalidTagNameException {
-		MsgService msgService = new XMPPMsgService();
+		IMsgService msgService = new XMPPMsgService();
 		File file = new File(System.getProperty("user.dir"));
 
 
@@ -188,7 +186,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 	@Transactional
 	@Test
 	public void testGetAll_FileObjectLogEntry() throws InvalidTagNameException {
-		MsgService msgService = new XMPPMsgService();
+		IMsgService msgService = new XMPPMsgService();
 		File file = new File(System.getProperty("user.dir"));
 
 
@@ -218,7 +216,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 	@Transactional
 	@Test
 	public void testGet() throws Exception {
-		MsgService msgService = new XMPPMsgService();
+		IMsgService msgService = new XMPPMsgService();
 		File file = new File(System.getProperty("user.dir"));
 
 
@@ -242,7 +240,7 @@ public class HibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
 	 * @return
 	 */
 	private void initProjectAndMembers(User projectMember, User invitedProjectMember) {
-		MsgService msgService = new XMPPMsgService();
+		IMsgService msgService = new XMPPMsgService();
 		File file = new File(System.getProperty("user.dir"));
 		Project testProject = new Project("test", UUID
 				.fromString("e0cd2322-6766-40a0-82c5-bcc0fe7a67c2"), msgService, file);

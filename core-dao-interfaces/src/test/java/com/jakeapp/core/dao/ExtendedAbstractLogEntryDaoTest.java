@@ -1,12 +1,10 @@
 package com.jakeapp.core.dao;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
+import com.jakeapp.core.domain.logentries.*;
+import com.jakeapp.core.services.XMPPMsgService;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
@@ -14,20 +12,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.logentries.*;
-import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
-import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.services.XMPPMsgService;
+import java.io.File;
+import java.util.*;
 
-@ContextConfiguration(locations = { "/com/jakeapp/core/dao/jake_core_test_hibernateLocal_context.xml" })
-public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
+@ContextConfiguration // local! 
+public abstract class ExtendedAbstractLogEntryDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
-	private static Logger log = Logger.getLogger(ExtendedHibernateLogEntryDaoTest.class);
+	private static Logger log = Logger.getLogger(ExtendedAbstractLogEntryDaoTest.class);
 
 	private HibernateTemplate hibernateTemplate;
 
@@ -77,7 +71,7 @@ public class ExtendedHibernateLogEntryDaoTest extends AbstractJUnit4SpringContex
 
 
 	private void fill() throws InvalidTagNameException {
-		MsgService msgService = new XMPPMsgService();
+		IMsgService msgService = new XMPPMsgService();
 		msgService.setServiceCredentials(new Account(me.getUserId(), null, me.getProtocolType()));
 		File file = new File(System.getProperty("user.dir"));
 

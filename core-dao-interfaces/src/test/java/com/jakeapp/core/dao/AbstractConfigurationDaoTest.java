@@ -1,7 +1,6 @@
 package com.jakeapp.core.dao;
 
-import java.util.List;
-
+import com.jakeapp.core.domain.Configuration;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
@@ -9,18 +8,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jakeapp.core.domain.Configuration;
+import java.util.List;
 
-@ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateGlobal_context.xml"})
-public class HibernateConfigurationDaoTest extends AbstractJUnit4SpringContextTests {
-    private static Logger log = Logger.getLogger(HibernateConfigurationDaoTest.class);
+@ContextConfiguration // global!
+public class AbstractConfigurationDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
+    private static Logger log = Logger.getLogger(AbstractConfigurationDaoTest.class);
     private IConfigurationDao configurationDao;
     private HibernateTemplate template;
 
-    public void setConfigurationDao(IConfigurationDao configurationDao) {
+	public void setConfigurationDao(IConfigurationDao configurationDao) {
         this.configurationDao = configurationDao;
     }
 
@@ -37,7 +36,7 @@ public class HibernateConfigurationDaoTest extends AbstractJUnit4SpringContextTe
         return template;
     }
 
-    public HibernateConfigurationDaoTest() {
+    public AbstractConfigurationDaoTest() {
 //        this.setConfigurationDao((IConfigurationDao) this.applicationContext.getBean("configurationDao"));
 //        this.setTemplate((HibernateTemplate) this.applicationContext.getBean("hibernateTemplate"));
 

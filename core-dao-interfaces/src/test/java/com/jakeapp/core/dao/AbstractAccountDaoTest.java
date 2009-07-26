@@ -1,34 +1,33 @@
 package com.jakeapp.core.dao;
 
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.transaction.annotation.Transactional;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.After;
-import org.apache.log4j.Logger;
+import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.net.UnknownHostException;
 import java.util.UUID;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
 
-
-@ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateGlobal_context.xml"})
-public class HibernateAccountDaoTest extends AbstractJUnit4SpringContextTests {
-    private static Logger log = Logger.getLogger(HibernateAccountDaoTest.class);
+@ContextConfiguration
+public abstract class AbstractAccountDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
+    private static Logger log = Logger.getLogger(AbstractAccountDaoTest.class);
     private static IAccountDao accountDao;
 
     Account validCredentials;
 
 	public static void setAccountDao(IAccountDao accountDao) {
-        HibernateAccountDaoTest.accountDao = accountDao;
+        AbstractAccountDaoTest.accountDao = accountDao;
     }
 
 

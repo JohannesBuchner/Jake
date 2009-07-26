@@ -1,35 +1,31 @@
 package com.jakeapp.core.dao;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.util.UUID;
-
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
+import com.jakeapp.core.domain.exceptions.InvalidProjectException;
+import com.jakeapp.core.services.XMPPMsgService;
 import junit.framework.Assert;
-
+import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.log4j.Logger;
 
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.Account;
-import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.services.XMPPMsgService;
+import java.io.File;
+import java.util.UUID;
 
 
 /**
  * Unit Tests for HibernateProjectDao
  */
-@ContextConfiguration(locations = { "/com/jakeapp/core/dao/jake_core_test_hibernateGlobal_context.xml" })
-public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContextTests {
+@ContextConfiguration // global
+public abstract class AbstractProjectCredentialsTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	private static final String PROJECT_DAO_BEAN_ID = "projectDao";
 
@@ -37,7 +33,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 
 	private static final String TEMPLATE_BEAN_ID = "hibernateTemplate";
 
-	private static Logger log = Logger.getLogger(HibernateProjectCredentialsTest.class);
+	private static Logger log = Logger.getLogger(AbstractProjectCredentialsTest.class);
 
 	private IProjectDao projectDao;
 
@@ -99,7 +95,7 @@ public class HibernateProjectCredentialsTest extends AbstractJUnit4SpringContext
 		this.setServiceCredentialsDao(((IAccountDao) applicationContext
 				.getBean(SERVICE_CREDENTIALS_DAO_BEAN_ID)));
 		this.setTemplate((HibernateTemplate) applicationContext
-				.getBean(HibernateProjectCredentialsTest.TEMPLATE_BEAN_ID));
+				.getBean(AbstractProjectCredentialsTest.TEMPLATE_BEAN_ID));
 
 		credentials1 = new Account("me@localhost", "mypasswd", ProtocolType.XMPP);
 		credentials1.setUuid(project_1_uuid);

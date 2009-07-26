@@ -66,24 +66,24 @@
             <version>${spring.version}</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-commons-annotations-->
-            <!--</artifactId>-->
-            <!--<version>${hibernate-commons-annotations.version}-->
-            <!--</version>-->
+        <!--<groupId>org.hibernate</groupId>-->
+        <!--<artifactId>hibernate-commons-annotations-->
+        <!--</artifactId>-->
+        <!--<version>${hibernate-commons-annotations.version}-->
+        <!--</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-            <!--<groupId>org.hibernate</groupId>-->
-            <!--<artifactId>hibernate-annotations</artifactId>-->
-            <!--<version>${hibernate-annotations.version}-->
-            <!--</version>-->
+        <!--<groupId>org.hibernate</groupId>-->
+        <!--<artifactId>hibernate-annotations</artifactId>-->
+        <!--<version>${hibernate-annotations.version}-->
+        <!--</version>-->
         <!--</dependency>-->
 
         <dependency>
-    <groupId>cglib</groupId>
-    <artifactId>cglib-nodep</artifactId>
-    <version>2.2</version>
-</dependency> 
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>2.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -142,7 +142,6 @@
             <artifactId>core-dao-interfaces</artifactId>
             <version>1.0</version>
         </dependency>
-
 
 
         <dependency>

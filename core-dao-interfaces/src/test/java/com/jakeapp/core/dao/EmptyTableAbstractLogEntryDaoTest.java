@@ -1,10 +1,11 @@
 package com.jakeapp.core.dao;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.domain.*;
+import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
+import com.jakeapp.core.domain.logentries.LogEntry;
 
+import com.jakeapp.core.services.XMPPMsgService;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
@@ -12,27 +13,19 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.ILogable;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.services.XMPPMsgService;
+import java.io.File;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 @ContextConfiguration(locations = { "/com/jakeapp/core/dao/jake_core_test_hibernateLocal_context.xml" })
-public class EmptyTableHibernateLogEntryDaoTest extends AbstractJUnit4SpringContextTests {
+public abstract class EmptyTableAbstractLogEntryDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	private static Logger log = Logger
-			.getLogger(EmptyTableHibernateLogEntryDaoTest.class);
+			.getLogger(EmptyTableAbstractLogEntryDaoTest.class);
 
 	private HibernateTemplate hibernateTemplate;
 
@@ -72,7 +65,7 @@ public class EmptyTableHibernateLogEntryDaoTest extends AbstractJUnit4SpringCont
 	}
 
 	private void fill() throws InvalidTagNameException {
-		MsgService msgService = new XMPPMsgService();
+		IMsgService msgService = new XMPPMsgService();
 		File file = new File(System.getProperty("user.dir"));
 
 		project = new Project("test", u[0], msgService, file);

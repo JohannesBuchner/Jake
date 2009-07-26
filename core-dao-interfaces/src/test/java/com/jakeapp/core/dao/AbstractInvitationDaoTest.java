@@ -1,30 +1,28 @@
 package com.jakeapp.core.dao;
 
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
-import org.junit.Assert;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.User;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-
-import java.util.UUID;
-import java.util.List;
-
 import static junit.framework.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
 
 /**
  * Test to test the correct behaviour of the HibernateInvitationDao
  */
-@ContextConfiguration(locations = "/com/jakeapp/core/dao/jake_core_test_hibernateGlobal_context.xml")
-public class HibernateInvitationDaoTest extends AbstractJUnit4SpringContextTests {
+@ContextConfiguration // global
+public abstract class AbstractInvitationDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	@Autowired
 	private IInvitationDao invitationDao;

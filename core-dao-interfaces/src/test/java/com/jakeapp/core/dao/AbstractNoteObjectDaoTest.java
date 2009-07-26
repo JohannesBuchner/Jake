@@ -1,27 +1,24 @@
 package com.jakeapp.core.dao;
 
-import org.junit.Assert;
-
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.orm.hibernate3.HibernateTemplate;
-import org.springframework.transaction.annotation.Transactional;
-import org.apache.log4j.Logger;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Tag;
-import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
+import com.jakeapp.core.domain.NoteObject;
+import org.apache.log4j.Logger;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
 import java.util.List;
+import java.util.UUID;
 
-@ContextConfiguration(locations = {"/com/jakeapp/core/dao/jake_core_test_hibernateLocal_context.xml"})
-public class HibernateNoteObjectDaoTest extends AbstractJUnit4SpringContextTests {
+@ContextConfiguration // local
+public class AbstractNoteObjectDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
-    private static Logger log = Logger.getLogger(HibernateNoteObjectDaoTest.class);
+    private static Logger log = Logger.getLogger(AbstractNoteObjectDaoTest.class);
 
     private INoteObjectDao noteObjectDao;
     private HibernateTemplate template;

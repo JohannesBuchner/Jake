@@ -1,27 +1,24 @@
 package com.jakeapp.core.dao;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.File;
-import java.util.UUID;
-
+import com.jakeapp.TestingConstants;
+import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.exceptions.InvalidProjectException;
 import junit.framework.Assert;
-
+import org.apache.log4j.Logger;
 import org.junit.After;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
-import org.apache.log4j.Logger;
 
-import com.jakeapp.TestingConstants;
-import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.Account;
-import com.jakeapp.core.domain.exceptions.InvalidProjectException;
+import java.io.File;
+import java.util.UUID;
 
 
 /**
@@ -29,8 +26,8 @@ import com.jakeapp.core.domain.exceptions.InvalidProjectException;
  */
 // @ContextConfiguration(locations =
 // "/com/jakeapp/core/dao/jake_core_test_hibernateProjectDao_context.xml")
-@ContextConfiguration(locations = { "/com/jakeapp/core/dao/jake_core_test_hibernateGlobal_context.xml" })
-public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
+@ContextConfiguration // global
+public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	private static final String DAO_BEAN_ID = "projectDao";
 
@@ -38,7 +35,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 
 	private static final String SERVICE_CREDENTIALS_DAO_BEAN_ID = "accountDao";
 
-	private static Logger log = Logger.getLogger(HibernateProjectDaoTest.class);
+	private static Logger log = Logger.getLogger(AbstractProjectDaoTest.class);
 
 	private IProjectDao projectDao;
 
@@ -101,7 +98,7 @@ public class HibernateProjectDaoTest extends AbstractJUnit4SpringContextTests {
 		this.setServiceCredentialsDao(((IAccountDao) applicationContext
 				.getBean(SERVICE_CREDENTIALS_DAO_BEAN_ID)));
 		this.setTemplate((HibernateTemplate) applicationContext
-				.getBean(HibernateProjectDaoTest.TEMPLATE_BEAN_ID));
+				.getBean(AbstractProjectDaoTest.TEMPLATE_BEAN_ID));
 
 		if (!this.getTemplate().getSessionFactory().getCurrentSession().isOpen()) {
 			log.debug("opening session");
