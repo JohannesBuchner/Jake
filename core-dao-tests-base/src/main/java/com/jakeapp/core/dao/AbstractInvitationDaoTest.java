@@ -22,7 +22,7 @@ import java.util.UUID;
  * Test to test the correct behaviour of the HibernateInvitationDao
  */
 @ContextConfiguration // global
-public abstract class AbstractInvitationDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
+public abstract class t cAbstractInvitationDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	@Autowired
 	private IInvitationDao invitationDao;
