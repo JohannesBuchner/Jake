@@ -21,6 +21,7 @@
     <module>core-domain</module>
     <module>core-dao-hibernate-impl</module>
     <module>core-dao-hibernate-threading</module>
+    <module>core-dao-tests-base</module>
   </modules>
     <developers>
         <developer>
