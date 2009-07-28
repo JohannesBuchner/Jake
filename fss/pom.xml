@@ -4,9 +4,11 @@
 	<groupId>com.jakeapp.jake</groupId>
 	<artifactId>fss</artifactId>
 	<name>fss</name>
-	<description>The File System Service provides an operating and filesystem independent abstraction of the project folder.</description>
-	<version>1.1-SNAPSHOT</version>
-	<url>http://maven.apache.org</url>
+	<description>
+		A computer-independent view and addressing scheme of a common folder.
+	</description>
+	<version>1.1</version>
+	<url>http://dev.jakeapp.com/projects/fss</url>
 	<scm>
 		<connection>scm:svn:svn://svn.jakeapp.com/trunk/fss</connection>
 		<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/fss</developerConnection>
@@ -64,7 +66,7 @@
         <developer>
             <id>dominik</id>
             <name>Dominik Dorn</name>
-            <email>mail.2008@dominikdorn.com</email>
+            <email>dominik@jakeapp.com</email>
             <roles>
                 <role>Bugfixing</role>
             </roles>
@@ -93,6 +95,7 @@
 			<groupId>com.googlecode.junit.ext</groupId>
 			<artifactId>junit-ext</artifactId>
 			<version>0.6</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<properties>
