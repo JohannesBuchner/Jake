@@ -141,13 +141,7 @@ public abstract class AbstractAccountDaoTest extends AbstractTransactionalJUnit4
 
         validCredentials.setUuid("9c16a0d1-5ee1-4df9-9a3c-f5e4b5dcc0b4");
 		validCredentials.setSavePassword(false);
-		System.out.println("validCredentials.getPlainTextPassword() = " + validCredentials.getPlainTextPassword());
-
-
 		accountCreated = accountDao.create(validCredentials);
-		System.out.println("validCredentials.getPlainTextPassword() = " + validCredentials.getPlainTextPassword());
-		System.out.println("accountCreated.getPlainTextPassword() = " + accountCreated.getPlainTextPassword());
-
 		assertEquals("Password may not be lost on persisting",
 				validCredentials.getPlainTextPassword(), accountCreated.getPlainTextPassword());
 
