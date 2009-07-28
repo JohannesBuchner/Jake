@@ -1,10 +1,11 @@
 package com.jakeapp.core.services;
 
 
-import com.jakeapp.core.util.ApplicationContextFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.jakeapp.core.util.ApplicationContextFactory;
 
 public class ProjectsManagingServiceTest {
 	IProjectsManagingService service;

@@ -1,20 +1,17 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.core.dao.IProjectDao;
-import com.jakeapp.core.domain.Account;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.User;
-import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
 import org.mockito.Mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import org.mockito.MockitoAnnotations;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.Ignore;
+import com.jakeapp.core.dao.IProjectDao;
+import com.jakeapp.core.domain.*;
+import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 
 import java.util.UUID;
 

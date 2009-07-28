@@ -14,8 +14,8 @@ import com.jakeapp.core.synchronization.attributes.LockStatus;
 import com.jakeapp.core.synchronization.attributes.SyncStatus;
 import com.jakeapp.core.util.ProjectApplicationContextFactory;
 import com.jakeapp.jake.test.FSTestCommons;
+import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,11 +27,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 
 @RunWith(PrerequisiteAwareClassRunner.class)
-public class TestSyncService  {
+public class TestSyncService extends TmpdirEnabledTestCase {
 
 	private static Logger log = Logger.getLogger(TestSyncService.class);
 
@@ -64,22 +69,11 @@ public class TestSyncService  {
 
 	private ILogEntryDao logEntryDao;
 
-
-	protected File tmpdir;
-
-	@After
-	public void teardown() throws Exception {
-		if (tmpdir.exists())
-			Assert.assertTrue(FSTestCommons.recursiveDelete(tmpdir));
-		Assert.assertFalse("Cleanup done", tmpdir.exists());
-	}
-
-
-
+	@Override
 	@Before
 	@Transactional
 	public void setup() throws Exception {
-		tmpdir = FSTestCommons.provideTempDir();
+		super.setup();
 		FSTestCommons.recursiveDelete(new File(".jake"));
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
 				new String[] { "/com/jakeapp/core/applicationContext.xml" });
@@ -284,7 +278,7 @@ public class TestSyncService  {
 
 	public void myteardown() throws Exception {
 		pms.deleteProject(project, true);
-		this.teardown();
+		super.teardown();
 		FSTestCommons.recursiveDelete(new File(".jake"));
 		frontend = null;
 		sessionId = null;

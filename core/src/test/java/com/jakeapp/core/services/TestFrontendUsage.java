@@ -1,33 +1,23 @@
 package com.jakeapp.core.services;
 
-import com.jakeapp.TestingConstants;
-import com.jakeapp.core.domain.Account;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.jake.test.FSTestCommons;
-import org.junit.After;
+import java.io.File;
+import java.util.HashMap;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.File;
-import java.util.HashMap;
+import com.jakeapp.TestingConstants;
+import com.jakeapp.core.domain.Project;
+import com.jakeapp.core.domain.ProtocolType;
+import com.jakeapp.core.domain.Account;
+import com.jakeapp.jake.test.FSTestCommons;
+import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 
 
-public class TestFrontendUsage {
-
-
-	protected File tmpdir;
-
-	@After
-	public void teardown() throws Exception {
-		if (tmpdir.exists())
-			Assert.assertTrue(FSTestCommons.recursiveDelete(tmpdir));
-		Assert.assertFalse("Cleanup done", tmpdir.exists());
-	}
-
+public class TestFrontendUsage extends TmpdirEnabledTestCase {
 
 	private IFrontendService frontend;
 
@@ -39,14 +29,14 @@ public class TestFrontendUsage {
 
 	private static final String password = "mypasswd";
 
+	@Override
 	@Before
 	public void setup() throws Exception {
-
-		tmpdir = FSTestCommons.provideTempDir();
+		super.setup();
 
 		FSTestCommons.recursiveDelete(new File(".jake"));
 		ApplicationContext applicationContext = new ClassPathXmlApplicationContext(
-				new String[]{"/com/jakeapp/core/applicationContext.xml"});
+				new String[] { "/com/jakeapp/core/applicationContext.xml" });
 		frontend = (IFrontendService) applicationContext.getBean("frontendService");
 
 		sessionId = frontend.authenticate(new HashMap<String, String>(), null);
@@ -138,4 +128,5 @@ public class TestFrontendUsage {
 	}
 
 
+	                                             
 }
