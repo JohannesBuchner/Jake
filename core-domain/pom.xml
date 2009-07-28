@@ -26,9 +26,5 @@
             <artifactId>ics</artifactId>
             <version>1.1-SNAPSHOT</version>
         </dependency>
-
     </dependencies>
-    <properties>
-        <jpa.version>1.0</jpa.version>        
-    </properties>
 </project>
