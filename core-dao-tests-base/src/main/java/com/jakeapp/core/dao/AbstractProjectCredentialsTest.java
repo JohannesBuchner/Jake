@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,15 +23,15 @@ import java.util.UUID;
 
 /**
  * Unit Tests for HibernateProjectDao
+ * // TODO MERGE THIS WITCH AbstractAccountDaoTest
  */
 @ContextConfiguration // global
 public abstract class AbstractProjectCredentialsTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	private static final String PROJECT_DAO_BEAN_ID = "projectDao";
 
-	private static final String SERVICE_CREDENTIALS_DAO_BEAN_ID = "accountDao";
+	private static final String ACCOUNT_DAO_BEAN_ID = "accountDao";
 
-	private static final String TEMPLATE_BEAN_ID = "hibernateTemplate";
 
 	private static Logger log = Logger.getLogger(AbstractProjectCredentialsTest.class);
 
@@ -65,11 +64,11 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 		this.projectDao = projectDao;
 	}
 
-	private void setServiceCredentialsDao(IAccountDao accountDao) {
+	private void setAccountDao(IAccountDao accountDao) {
 		this.accountDao = accountDao;
 	}
 
-	private IAccountDao getServiceCredentialsDao() {
+	private IAccountDao getAccountDao() {
 		return accountDao;
 	}
 
@@ -79,8 +78,8 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 	public void setUp() {
 		this.setProjectDao((IProjectDao) this.applicationContext
 				.getBean(PROJECT_DAO_BEAN_ID));
-		this.setServiceCredentialsDao(((IAccountDao) applicationContext
-				.getBean(SERVICE_CREDENTIALS_DAO_BEAN_ID)));
+		this.setAccountDao(((IAccountDao) applicationContext
+				.getBean(ACCOUNT_DAO_BEAN_ID)));
 
 		credentials1 = new Account("me@localhost", "mypasswd", ProtocolType.XMPP);
 		credentials1.setUuid(project_1_uuid);
@@ -101,7 +100,7 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 	public final void testProjectDao() throws InvalidProjectException,
 			NoSuchProjectException {
 		Project actual;
-		Account credentials = this.getServiceCredentialsDao().create(
+		Account credentials = this.getAccountDao().create(
 				credentials1);
 		actual = this.getProjectDao().create(project1);
 		Assert.assertEquals(project1, actual);
@@ -115,20 +114,20 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 		
 		//since rollback may not have happened, delete possibly inserted credentials1
 		try {
-			this.getServiceCredentialsDao().delete(credentials1);
+			this.getAccountDao().delete(credentials1);
 		}
 		catch (Exception ex) {
 			//empty handling
 		}
 		
-		int before = this.getServiceCredentialsDao().getAll().size();
-		Account credentials = this.getServiceCredentialsDao().create(
+		int before = this.getAccountDao().getAll().size();
+		Account credentials = this.getAccountDao().create(
 				credentials1);
 		Assert.assertEquals(credentials.getUuid(), credentials1.getUuid());
 		Assert.assertEquals(credentials.getPlainTextPassword(), credentials1.getPlainTextPassword());
 		Assert.assertEquals(credentials.getUserId(), credentials1.getUserId());
 		Assert.assertEquals(credentials.getProtocolType(), credentials1.getProtocolType());
-		Assert.assertEquals(before + 1, this.getServiceCredentialsDao().getAll().size());
+		Assert.assertEquals(before + 1, this.getAccountDao().getAll().size());
 	}
 
 
