@@ -4,13 +4,12 @@ import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.*;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,15 +54,10 @@ public abstract class AbstractAccountDaoTest extends AbstractTransactionalJUnit4
         validCredentials.setServerPort(5222);
 
         validCredentials.setProtocol(ProtocolType.XMPP);
-
-
-        // TODO BEGIN TRANSACTION
-
     }
 
     @After
     public void tearDown() {
-		// TODO COMMIT/ROLLBACK TRANSACTION
     }
 
     /**
@@ -142,17 +136,24 @@ public abstract class AbstractAccountDaoTest extends AbstractTransactionalJUnit4
     @Test
     @Transactional
     public final void createRead_testNoPasswordSaving() throws InvalidCredentialsException, NoSuchServiceCredentialsException {
-        Account result;
+        Account accountCreated;
+		Account accountRead;
+
         validCredentials.setUuid("9c16a0d1-5ee1-4df9-9a3c-f5e4b5dcc0b4");
-        accountDao.create(validCredentials);
-        validCredentials.setSavePassword(false);
-        result = accountDao.read(UUID.fromString(validCredentials.getUuid()));
-        assertFalse("not the same with password in",validCredentials.equals(result));
-        validCredentials.setPlainTextPassword("");
-        assertEquals("the same with no password", validCredentials, result);
+		validCredentials.setSavePassword(false);
+		System.out.println("validCredentials.getPlainTextPassword() = " + validCredentials.getPlainTextPassword());
 
 
-    }
+		accountCreated = accountDao.create(validCredentials);
+		System.out.println("validCredentials.getPlainTextPassword() = " + validCredentials.getPlainTextPassword());
+		System.out.println("accountCreated.getPlainTextPassword() = " + accountCreated.getPlainTextPassword());
+
+		assertEquals("Password may not be lost on persisting",
+				validCredentials.getPlainTextPassword(), accountCreated.getPlainTextPassword());
+
+		accountRead = accountDao.read(UUID.fromString(validCredentials.getUuid()));
+		assertFalse("Password may not be set when retrieving Account", accountCreated.getPlainTextPassword().equals(accountRead.getPlainTextPassword()));
+   }
 
 
 }

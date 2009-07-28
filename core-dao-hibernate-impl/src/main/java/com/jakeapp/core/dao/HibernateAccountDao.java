@@ -1,6 +1,7 @@
 package com.jakeapp.core.dao;
 
 import com.jakeapp.core.domain.Account;
+import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 
@@ -23,10 +24,11 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Account create(Account credentials)
+	public Account create(final Account credentials)
 			throws InvalidCredentialsException {
 		if (credentials == null)
 			throw new InvalidCredentialsException();
+
 
 		if (credentials.getUuid() == null) {
 			credentials.setUuid(UUID.randomUUID());
@@ -38,21 +40,28 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 		if (credentials.getServerAddress() == null)
 			throw new InvalidCredentialsException();
 
-		String origpw = credentials.getPlainTextPassword();
-		if (!credentials.isSavePassword()) {
-			credentials.setPlainTextPassword("");
+
+		Account persistingAccount = null;
+
+		try {
+			persistingAccount = credentials.clone();
+		} catch (CloneNotSupportedException e) {
+			throw new RuntimeException("Account could not be cloned");
 		}
 
 
+		if (!credentials.isSavePassword()) {
+			persistingAccount.setPlainTextPassword("");
+		}
 		log.debug("persisting Account with uuid " + credentials.getUuid());
 
 		// TODO: beautify. 
 		try {
-			getHibernateTemplate().persist(credentials);
+			getHibernateTemplate().persist(persistingAccount);
 		} catch (DataAccessException e) {
 			throw new InvalidCredentialsException(e);
 		}
-		credentials.setPlainTextPassword(origpw);
+
 		return credentials;
 	}
 

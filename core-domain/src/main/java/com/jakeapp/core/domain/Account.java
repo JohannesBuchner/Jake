@@ -23,7 +23,7 @@ import java.util.UUID;
  * </ul>
  */
 @Entity(name = "servicecredentials")
-public class Account implements Serializable {
+public class Account implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = -3550631428630088119L;
 
@@ -56,13 +56,10 @@ public class Account implements Serializable {
 	 * Construct new user credentials with the given params. <br/> Note: the
 	 * password will not be persisted unless you call
 	 * {@link #setSavePassword(boolean)}
-	 * 
-	 * @param userId
-	 *            the userid to be used
-	 * @param plainTextPassword
-	 *            the password in plaintext-format for this userId
-	 * @param protocolType
-	 *            The Protocol the credentials are bound to.
+	 *
+	 * @param userId			the userid to be used
+	 * @param plainTextPassword the password in plaintext-format for this userId
+	 * @param protocolType	  The Protocol the credentials are bound to.
 	 */
 	public Account(String userId, String plainTextPassword, ProtocolType protocolType) {
 		this.userId = userId;
@@ -72,6 +69,7 @@ public class Account implements Serializable {
 
 	/**
 	 * Returns the <code>String</code> representation of the accounts-UUID.
+	 *
 	 * @return String representation of the accounts-UUID.
 	 */
 	@Id
@@ -92,7 +90,7 @@ public class Account implements Serializable {
 
 	/**
 	 * Get the <code>userId</code>.
-	 * 
+	 *
 	 * @return the userId
 	 */
 	@Column(name = "username", nullable = false)
@@ -106,7 +104,7 @@ public class Account implements Serializable {
 
 	/**
 	 * Get the password in plaintext
-	 * 
+	 *
 	 * @return the <code>plainTextPassword</code>
 	 */
 	@Column(name = "password", nullable = true)
@@ -122,7 +120,7 @@ public class Account implements Serializable {
 	 * Returns the InetAddress of the server on which these
 	 * <code>ServiceCredentials</code> are registered. Both IPv4 or IPv6 should
 	 * work.
-	 * 
+	 *
 	 * @return the ip address/hostname currently set or an empty string, if not set.
 	 */
 	@Column(name = "server", nullable = false)
@@ -140,7 +138,7 @@ public class Account implements Serializable {
 	/**
 	 * Returns the port on the specified <code>serverAddress</code> where the
 	 * server listens for incoming connections.
-	 * 
+	 *
 	 * @return the port used by the IM-Server
 	 */
 	@Column(name = "port", nullable = false)
@@ -166,6 +164,7 @@ public class Account implements Serializable {
 
 	/**
 	 * Returns wheter autoLogin is
+	 *
 	 * @return
 	 */
 	@Column(name = "autologin")
@@ -179,7 +178,7 @@ public class Account implements Serializable {
 
 	@Column(name = "protocol")
 	public String getProtocolType() {
-		if(this.protocol == null)
+		if (this.protocol == null)
 			return "";
 		return this.protocol.toString();
 	}
@@ -223,9 +222,9 @@ public class Account implements Serializable {
 		if (plainTextPassword != null ? !plainTextPassword.equals(that.plainTextPassword)
 				: that.plainTextPassword != null)
 			return false;
-		if ( (serverAddress!=null)?(!serverAddress.equals(that.serverAddress)):that.serverAddress!=null)
+		if ((serverAddress != null) ? (!serverAddress.equals(that.serverAddress)) : that.serverAddress != null)
 			return false;
-		if ( (userId!=null)?( !userId.equals(that.userId) ):that.userId!=null)
+		if ((userId != null) ? (!userId.equals(that.userId)) : that.userId != null)
 			return false;
 		return !((uuid != null) ? (!uuid.equals(that.uuid)) : that.uuid != null);
 
@@ -233,19 +232,25 @@ public class Account implements Serializable {
 
 	@Override
 	public int hashCode() {
-		int result = (uuid==null)?0:uuid.hashCode();
-		result = 31 * result + ((userId==null)?0:userId.hashCode());
+		int result = (uuid == null) ? 0 : uuid.hashCode();
+		result = 31 * result + ((userId == null) ? 0 : userId.hashCode());
 		result = 31 * result
 				+ (plainTextPassword != null ? plainTextPassword.hashCode() : 0);
-		result = 31 * result + ((serverAddress==null)?0:serverAddress.hashCode());
+		result = 31 * result + ((serverAddress == null) ? 0 : serverAddress.hashCode());
 		result = 31 * result + (int) (serverPort ^ (serverPort >>> 32));
 		result = 31 * result + (encryptionUsed ? 1 : 0);
 		return result;
 	}
-	
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + ":" + this.getProtocol() + ":"
 				+ this.getUserId() + " [" + this.getUuid() + "]";
+	}
+
+
+	@Override
+	public Account clone() throws CloneNotSupportedException {
+		return (Account) super.clone();
 	}
 }

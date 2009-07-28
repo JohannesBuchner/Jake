@@ -5,7 +5,7 @@ import org.springframework.test.context.ContextConfiguration;
 /**
  * @author Dominik Dorn
  */
-@ContextConfiguration
+@ContextConfiguration(inheritLocations = true)
 public class EmptyTableHibernateLogEntryDaoTest extends EmptyTableAbstractLogEntryDaoTest{
 
 	public EmptyTableHibernateLogEntryDaoTest() {
