@@ -26,7 +26,7 @@
         <dependency>
             <groupId>com.jakeapp.jake</groupId>
             <artifactId>fss</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -99,7 +99,7 @@
         <dependency>
             <groupId>com.jakeapp</groupId>
             <artifactId>availablelater</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.1</version>
         </dependency>
 
         <dependency>
