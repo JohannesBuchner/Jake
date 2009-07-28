@@ -182,5 +182,18 @@
         <junit.version>4.4</junit.version>
         <jmock.version>2.5.1</jmock.version>
         <hsqldb.version>1.8.0.1</hsqldb.version>
+	
+	
+	<javassist.version>3.7.ga</javassist.version>
+        <sl4j-log4j12.version>1.5.6</sl4j-log4j12.version>
+        <sl4j-api.version>1.5.6</sl4j-api.version>
+
+        <log4j.version>1.2.14</log4j.version>
+        
+        <hibernate-core.version>3.3.1.GA</hibernate-core.version>
+        <!--<hibernate.version>3.3.0.ga</hibernate.version>-->
+        <hibernate-annotations.version>3.4.0.GA</hibernate-annotations.version>
+        <hibernate-commons-annotations.version>3.3.0.ga</hibernate-commons-annotations.version>
+	<hibernate-entitymanager.version>3.4.0.GA</hibernate-entitymanager.version>
     </properties>
 </project>
