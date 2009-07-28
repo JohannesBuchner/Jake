@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-@ContextConfiguration(locations = { "/com/jakeapp/core/dao/jake_core_test_hibernateLocal_context.xml" })
+@ContextConfiguration
 public abstract class EmptyTableAbstractLogEntryDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	private static Logger log = Logger

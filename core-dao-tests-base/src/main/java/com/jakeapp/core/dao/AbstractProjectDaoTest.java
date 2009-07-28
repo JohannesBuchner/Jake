@@ -15,6 +15,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.UUID;
@@ -23,9 +24,7 @@ import java.util.UUID;
 /**
  * Unit Tests for HibernateProjectDao
  */
-// @ContextConfiguration(locations =
-// "/com/jakeapp/core/dao/jake_core_test_hibernateProjectDao_context.xml")
-@ContextConfiguration // global
+@ContextConfiguration
 public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 	private final int UNITTESTTIME = 1000;
 	private static final String DAO_BEAN_ID = "projectDao";
@@ -36,8 +35,10 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 
 	private static Logger log = Logger.getLogger(AbstractProjectDaoTest.class);
 
+	@Autowired
 	private IProjectDao projectDao;
 
+	@Autowired
 	private IAccountDao accountDao;
 
 	private File systemTmpDir = new File(System.getProperty("java.io.tmpdir"));

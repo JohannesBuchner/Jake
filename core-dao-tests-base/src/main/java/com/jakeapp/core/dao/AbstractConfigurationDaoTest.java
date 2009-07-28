@@ -14,103 +14,82 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@ContextConfiguration // global!
+@ContextConfiguration
 public class AbstractConfigurationDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
-    private static Logger log = Logger.getLogger(AbstractConfigurationDaoTest.class);
+	private static Logger log = Logger.getLogger(AbstractConfigurationDaoTest.class);
 
 
 	@Autowired
 	private IConfigurationDao configurationDao;
 
 	public void setConfigurationDao(IConfigurationDao configurationDao) {
-        this.configurationDao = configurationDao;
-    }
+		this.configurationDao = configurationDao;
+	}
 
-    public IConfigurationDao getConfigurationDao() {
-        return configurationDao;
-    }
-
-
-
-    public AbstractConfigurationDaoTest() {
-//        this.setConfigurationDao((IConfigurationDao) this.applicationContext.getBean("configurationDao"));
-//        this.setTemplate((HibernateTemplate) this.applicationContext.getBean("hibernateTemplate"));
-
-    }
-
-    @Before
-    public void setUp() {
-		// TODO BEGIN TRANSACTION
-    }
-
-    @After
-    public void tearDown() {
-		// TODO COMMIT/ROLLBACK TRANSACTION
-
-        /* rollback for true unit testing */
-//        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
-    }
+	public IConfigurationDao getConfigurationDao() {
+		return configurationDao;
+	}
 
 
-    @Transactional
-    @Test
-    public void testDeleteConfigurationValue() {
-             Configuration conf;
-        conf = new Configuration("testDeleteConfigurationValue", "testValue");
-        configurationDao.update(conf);
-
-        configurationDao.deleteConfigurationValue(conf.getKey());
-        List<Configuration> result = configurationDao.getAll();
+	public AbstractConfigurationDaoTest() {
+	}
 
 
-        Assert.assertFalse(result.contains(conf));
-    }
 
-    @Transactional
-    @Test
-    public void testConfigurationValueExists() {
-        // Add your code here
-    }
+	@Transactional()
+	@Test
+	public void testDeleteConfigurationValue() {
+		Configuration conf;
+		conf = new Configuration("testDeleteConfigurationValue", "testValue");
+		configurationDao.update(conf);
 
-    @Transactional
-    @Test
-    public void testUpdate() {
-        Configuration conf;
-        conf = new Configuration("testUpdate", "testValue");
-
-        configurationDao.update(conf);
+		configurationDao.deleteConfigurationValue(conf.getKey());
+		List<Configuration> result = configurationDao.getAll();
+		Assert.assertFalse(result.contains(conf));
+	}
 
 
-        List<Configuration> result = configurationDao.getAll();
+	@Transactional
+	@Test
+	public void testUpdate() {
+		Configuration conf;
+		conf = new Configuration("testUpdate", "testValue");
+
+		configurationDao.update(conf);
 
 
-        Assert.assertTrue(result.contains(conf));
-
-    }
-
-    @Test
-    public void testGetConfigurationValue()  {
-                Configuration conf;
-        conf = new Configuration("testGetConfigurationValue", "testValue");
-
-        configurationDao.update(conf);
-        String result = configurationDao.getConfigurationValue(conf.getKey());
-        Assert.assertEquals(result, conf.getValue());
-    }
-
-    @Test
-    public void testSetConfigurationValue() {
-                Configuration conf, confOther;
-        conf = new Configuration("testGetConfigurationValue", "testValue");
-        confOther = new Configuration("testGetConfigurationValue", "someOtherValue");
-        configurationDao.setConfigurationValue(confOther.getKey(), confOther.getValue());
-
-        List<Configuration> result = configurationDao.getAll();
+		List<Configuration> result = configurationDao.getAll();
 
 
-        Assert.assertFalse(result.contains(conf));
-        Assert.assertTrue(result.contains(confOther));        
-    }
+		Assert.assertTrue(result.contains(conf));
+
+	}
+
+	@Transactional
+	@Test
+	public void testGetConfigurationValue() {
+		Configuration conf;
+		conf = new Configuration("testGetConfigurationValue", "testValue");
+
+		configurationDao.update(conf);
+		String result = configurationDao.getConfigurationValue(conf.getKey());
+		Assert.assertEquals(result, conf.getValue());
+	}
+
+	@Transactional
+	@Test
+	public void testSetConfigurationValue() {
+		Configuration conf, confOther;
+		conf = new Configuration("testGetConfigurationValue", "testValue");
+		confOther = new Configuration("testGetConfigurationValue", "someOtherValue");
+		configurationDao.setConfigurationValue(confOther.getKey(), confOther.getValue());
+
+		List<Configuration> result = configurationDao.getAll();
+
+
+		Assert.assertFalse(result.contains(conf));
+		Assert.assertTrue(result.contains(confOther));
+	}
 
 
 }

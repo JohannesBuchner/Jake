@@ -9,4 +9,10 @@
         <property name="hibernateTemplate" ref="hibernateTemplate" />
     </bean>
 
+
+    <bean id="accountDao" class="com.jakeapp.core.dao.HibernateAccountDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate" />
+    </bean>
+
+
 </beans>

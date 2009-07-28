@@ -5,7 +5,7 @@
     <import resource="LocalDatabaseHibernate-context.xml"/>
 
     <bean id="logEntryDao" class="com.jakeapp.core.dao.HibernateLogEntryDao">
-        <property name="hibernateTemplate" value="hibernateTemplate"/>
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
     </bean>
 
 </beans>

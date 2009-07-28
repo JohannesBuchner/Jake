@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.util.*;
 
-@ContextConfiguration // local! 
+@ContextConfiguration 
 public abstract class ExtendedAbstractLogEntryDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	private static Logger log = Logger.getLogger(ExtendedAbstractLogEntryDaoTest.class);

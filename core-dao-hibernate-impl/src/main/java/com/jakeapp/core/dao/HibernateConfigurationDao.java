@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.dao.DataAccessException;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jakeapp.core.domain.Configuration;
 
@@ -14,6 +15,7 @@ import com.jakeapp.core.domain.Configuration;
  *
  * @author Simon
  */
+@Transactional
 public class HibernateConfigurationDao extends HibernateDaoSupport implements
 		IConfigurationDao {
 
@@ -24,6 +26,7 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional(readOnly = false)
 	public final void deleteConfigurationValue(final String name) {
 		try {
 			this.getHibernateTemplate().getSessionFactory().getCurrentSession()
@@ -40,6 +43,7 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
 	public final boolean configurationValueExists(final String name) {
 		List<String> result = this.getHibernateTemplate().getSessionFactory()
 				.getCurrentSession().createQuery(
@@ -53,8 +57,9 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional(readOnly = false)
 	public Configuration update(final Configuration configuration) {
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession().saveOrUpdate(
+		this.getHibernateTemplate().getSessionFactory().getCurrentSession().merge(
 				configuration);
 		return configuration;
 	}
@@ -64,6 +69,7 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
+	@Transactional(readOnly = true)
 	public List<Configuration> getAll() {
 		List<Configuration> result = this.getHibernateTemplate().getSessionFactory()
 				.getCurrentSession().createQuery("FROM configuration").list();
@@ -76,6 +82,7 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
+	@Transactional(readOnly = true)
 	public final String getConfigurationValue(final String name) {
 
 		List<Configuration> result = this.getHibernateTemplate().getSessionFactory()
@@ -94,10 +101,10 @@ public class HibernateConfigurationDao extends HibernateDaoSupport implements
 	 * {@inheritDoc}
 	 */
 	@Override
+	@Transactional(readOnly = false)
 	public final void setConfigurationValue(final String name, final String value) {
 		Configuration conf = new Configuration(name, value);
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession().saveOrUpdate(
-				conf);
+		this.getHibernateTemplate().getSessionFactory().getCurrentSession().merge(conf);
 	}
 
 }
