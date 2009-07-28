@@ -2,15 +2,12 @@ package com.jakeapp.core.dao;
 
 import com.jakeapp.core.domain.Configuration;
 import org.apache.log4j.Logger;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 

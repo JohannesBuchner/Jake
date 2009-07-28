@@ -4,16 +4,16 @@ import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.UnknownHostException;
 import java.util.UUID;
