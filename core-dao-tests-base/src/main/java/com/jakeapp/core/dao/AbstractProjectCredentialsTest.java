@@ -6,7 +6,6 @@ import com.jakeapp.core.domain.Project;
 import com.jakeapp.core.domain.ProtocolType;
 import com.jakeapp.core.domain.exceptions.InvalidCredentialsException;
 import com.jakeapp.core.domain.exceptions.InvalidProjectException;
-import com.jakeapp.core.services.XMPPMsgService;
 import junit.framework.Assert;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -16,6 +15,8 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.UUID;
@@ -41,7 +42,6 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 
 	private File systemTmpDir = new File(System.getProperty("java.io.tmpdir"));
 
-	private HibernateTemplate template;
 
 	private String project_1_uuid = "480f3166-06f5-40db-93b7-a69789d1fcd2";
 
@@ -73,20 +73,7 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 		return accountDao;
 	}
 
-	/**
-	 * @return the template
-	 */
-	private HibernateTemplate getTemplate() {
-		return template;
-	}
 
-	/**
-	 * @param template
-	 *            the template to set
-	 */
-	private void setTemplate(HibernateTemplate template) {
-		this.template = template;
-	}
 
 	@Before
 	public void setUp() {
@@ -94,29 +81,19 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 				.getBean(PROJECT_DAO_BEAN_ID));
 		this.setServiceCredentialsDao(((IAccountDao) applicationContext
 				.getBean(SERVICE_CREDENTIALS_DAO_BEAN_ID)));
-		this.setTemplate((HibernateTemplate) applicationContext
-				.getBean(AbstractProjectCredentialsTest.TEMPLATE_BEAN_ID));
 
 		credentials1 = new Account("me@localhost", "mypasswd", ProtocolType.XMPP);
 		credentials1.setUuid(project_1_uuid);
 		credentials1.setSavePassword(true);
 		project1.setCredentials(credentials1);
 
-		if (!this.getTemplate().getSessionFactory().getCurrentSession().isOpen()) {
-			log.debug("opening session");
-			this.getTemplate().getSessionFactory().openSession();
-		} else {
-			log.debug("session already open");
-		}
-		this.getTemplate().getSessionFactory().getCurrentSession().getTransaction()
-				.begin();
+		// TODO BEGIN TRANSACTION
 	}
 
 	@After
 	public void tearDown() {
 		/* rollback for true unit testing */
-		this.getTemplate().getSessionFactory().getCurrentSession().getTransaction()
-				.rollback();
+	// TODO ROLLBACK TRANSACTION
 	}
 
 	@Transactional
@@ -189,9 +166,12 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 		
 		// don't do this, the project's create saves it for us
 		// this.getAccountDao().create(sc);
-		
+		com.jakeapp.core.domain.IMsgService xmppMsgService = mock(com.jakeapp.core.domain.IMsgService.class);
+		when(xmppMsgService.getProtocolType()).thenReturn(ProtocolType.XMPP);
+
+
 		// create Project
-		p = new Project("lol", UUID.fromString(project_1_uuid), new XMPPMsgService(),
+		p = new Project("lol", UUID.fromString(project_1_uuid), xmppMsgService,
 				new File("/home/lol"));
 
 		// connect Project and MessageService

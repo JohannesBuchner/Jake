@@ -4,14 +4,13 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.domain.logentries.LogEntry;
-
-import com.jakeapp.core.services.XMPPMsgService;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.orm.hibernate3.HibernateTemplate;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,7 @@ public abstract class EmptyTableAbstractLogEntryDaoTest extends AbstractTransact
 	private static Logger log = Logger
 			.getLogger(EmptyTableAbstractLogEntryDaoTest.class);
 
-	private HibernateTemplate hibernateTemplate;
+
 
 	private ILogEntryDao logEntryDao;
 
@@ -35,13 +34,7 @@ public abstract class EmptyTableAbstractLogEntryDaoTest extends AbstractTransact
 
 	private Project project;
 
-	public HibernateTemplate getHibernateTemplate() {
-		return this.hibernateTemplate;
-	}
 
-	public void setHibernateTemplate(HibernateTemplate hibernateTemplate) {
-		this.hibernateTemplate = hibernateTemplate;
-	}
 
 	public ILogEntryDao getLogEntryDao() {
 		return this.logEntryDao;
@@ -56,16 +49,18 @@ public abstract class EmptyTableAbstractLogEntryDaoTest extends AbstractTransact
 		this
 				.setLogEntryDao((ILogEntryDao) this.applicationContext
 						.getBean("logEntryDao"));
-		this.setHibernateTemplate((HibernateTemplate) this.applicationContext
-				.getBean("hibernateTemplate"));
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession()
-				.beginTransaction();
+
+
+		// TODO begin transaction
+
 
 		fill();
 	}
 
 	private void fill() throws InvalidTagNameException {
-		IMsgService msgService = new XMPPMsgService();
+		IMsgService msgService = mock(IMsgService.class);
+		when(msgService.getProtocolType()).thenReturn(ProtocolType.XMPP);
+
 		File file = new File(System.getProperty("user.dir"));
 
 		project = new Project("test", u[0], msgService, file);
@@ -78,8 +73,7 @@ public abstract class EmptyTableAbstractLogEntryDaoTest extends AbstractTransact
 
 	@After
 	public void tearDown() {
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession()
-				.getTransaction().rollback();
+		// TODO ROLLBACK TRANSACTION
 	}
 
 	@Transactional

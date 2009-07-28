@@ -21,27 +21,22 @@ import java.util.UUID;
 /**
  * Test to test the correct behaviour of the HibernateInvitationDao
  */
-@ContextConfiguration // global
-public abstract class t cAbstractInvitationDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
+@ContextConfiguration
+// global
+public abstract class AbstractInvitationDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	@Autowired
 	private IInvitationDao invitationDao;
 
-	@Autowired
-	private HibernateTemplate hibernateTemplate;
-
 
 	@Before
 	public void setUp() {
-		// Add your code here
-
-		hibernateTemplate.getSessionFactory().getCurrentSession().beginTransaction();
+		// TODO BEGIN TRANSACTION
 	}
 
 	@After
 	public void tearDown() {
-		// Add your code here
-		hibernateTemplate.getSessionFactory().getCurrentSession().getTransaction().commit();
+		// TODO COMMIT/ROLLBACK TRANSACTION
 	}
 
 	@Test
@@ -60,7 +55,7 @@ public abstract class t cAbstractInvitationDaoTest extends AbstractTransactional
 		assertEquals(result.size(), 0);
 
 
-		Invitation invitationResult = 	invitationDao.create(invite);
+		Invitation invitationResult = invitationDao.create(invite);
 
 		result = invitationDao.getAll();
 

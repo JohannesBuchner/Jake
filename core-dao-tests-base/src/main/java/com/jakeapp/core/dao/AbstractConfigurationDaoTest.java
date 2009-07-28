@@ -17,24 +17,19 @@ import java.util.List;
 public class AbstractConfigurationDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
     private static Logger log = Logger.getLogger(AbstractConfigurationDaoTest.class);
     private IConfigurationDao configurationDao;
-    private HibernateTemplate template;
 
 	public void setConfigurationDao(IConfigurationDao configurationDao) {
         this.configurationDao = configurationDao;
     }
 
-    public void setTemplate(HibernateTemplate template) {
-        this.template = template;
-    }
+
 
 
     public IConfigurationDao getConfigurationDao() {
         return configurationDao;
     }
 
-    public HibernateTemplate getTemplate() {
-        return template;
-    }
+
 
     public AbstractConfigurationDaoTest() {
 //        this.setConfigurationDao((IConfigurationDao) this.applicationContext.getBean("configurationDao"));
@@ -45,13 +40,13 @@ public class AbstractConfigurationDaoTest extends AbstractTransactionalJUnit4Spr
     @Before
     public void setUp() {
         this.setConfigurationDao((IConfigurationDao) this.applicationContext.getBean("configurationDao"));
-        this.setTemplate((HibernateTemplate) this.applicationContext.getBean("hibernateTemplate"));
-        this.getTemplate().getSessionFactory().getCurrentSession().beginTransaction();
+		// TODO BEGIN TRANSACTION
     }
 
     @After
     public void tearDown() {
-        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
+		// TOOD COMMIT/ROLLBACK TRANSACTION
+
         /* rollback for true unit testing */
 //        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
     }

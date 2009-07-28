@@ -22,8 +22,6 @@ public abstract class AbstractFileObjectDaoTest extends AbstractTransactionalJUn
 
 	private IFileObjectDao fileObjectDao;
 
-	private HibernateTemplate template;
-
 	public IJakeObjectDao getFileObjectDao() {
 		return fileObjectDao;
 	}
@@ -32,29 +30,18 @@ public abstract class AbstractFileObjectDaoTest extends AbstractTransactionalJUn
 		this.fileObjectDao = fileObjectDao;
 	}
 
-	public HibernateTemplate getTemplate() {
-		return template;
-	}
-
-	public void setTemplate(HibernateTemplate template) {
-		this.template = template;
-	}
-
 	@Before
 	public void setUp() {
 		// Add your code here
 		this.setFileObjectDao((IFileObjectDao) this.applicationContext
 				.getBean("fileObjectDao"));
-		this.setTemplate((HibernateTemplate) applicationContext
-				.getBean("hibernateTemplate"));
-		this.getTemplate().getSessionFactory().getCurrentSession().getTransaction()
-				.begin();
+
+		// TODO BEGIN TRANSACTION
 	}
 
 	@After
 	public void tearDown() {
-		this.getTemplate().getSessionFactory().getCurrentSession().getTransaction()
-				.commit();
+		// TODO COMMIT TRANSACTION -- should this really be done? can we proove hibernate is working with rolling back also?
 
 		/* rollback for true unit testing */
 		// this.getTemplate().getSessionFactory().getCurrentSession().

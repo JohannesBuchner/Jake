@@ -21,26 +21,17 @@ public class AbstractNoteObjectDaoTest extends AbstractTransactionalJUnit4Spring
     private static Logger log = Logger.getLogger(AbstractNoteObjectDaoTest.class);
 
     private INoteObjectDao noteObjectDao;
-    private HibernateTemplate template;
 
     public void setNoteObjectDao(INoteObjectDao noteObjectDao) {
         this.noteObjectDao = noteObjectDao;
     }
 
-    public HibernateTemplate getTemplate() {
-        return template;
-    }
-
-    public void setTemplate(HibernateTemplate template) {
-        this.template = template;
-    }
 
     @Before
     public void setUp() {
         // Add your code here
         this.setNoteObjectDao((INoteObjectDao) this.applicationContext.getBean("noteObjectDao"));
-        this.setTemplate((HibernateTemplate) applicationContext.getBean("hibernateTemplate"));
-        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().begin();
+  // TOOD BEGIN TRANSACTION
     }
 
     @After
@@ -48,7 +39,7 @@ public class AbstractNoteObjectDaoTest extends AbstractTransactionalJUnit4Spring
 //        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().commit();
 
         /* rollback for true unit testing */
-        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
+// TODO ROLLBACK TRANSACTION
     }
 
     @Transactional

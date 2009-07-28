@@ -1,6 +1,5 @@
 package com.jakeapp.core.dao;
 
-import com.jakeapp.TestingConstants;
 import com.jakeapp.core.dao.exceptions.NoSuchProjectException;
 import com.jakeapp.core.domain.Account;
 import com.jakeapp.core.domain.Project;
@@ -28,7 +27,7 @@ import java.util.UUID;
 // "/com/jakeapp/core/dao/jake_core_test_hibernateProjectDao_context.xml")
 @ContextConfiguration // global
 public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
-
+	private final int UNITTESTTIME = 1000;
 	private static final String DAO_BEAN_ID = "projectDao";
 
 	private static final String TEMPLATE_BEAN_ID = "hibernateTemplate";
@@ -43,7 +42,6 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 
 	private File systemTmpDir = new File(System.getProperty("java.io.tmpdir"));
 
-	private HibernateTemplate template;
 
 
 	private String project_1_uuid = "480f3166-06f5-40db-93b7-a69789d1fcd2";
@@ -77,42 +75,20 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 		this.projectDao = projectDao;
 	}
 
-	/**
-	 * @return the template
-	 */
-	private HibernateTemplate getTemplate() {
-		return template;
-	}
-
-	/**
-	 * @param template
-	 *            the template to set
-	 */
-	private void setTemplate(HibernateTemplate template) {
-		this.template = template;
-	}
 
 	@Before
 	public void setUp() {
 		this.setProjectDao((IProjectDao) this.applicationContext.getBean(DAO_BEAN_ID));
 		this.setServiceCredentialsDao(((IAccountDao) applicationContext
 				.getBean(SERVICE_CREDENTIALS_DAO_BEAN_ID)));
-		this.setTemplate((HibernateTemplate) applicationContext
-				.getBean(AbstractProjectDaoTest.TEMPLATE_BEAN_ID));
 
-		if (!this.getTemplate().getSessionFactory().getCurrentSession().isOpen()) {
-			log.debug("opening session");
-			this.getTemplate().getSessionFactory().openSession();
-		} else {
-			log.debug("session already open");
-		}
+
 
 		// if(this.getTemplate().getSessionFactory().getCurrentSession().
 		// getTransaction().)
 
 
-		this.getTemplate().getSessionFactory().getCurrentSession().getTransaction()
-				.begin();
+		// TODO BEGIN TRANSACTION
 
 		cred = new Account("foo@bar", "", ProtocolType.XMPP);
 		cred.setUuid(UUID.randomUUID());
@@ -130,8 +106,7 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 		// getTransaction().commit();
 
 		/* rollback for true unit testing */
-		this.getTemplate().getSessionFactory().getCurrentSession().getTransaction()
-				.rollback();
+		// TODO ROLLBACK TRANSACTION
 	}
 
 	/**
@@ -287,7 +262,7 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 	 * This test tries to create a null-project
 	 * @throws com.jakeapp.core.domain.exceptions.InvalidProjectException
 	 */
-	@Test(timeout = TestingConstants.UNITTESTTIME, expected = InvalidProjectException.class)
+	@Test(timeout = UNITTESTTIME, expected = InvalidProjectException.class)
 	public final void create_persistNullshouldFail() throws InvalidProjectException {
 		projectDao.create(null);
 	}
@@ -296,7 +271,7 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 	 * This test tries to update a null-project
 	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
 	 */
-	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
+	@Test(timeout = UNITTESTTIME, expected = NoSuchProjectException.class)
 	public final void update_persistNullShouldFail() throws NoSuchProjectException {
 		projectDao.update(null);
 	}
@@ -305,7 +280,7 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 	 * This test tries to delete a null-project
 	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
 	 */
-	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
+	@Test(timeout = UNITTESTTIME, expected = NoSuchProjectException.class)
 	public final void delete_persistNullShouldFail() throws NoSuchProjectException {
 		projectDao.delete(null);
 	}
@@ -315,7 +290,7 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 	 * This test tries to get a null-project
 	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
 	 */
-	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
+	@Test(timeout = UNITTESTTIME, expected = NoSuchProjectException.class)
 	public final void read_persistNullShouldFail() throws NoSuchProjectException {
 		projectDao.read(null);
 	}
@@ -326,7 +301,7 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 	 * 
 	 * @throws InvalidProjectException
 	 */
-	@Test(timeout = TestingConstants.UNITTESTTIME, expected = InvalidProjectException.class)
+	@Test(timeout = UNITTESTTIME, expected = InvalidProjectException.class)
 	public final void create_persistProjectWithNullUUID() throws InvalidProjectException {
 		Project project = new Project();
 		project.setName("projectName");
@@ -342,7 +317,7 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 	 * @throws InvalidProjectException
 	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
 	 */
-	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
+	@Test(timeout = UNITTESTTIME, expected = NoSuchProjectException.class)
 	public final void update_persistProjectWithNullUUID() throws NoSuchProjectException {
 		Project project = new Project();
 		project.setProjectId((UUID) null);
@@ -356,7 +331,7 @@ public class AbstractProjectDaoTest extends AbstractTransactionalJUnit4SpringCon
 	 * @throws InvalidProjectException
 	 * @throws com.jakeapp.core.dao.exceptions.NoSuchProjectException
 	 */
-	@Test(timeout = TestingConstants.UNITTESTTIME, expected = NoSuchProjectException.class)
+	@Test(timeout = UNITTESTTIME, expected = NoSuchProjectException.class)
 	public final void delete_persistProjectWithNullUUID() throws NoSuchProjectException {
 		Project project = new Project();
 		project.setProjectId((UUID) null);

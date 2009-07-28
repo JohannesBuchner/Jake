@@ -50,22 +50,13 @@ public abstract class AbstractAccountDaoTest extends AbstractTransactionalJUnit4
         validCredentials.setProtocol(ProtocolType.XMPP);
 
 
-        HibernateTemplate template = (HibernateTemplate) applicationContext.getBean("hibernateTemplate");
-
-        template.getSessionFactory().getCurrentSession().getTransaction().begin();
+        // TODO BEGIN TRANSACTION
 
     }
 
     @After
     public void tearDown() {
-        HibernateTemplate template = (HibernateTemplate) applicationContext.getBean("hibernateTemplate");
-
-        /* commit transactions to test if they are really working */
-        template.getSessionFactory().getCurrentSession().getTransaction().commit();
-
-        /* rollback for true unit testing */
-//        template.getSessionFactory().getCurrentSession().getTransaction().rollback();
-
+		// TODO COMMIT/ROLLBACK TRANSACTION
     }
 
     /**

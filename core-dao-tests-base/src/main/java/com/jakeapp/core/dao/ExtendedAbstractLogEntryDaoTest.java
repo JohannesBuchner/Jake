@@ -4,7 +4,6 @@ import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
 import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.exceptions.InvalidTagNameException;
 import com.jakeapp.core.domain.logentries.*;
-import com.jakeapp.core.services.XMPPMsgService;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Assert;
@@ -14,6 +13,8 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.util.*;
@@ -22,8 +23,6 @@ import java.util.*;
 public abstract class ExtendedAbstractLogEntryDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
 
 	private static Logger log = Logger.getLogger(ExtendedAbstractLogEntryDaoTest.class);
-
-	private HibernateTemplate hibernateTemplate;
 
 	private ILogEntryDao logEntryDao;
 
@@ -37,13 +36,7 @@ public abstract class ExtendedAbstractLogEntryDaoTest extends AbstractTransactio
 
 	private Project project;
 
-	public HibernateTemplate getHibernateTemplate() {
-		return this.hibernateTemplate;
-	}
 
-	public void setHibernateTemplate(HibernateTemplate hibernateTemplate) {
-		this.hibernateTemplate = hibernateTemplate;
-	}
 
 	public ILogEntryDao getLogEntryDao() {
 		return this.logEntryDao;
@@ -58,10 +51,8 @@ public abstract class ExtendedAbstractLogEntryDaoTest extends AbstractTransactio
 		this
 				.setLogEntryDao((ILogEntryDao) this.applicationContext
 						.getBean("logEntryDao"));
-		this.setHibernateTemplate((HibernateTemplate) this.applicationContext
-				.getBean("hibernateTemplate"));
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession()
-				.beginTransaction();
+
+		// TODO BEGIN TRANSACTION
 
 		fill();
 
@@ -71,7 +62,9 @@ public abstract class ExtendedAbstractLogEntryDaoTest extends AbstractTransactio
 
 
 	private void fill() throws InvalidTagNameException {
-		IMsgService msgService = new XMPPMsgService();
+		IMsgService msgService = mock(IMsgService.class);
+		when(msgService.getProtocolType()).thenReturn(ProtocolType.XMPP);
+
 		msgService.setServiceCredentials(new Account(me.getUserId(), null, me.getProtocolType()));
 		File file = new File(System.getProperty("user.dir"));
 
@@ -149,8 +142,9 @@ public abstract class ExtendedAbstractLogEntryDaoTest extends AbstractTransactio
 
 	@After
 	public void tearDown() {
-		this.getHibernateTemplate().getSessionFactory().getCurrentSession()
-				.getTransaction().rollback();
+
+		// TODO ROLLBACK TRANSACTION
+
 	}
 
 	@Transactional
