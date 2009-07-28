@@ -21,12 +21,12 @@ help:
 
 # @start    : start gui with simple install (no dependency system)
 start: install
-	cd gui; ${MVN} exec:java
+	cd gui; ${MVN} -o exec:java
 
 # multistart: allow jake to run multiple instances (no dependency 
 # 			  system)
 multistart: install
-	cd gui; ${MVN} exec:java -Dcom.jakeapp.gui.ignoresingleinstance
+	cd gui; ${MVN} -o exec:java -Dcom.jakeapp.gui.ignoresingleinstance
 
 # @depstart: start gui with dependency system
 depstart: gui 
