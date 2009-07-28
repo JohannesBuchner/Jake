@@ -16,32 +16,46 @@
             <artifactId>core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <!-- <scope>test</scope> -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <!--<scope>test</scope>-->
+        </dependency>
     </dependencies>
     <scm>
-    	<connection>scm:svn:svn://svn.jakeapp.com/trunk/</connection>
-    	<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/</developerConnection>
+        <connection>scm:svn:svn://svn.jakeapp.com/trunk/</connection>
+        <developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/</developerConnection>
     </scm>
 
     <build>
         <plugins>
             <!--<plugin>-->
-                <!--<groupId>org.codehaus.mojo</groupId>-->
-                <!--<artifactId>exec-maven-plugin</artifactId>-->
-                <!--<version>1.1</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>java</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!---->
-                <!--<configuration>-->
-                    <!--<mainClass>com.jakeapp.gui.console.JakeCommander</mainClass>-->
-                    <!--<arguments>-->
-                    <!--</arguments>-->
-                    <!--<workingDirectory>target/classes</workingDirectory>-->
-                <!--</configuration>-->
+            <!--<groupId>org.codehaus.mojo</groupId>-->
+            <!--<artifactId>exec-maven-plugin</artifactId>-->
+            <!--<version>1.1</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<goals>-->
+            <!--<goal>java</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!---->
+            <!--<configuration>-->
+            <!--<mainClass>com.jakeapp.gui.console.JakeCommander</mainClass>-->
+            <!--<arguments>-->
+            <!--</arguments>-->
+            <!--<workingDirectory>target/classes</workingDirectory>-->
+            <!--</configuration>-->
 
             <!--</plugin>-->
         </plugins>
