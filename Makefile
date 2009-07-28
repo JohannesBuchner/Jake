@@ -122,9 +122,25 @@ commander: core
 	rm -f .rebuild* */.rebuild
 
 # core       : build core component
-core: fss ics ics-xmpp
+core: fss ics ics-xmpp core-dao-hibernate-threading
 	@bash .build.sh ${VERSION} $@ "$^"
 	rm -f .rebuild_ics_dependent .rebuild_ics-xmpp_dependent
+
+core-domain:
+	@bash .build.sh ${VERSION} $@ "$^"
+
+core-dao-interfaces: core-domain
+	@bash .build.sh ${VERSION} $@ "$^"
+
+core-dao-tests-base: core-dao-interfaces core-domain
+	@bash .build.sh ${VERSION} $@ "$^"
+
+core-dao-hibernate-impl: core-dao-interfaces core-domain
+	@bash .build.sh ${VERSION} $@ "$^"
+
+core-dao-hibernate-threading: core-dao-hibernate-impl
+	@bash .build.sh ${VERSION} $@ "$^"
+
 
 # fss        : build fss component
 fss:
