@@ -16,7 +16,7 @@
         <dependency>
             <groupId>com.jakeapp.jake</groupId>
             <artifactId>ics</artifactId>
-            <version>1.1-SNAPSHOT</version>
+            <version>1.1</version>
         </dependency>
         <dependency>
             <groupId>com.jakeapp.jake</groupId>

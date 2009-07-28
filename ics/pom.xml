@@ -10,8 +10,8 @@
 	<artifactId>ics</artifactId>
 	<name>ics</name>
 	<description>The Interclient Communication Service provides low-level clients communication methods.</description>
-	<version>1.1-SNAPSHOT</version>
-	<url>http://maven.apache.org</url>
+	<version>1.1</version>
+	<url>http://jakeapp.com</url>
 	<scm>
 		<connection>scm:svn:svn://svn.jakeapp.com/trunk/ics/</connection>
 		<developerConnection>scm:svn:svn://svn.jakeapp.com/trunk/ics/</developerConnection>
