@@ -14,6 +14,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.UnknownHostException;
 import java.util.UUID;
@@ -22,19 +23,25 @@ import java.util.UUID;
 @ContextConfiguration
 public abstract class AbstractAccountDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
     private static Logger log = Logger.getLogger(AbstractAccountDaoTest.class);
-    private static IAccountDao accountDao;
 
-    Account validCredentials;
 
-	public static void setAccountDao(IAccountDao accountDao) {
-        AbstractAccountDaoTest.accountDao = accountDao;
-    }
+	@Autowired
+	private  IAccountDao accountDao;
+
+	public IAccountDao getAccountDao() {
+		return accountDao;
+	}
+
+	public void setAccountDao(IAccountDao accountDao) {
+		this.accountDao = accountDao;
+	}
+
+	Account validCredentials;
+
 
 
     @Before
     public void setUp() throws UnknownHostException, InvalidCredentialsException {
-        setAccountDao((IAccountDao) applicationContext.getBean("accountDao"));
-
 
         validCredentials = new Account();
         validCredentials.setUuid("6c8b815b-c50c-4b49-a74a-3eefe9fa2977");

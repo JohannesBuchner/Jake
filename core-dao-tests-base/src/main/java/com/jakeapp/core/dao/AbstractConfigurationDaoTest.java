@@ -10,20 +10,21 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 @ContextConfiguration // global!
 public class AbstractConfigurationDaoTest extends AbstractTransactionalJUnit4SpringContextTests {
     private static Logger log = Logger.getLogger(AbstractConfigurationDaoTest.class);
-    private IConfigurationDao configurationDao;
+
+
+	@Autowired
+	private IConfigurationDao configurationDao;
 
 	public void setConfigurationDao(IConfigurationDao configurationDao) {
         this.configurationDao = configurationDao;
     }
-
-
-
 
     public IConfigurationDao getConfigurationDao() {
         return configurationDao;
@@ -39,13 +40,12 @@ public class AbstractConfigurationDaoTest extends AbstractTransactionalJUnit4Spr
 
     @Before
     public void setUp() {
-        this.setConfigurationDao((IConfigurationDao) this.applicationContext.getBean("configurationDao"));
 		// TODO BEGIN TRANSACTION
     }
 
     @After
     public void tearDown() {
-		// TOOD COMMIT/ROLLBACK TRANSACTION
+		// TODO COMMIT/ROLLBACK TRANSACTION
 
         /* rollback for true unit testing */
 //        this.getTemplate().getSessionFactory().getCurrentSession().getTransaction().rollback();
@@ -64,10 +64,6 @@ public class AbstractConfigurationDaoTest extends AbstractTransactionalJUnit4Spr
 
 
         Assert.assertFalse(result.contains(conf));
-
-
-
-
     }
 
     @Transactional
