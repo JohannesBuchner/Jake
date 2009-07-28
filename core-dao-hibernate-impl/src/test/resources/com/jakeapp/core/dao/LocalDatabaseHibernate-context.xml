@@ -42,7 +42,7 @@
                 <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
                 <prop key="hibernate.hbm2ddl.auto">create</prop>
                 <prop key="hibernate.show_sql">false</prop>
-                <prop key="hibernate.current_session_context_class">thread</prop>
+                <prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate3.SpringSessionContext</prop>
                 <prop key="hibernate.transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</prop>
                 <prop key="hibernate.default_batch_fetch_size">0</prop>
                 <prop key="hibernate.jdbc.batch_size">0</prop>
@@ -50,20 +50,16 @@
         </property>
         <property name="dataSource" ref="localDataSource"/>
         <property name="schemaUpdate" value="false"/>
-        <property name="useTransactionAwareDataSource" value="true" />
     </bean>
 
 
     <bean id="transactionManager"
           class="org.springframework.orm.hibernate3.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
-
     </bean>
     <bean id="hibernateTemplate"
           class="org.springframework.orm.hibernate3.HibernateTemplate">
         <property name="sessionFactory" ref="sessionFactory"/>
-        <property name="alwaysUseNewSession" value="true" />
-
     </bean>
 
 
