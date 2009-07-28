@@ -69,7 +69,7 @@
             <!-- compare to org.slf4j-log4j XX -->
         </dependency>
         <dependency>
-            <groupId>jboss</groupId>
+            <groupId>javassist</groupId>
             <artifactId>javassist</artifactId>
             <version>${javassist.version}</version>
         </dependency>
