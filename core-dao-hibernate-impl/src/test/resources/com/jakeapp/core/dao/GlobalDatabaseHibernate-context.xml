@@ -28,7 +28,7 @@
                 <prop key="hibernate.jdbc.batch_size">0</prop>
             </props>
         </property>
-        <property name="dataSource" ref="mainDataSource"/>
+        <property name="dataSource" ref="globalDataSource"/>
         <property name="schemaUpdate" value="false"/>
 
     </bean>

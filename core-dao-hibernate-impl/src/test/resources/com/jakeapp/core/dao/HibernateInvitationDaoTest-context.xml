@@ -3,4 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
+    <import resource="GlobalDatabaseHibernate-context.xml"/>
+    <bean id="invitationDao" class="com.jakeapp.core.dao.HibernateInvitationDao">
+        <property name="hibernateTemplate" ref="hibernateTemplate"/>
+    </bean>
+
 </beans>
