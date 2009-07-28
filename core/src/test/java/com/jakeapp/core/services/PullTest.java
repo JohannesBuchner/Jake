@@ -2,12 +2,7 @@ package com.jakeapp.core.services;
 
 import com.jakeapp.core.dao.IFileObjectDao;
 import com.jakeapp.core.dao.ILogEntryDao;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogEntrySerializer;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.User;
+import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.JakeObjectNewVersionLogEntry;
 import com.jakeapp.core.synchronization.ISyncService;
 import com.jakeapp.core.synchronization.SyncServiceImpl;
@@ -21,11 +16,7 @@ import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
-import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
-import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
-import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
-import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
-import com.jakeapp.jake.ics.filetransfer.IncomingTransferListener;
+import com.jakeapp.jake.ics.filetransfer.*;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethod;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
@@ -35,11 +26,12 @@ import com.jakeapp.jake.ics.impl.mock.MockICService;
 import com.jakeapp.jake.ics.impl.mock.MockUserId;
 import com.jakeapp.jake.ics.impl.sockets.filetransfer.FileTransfer;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
+import com.jakeapp.jake.test.FSTestCommons;
 import com.jakeapp.jake.test.SimpleFakeMessageExchanger;
-import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 import junit.framework.Assert;
 import local.test.Tracer;
 import org.apache.log4j.Logger;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -52,7 +44,15 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 
-public class PullTest extends TmpdirEnabledTestCase {
+public class PullTest {
+
+
+		protected File tmpdir;
+
+
+
+
+
 
 	private final class TracingChangeListener implements ChangeListener {
 
@@ -137,9 +137,22 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 	private IFSService fss;
 
+
+
+	@After
+	public void teardown() throws Exception {
+		if (tmpdir.exists())
+			Assert.assertTrue(FSTestCommons.recursiveDelete(tmpdir));
+		Assert.assertFalse("Cleanup done", tmpdir.exists());
+	}
+
+
+
+
 	@Before
 	public void setup() throws Exception {
-		super.setup();
+		tmpdir = FSTestCommons.provideTempDir();
+
 		MockitoAnnotations.initMocks(this);
 		SyncServiceImpl sync = new SyncServiceImpl();
 		sync.setICSManager(icsmanager);
