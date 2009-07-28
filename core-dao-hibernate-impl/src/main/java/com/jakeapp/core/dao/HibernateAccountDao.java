@@ -123,7 +123,7 @@ public class HibernateAccountDao extends HibernateDaoSupport implements
 
 		try {
 
-			getHibernateTemplate().update(credentials/* , LockMode.WRITE */);
+			getHibernateTemplate().merge(credentials/* , LockMode.WRITE */);
 		} catch (DataAccessException e) {
 			throw new NoSuchServiceCredentialsException(e);
 		}

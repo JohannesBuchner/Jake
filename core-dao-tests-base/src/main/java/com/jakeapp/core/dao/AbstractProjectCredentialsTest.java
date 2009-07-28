@@ -14,6 +14,8 @@ import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.beans.factory.annotation.Autowired;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -35,9 +37,26 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 
 	private static Logger log = Logger.getLogger(AbstractProjectCredentialsTest.class);
 
+	@Autowired
 	private IProjectDao projectDao;
-
+	@Autowired
 	private IAccountDao accountDao;
+
+	public IProjectDao getProjectDao() {
+		return projectDao;
+	}
+
+	public void setProjectDao(IProjectDao projectDao) {
+		this.projectDao = projectDao;
+	}
+
+	public IAccountDao getAccountDao() {
+		return accountDao;
+	}
+
+	public void setAccountDao(IAccountDao accountDao) {
+		this.accountDao = accountDao;
+	}
 
 	private File systemTmpDir = new File(System.getProperty("java.io.tmpdir"));
 
@@ -49,50 +68,21 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 	Project project1 = new Project("someName", UUID.fromString(project_1_uuid), null,
 			systemTmpDir);
 
-	/**
-	 * @return the projectDao
-	 */
-	private IProjectDao getProjectDao() {
-		return projectDao;
-	}
-
-	/**
-	 * @param projectDao
-	 *            the projectDao to set
-	 */
-	private void setProjectDao(IProjectDao projectDao) {
-		this.projectDao = projectDao;
-	}
-
-	private void setAccountDao(IAccountDao accountDao) {
-		this.accountDao = accountDao;
-	}
-
-	private IAccountDao getAccountDao() {
-		return accountDao;
-	}
-
 
 
 	@Before
 	public void setUp() {
-		this.setProjectDao((IProjectDao) this.applicationContext
-				.getBean(PROJECT_DAO_BEAN_ID));
-		this.setAccountDao(((IAccountDao) applicationContext
-				.getBean(ACCOUNT_DAO_BEAN_ID)));
 
 		credentials1 = new Account("me@localhost", "mypasswd", ProtocolType.XMPP);
 		credentials1.setUuid(project_1_uuid);
 		credentials1.setSavePassword(true);
 		project1.setCredentials(credentials1);
 
-		// TODO BEGIN TRANSACTION
+
 	}
 
 	@After
 	public void tearDown() {
-		/* rollback for true unit testing */
-	// TODO ROLLBACK TRANSACTION
 	}
 
 	@Transactional
@@ -100,8 +90,7 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 	public final void testProjectDao() throws InvalidProjectException,
 			NoSuchProjectException {
 		Project actual;
-		Account credentials = this.getAccountDao().create(
-				credentials1);
+		Account credentials = this.getAccountDao().create(credentials1);
 		actual = this.getProjectDao().create(project1);
 		Assert.assertEquals(project1, actual);
 		Assert.assertEquals(1, this.getProjectDao().getAll().size());
@@ -135,16 +124,20 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 	@Test
 	public final void testProjectWithServiceCredentialsDao()
 			throws InvalidProjectException, NoSuchProjectException {
+
+		Account credentials =
+		this.getAccountDao().create(credentials1);
+		Assert.assertEquals(credentials, credentials1);
+		Assert.assertEquals(1,	this.getAccountDao().getAll().size());
+
+
+
+
 		Project project;
 		project = this.getProjectDao().create(project1);
 		Assert.assertEquals(project1, project);
 		Assert.assertEquals(1, this.getProjectDao().getAll().size());
 
-		// Account credentials =
-		// this.getAccountDao().create(credentials1);
-		// Assert.assertEquals(credentials, credentials1);
-		// Assert.assertEquals(1,
-		// this.getAccountDao().getAll().size());
 
 		project.setCredentials(credentials1);
 		project = this.getProjectDao().update(project);
@@ -162,9 +155,9 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 		Project p;
 		Account sc = new Account("username", "password", ProtocolType.XMPP);
 		sc.setUuid(project_1_uuid);
-		
-		// don't do this, the project's create saves it for us
-		// this.getAccountDao().create(sc);
+		this.getAccountDao().create(sc);
+
+
 		com.jakeapp.core.domain.IMsgService xmppMsgService = mock(com.jakeapp.core.domain.IMsgService.class);
 		when(xmppMsgService.getProtocolType()).thenReturn(ProtocolType.XMPP);
 
@@ -225,6 +218,7 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 		Account sc1 = new Account("username", "password", ProtocolType.XMPP);
 		sc1.setUuid(uuid);
 		sc1.setSavePassword(true);
+
 		
 		Account sc2 = new Account("username2", "password2", ProtocolType.XMPP);
 		sc2.setUuid(uuid);
@@ -242,7 +236,10 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 		Assert.assertFalse(sc1.equals(entry));
 	}
 
+
+
 	@Test
+	@Transactional
 	public final void testSilentReplaceCredentials() throws Exception {
 		UUID uuid = UUID.randomUUID();
 
@@ -251,15 +248,15 @@ public abstract class AbstractProjectCredentialsTest extends AbstractTransaction
 		sc1.setUuid(uuid);
 		sc1.setSavePassword(true);
 		this.accountDao.create(sc1);
-		
+
 		sc1 = this.accountDao.read(UUID.fromString(sc1.getUuid()));
-		
+
 		Account sc2 = new Account("username2", "password2", ProtocolType.XMPP);
 		sc2.setUuid(UUID.fromString(uuid.toString()));
 		sc2.setSavePassword(true);
-		
+
 		Account entry = this.accountDao.update(sc2);
-	
+
 		Assert.assertEquals(sc2.getUserId(), entry.getUserId());
 		Assert.assertEquals(sc2.getUuid(), entry.getUuid());
 		// Assert.assertEquals(sc2, entry);
