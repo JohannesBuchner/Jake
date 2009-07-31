@@ -32,8 +32,17 @@
             <version>${spring.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 
-
+           <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -43,7 +52,7 @@
         </dependency>
 
 
-       <dependency>
+        <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager
             </artifactId>
@@ -51,7 +60,7 @@
         </dependency>
 
 
-             <dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${sl4j-api.version}</version>
@@ -74,7 +83,6 @@
             <version>${javassist.version}</version>
         </dependency>
         <!-- end of hibernate stuff -->
-
 
 
         <dependency>
