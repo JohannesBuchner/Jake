@@ -112,7 +112,7 @@ package-linux: jar
 
 
 # gui        : build gui component
-gui: core
+gui: core availablelater
 	@bash .build.sh ${VERSION} $@ "$^"
 	rm -f .rebuild* */.rebuild
 
@@ -122,7 +122,7 @@ commander: core
 	rm -f .rebuild* */.rebuild
 
 # core       : build core component
-core: fss ics ics-xmpp core-dao-hibernate-threading
+core: availablelater fss ics ics-xmpp core-dao-hibernate-threading 
 	@bash .build.sh ${VERSION} $@ "$^"
 	rm -f .rebuild_ics_dependent .rebuild_ics-xmpp_dependent
 
@@ -141,10 +141,15 @@ core-dao-hibernate-impl: core-dao-interfaces core-domain
 core-dao-hibernate-threading: core-dao-hibernate-impl
 	@bash .build.sh ${VERSION} $@ "$^"
 
+availablelater:
+	@bash .build.sh ${VERSION} $@ "$^"
 
 # fss        : build fss component
-fss:
+fss: fss-tests-base
 	@bash .build.sh ${VERSION} $@ "$^"
+
+fss-tests-base:
+	bash .build.sh ${VERSION} $@ "$^"
 
 # ics        : build ics component
 ics:
@@ -198,4 +203,4 @@ generateDaos:
 # The dependency system does only work with the coreutils package, i.e., only on 
 #   Linux. 
 # 
-.PHONY: install jar packages package-win package-mac package-linux gui core fss ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up
+.PHONY: install jar packages package-win package-mac package-linux availablelater gui core fss fss-tests-base ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up

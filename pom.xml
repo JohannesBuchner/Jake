@@ -12,8 +12,9 @@
     </description>
     <url>http://jakeapp.com/</url>
     <modules>
-        <!-- fss is a seperate project now -->
-        <module>ics</module>
+        <module>availablelater</module><!-- this needs to be here to let the makefile do its job -->
+	<module>fss</module><!-- this needs to be here to let the makefile do its job -->
+	<module>ics</module>
         <module>ics-xmpp</module>
         <module>core</module>
         <module>gui</module>
