@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jakeapp.jake</groupId>
     <artifactId>parent</artifactId>
@@ -11,18 +12,19 @@
     </description>
     <url>http://jakeapp.com/</url>
     <modules>
-    	<!-- fss is a seperate project now -->
+        <!-- fss is a seperate project now -->
         <module>ics</module>
         <module>ics-xmpp</module>
         <module>core</module>
         <module>gui</module>
         <module>commander</module>
-    <module>core-dao-interfaces</module>
-    <module>core-domain</module>
-    <module>core-dao-hibernate-impl</module>
-    <module>core-dao-hibernate-threading</module>
-    <module>core-dao-tests-base</module>
-  </modules>
+        <module>core-dao-interfaces</module>
+        <module>core-domain</module>
+        <module>core-dao-hibernate-impl</module>
+        <module>core-dao-hibernate-threading</module>
+        <module>core-dao-tests-base</module>
+        <module>fss-tests-base</module>
+    </modules>
     <developers>
         <developer>
             <id>chris</id>
@@ -164,31 +166,33 @@
             </plugin>
         </plugins>
     </reporting>
-	<distributionManagement>
-		<repository>
-			<id>repo</id>
-			<url>scp://johannes@dev.jakeapp.com/var/www/dev.jakeapp.com/htdocs/maven-repository/</url>
-		</repository>
-	</distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>repo</id>
+            <url>scp://johannes@dev.jakeapp.com/var/www/dev.jakeapp.com/htdocs/maven-repository/</url>
+        </repository>
+    </distributionManagement>
     <properties>
         <spring.version>2.5.6</spring.version>
         <spring-test.version>2.5.6</spring-test.version>
         <junit.version>4.4</junit.version>
         <jmock.version>2.5.1</jmock.version>
         <hsqldb.version>1.8.0.1</hsqldb.version>
-	<mockito.version>1.7</mockito.version>	
-        <jpa.version>1.0</jpa.version>        
-	
-	<javassist.version>3.8.0.GA</javassist.version>
+        <mockito.version>1.7</mockito.version>
+        <jpa.version>1.0</jpa.version>
+
+        <javassist.version>3.8.0.GA</javassist.version>
         <sl4j-log4j12.version>1.5.6</sl4j-log4j12.version>
         <sl4j-api.version>1.5.6</sl4j-api.version>
 
         <log4j.version>1.2.14</log4j.version>
-        
+
         <hibernate-core.version>3.3.1.GA</hibernate-core.version>
         <!--<hibernate.version>3.3.0.ga</hibernate.version>-->
         <hibernate-annotations.version>3.4.0.GA</hibernate-annotations.version>
         <hibernate-commons-annotations.version>3.3.0.ga</hibernate-commons-annotations.version>
-	<hibernate-entitymanager.version>3.4.0.GA</hibernate-entitymanager.version>
+        <hibernate-entitymanager.version>3.4.0.GA</hibernate-entitymanager.version>
     </properties>
 </project>
+
+
