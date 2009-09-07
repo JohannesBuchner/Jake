@@ -6,13 +6,17 @@ import com.jakeapp.core.dao.exceptions.NoSuchServiceCredentialsException;
 
 import java.util.UUID;
 import java.util.List;
-import java.sql.SQLException;
 
+
+// FIXME: is there a difference between "ServiceCredentials" and "Accounts"
+// If there is none why have two names. If there is one, make it explicit.
 /**
- * DAO Interface for User Credentials.
+ * DAO Interface for service credentials (aka <code>Account</code>).
  */
 public interface IAccountDao {
 
+	// FIXME what are the requirements for credentials to be valid???
+	// see InvalidCredentialsException
 	/**
 	 * Puts new ServiceCredentials into the database.
 	 *
@@ -24,19 +28,20 @@ public interface IAccountDao {
 
 
 	/**
-	 * Returns the ServiceCredentials by the given uuid.
+	 * Returns the ServiceCredentials that correspond the given uuid.
 	 *
-	 * @param uuid the UUID of the user requested
+	 * @param uuid the UUID of the <code>Account</code> that is to be fetched.
 	 * @return the ServiceCredentials for the requested user
 	 * @throws NoSuchServiceCredentialsException
-	 *          if no credentials by the given UUID exist
+	 *          if no credentials exist for the given <code>uuid</code>.
 	 */
 	public Account read(UUID uuid) throws NoSuchServiceCredentialsException;
 
 	/**
-	 * Get a <code>List</code> with all <code>Account</code>s.
-	 * @return a <code>List</code> with all <code>Account</code>s.
-	 * The <code>List</code> is empty if there are no <code>Account</code>s available.
+	 * Get a <code>List</code> of all <code>Account</code>s.
+	 * 
+	 * @return a <code>List</code> of all <code>Account</code>s. The
+	 * <code>List</code> is empty if there are no <code>Account</code>s available.
 	 */
 	public List<Account> getAll();
 
@@ -47,8 +52,8 @@ public interface IAccountDao {
 	 * @param credentials the ServiceCredentials to be updated
 	 * @return the updated ServiceCredentials
 	 * @throws NoSuchServiceCredentialsException
-	 *          if no credentials by the uuid of this credentials where in the
-	 *          database
+	 *          if no credentials with a matching uuid of the given 
+	 *          <code>credentials</code> where found in the database
 	 */
 	public Account update(Account credentials) throws NoSuchServiceCredentialsException;
 
@@ -58,10 +63,7 @@ public interface IAccountDao {
 	 *
 	 * @param credentials the ServiceCredentials to be deleted.
 	 * @throws NoSuchServiceCredentialsException
-	 *          if no credentials by the uuid of this credentials where in the
-	 *          database
+	 *          raised if no credentials with a matching uuid can be found.
 	 */
 	public void delete(Account credentials) throws NoSuchServiceCredentialsException;
-
-
 }

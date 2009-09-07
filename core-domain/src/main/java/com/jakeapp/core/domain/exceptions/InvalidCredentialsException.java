@@ -1,5 +1,7 @@
 package com.jakeapp.core.domain.exceptions;
 
+
+// FIXME: explicitly declare what criteria must be met to be valid.
 /**
  * This exception gets thrown if the supplied credentials are not fully filled out.
  */

@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.jakeapp.core.domain.Configuration;
 
+
+// FIXME: how about empty configurations. May I delete a configuration value
+// by setting it to ""? Do empty values show up in the list?
 /**
  * Serves as a frontend for database/project-independent <code>Configuration</code> management.
  * 
@@ -17,7 +20,7 @@ public interface IConfigurationDao {
 	 * @param name
 	 *            The name of the <code>Configuration</code> option to be queried
 	 * @return The value corresponding to the given <code>Configuration</code> option, or an
-	 *         empty string if not set
+	 *         empty string if not set.
 	 */
 	public String getConfigurationValue(String name);
 
@@ -50,6 +53,8 @@ public interface IConfigurationDao {
 	 */
 	public boolean configurationValueExists(String name);
 
+	// FIXME: do we really need an update method? how about overriding existing 
+	// values.
 	/**
 	 * Updates the given <code>Configuration</code> Object in the database. Create it if it
 	 * doesn't exist.

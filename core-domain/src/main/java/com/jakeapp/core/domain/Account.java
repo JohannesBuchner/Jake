@@ -9,8 +9,10 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.UUID;
 
+//FIXME clarify the difference between uuid and userId
 /**
  * A representation of the users credentials. It consists of <ul>
+ * <li> a <code>uuid</code>, </li> 
  * <li> a <code>userId</code>,</li>
  * <li>a <code>plainTextPassword</code>,</li>
  * <li>the <code>serverAddress</code>,</li>
@@ -28,27 +30,19 @@ public class Account implements Serializable, Cloneable {
 	private static final long serialVersionUID = -3550631428630088119L;
 
 	private UUID uuid;
-
 	private String userId;
-
 	private String plainTextPassword;
-
 	private String serverAddress;
-
 	private long serverPort;
-
-
 	private boolean autologin;
-
 	private boolean encryptionUsed;
-
 	private ProtocolType protocol;
-
-
 	private boolean savePassword = false;
 
+	/**
+	 * Default constructor that constructs an Account with a random uuid.
+	 */
 	public Account() {
-
 		this.uuid = UUID.randomUUID();
 	}
 
@@ -80,6 +74,15 @@ public class Account implements Serializable, Cloneable {
 		return uuid.toString();
 	}
 
+	//FIXME theres an unhandled exception in the .fromString(String) method that
+	// should be taken care of. Either annotate the exception or handle it 
+	// internally.
+	/**
+	 * Set the uuid of the account.
+	 * @param uuid the new uuid as a <code>String</code>. The given string is
+	 * then parsed into a uuid. This may raise an <code>IllegalArgumentException</code>
+	 * if the string can not be parsed.
+	 */
 	public void setUuid(String uuid) {
 		this.uuid = UUID.fromString(uuid);
 	}
@@ -89,9 +92,9 @@ public class Account implements Serializable, Cloneable {
 	}
 
 	/**
-	 * Get the <code>userId</code>.
+	 * Get the <code>userId</code> of the account.
 	 *
-	 * @return the userId
+	 * @return the userId of the account
 	 */
 	@Column(name = "username", nullable = false)
 	public String getUserId() {
@@ -105,7 +108,7 @@ public class Account implements Serializable, Cloneable {
 	/**
 	 * Get the password in plaintext
 	 *
-	 * @return the <code>plainTextPassword</code>
+	 * @return the <code>plainTextPassword</code>.
 	 */
 	@Column(name = "password", nullable = true)
 	public String getPlainTextPassword() {
@@ -116,6 +119,7 @@ public class Account implements Serializable, Cloneable {
 		this.plainTextPassword = plainTextPassword;
 	}
 
+	//FIXME explicitly declare an output format for the ip address/hostname
 	/**
 	 * Returns the InetAddress of the server on which these
 	 * <code>ServiceCredentials</code> are registered. Both IPv4 or IPv6 should
@@ -130,9 +134,9 @@ public class Account implements Serializable, Cloneable {
 		return this.serverAddress;
 	}
 
+	//FIXME explicitly declare the format for the server address, see getServerAddress()
 	public void setServerAddress(String serverAddress) throws InvalidCredentialsException {
 		this.serverAddress = serverAddress;
-
 	}
 
 	/**
@@ -163,9 +167,9 @@ public class Account implements Serializable, Cloneable {
 	}
 
 	/**
-	 * Returns wheter autoLogin is
+	 * Returns whether autoLogin is <code>true</code> or <code>false</code>
 	 *
-	 * @return
+	 * @return value of the autologin option
 	 */
 	@Column(name = "autologin")
 	public boolean isAutologin() {
@@ -176,6 +180,11 @@ public class Account implements Serializable, Cloneable {
 		this.autologin = autologin;
 	}
 
+	/**
+	 * Get the protocol type for this account.
+	 * @return The protocol type of the account. If it is not set, an empty
+	 * String ("" that is) is returned instead. 
+	 */
 	@Column(name = "protocol")
 	public String getProtocolType() {
 		if (this.protocol == null)

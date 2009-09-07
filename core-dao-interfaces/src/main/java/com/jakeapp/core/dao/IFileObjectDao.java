@@ -1,7 +1,5 @@
 package com.jakeapp.core.dao;
 
-import java.util.UUID;
-
 import com.jakeapp.core.dao.exceptions.NoSuchJakeObjectException;
 import com.jakeapp.core.domain.FileObject;
 
@@ -12,7 +10,7 @@ import com.jakeapp.core.domain.FileObject;
 public interface IFileObjectDao extends IJakeObjectDao<FileObject> {
 	/**
 	 * Gets the <code>FileObject</code> that is located at a given relative path
-	 * @param relpath the relative Path to the <code>FileObject</code>
+	 * @param relpath the relative Path to the <code>FileObject</code>. see: {@link com.jakeapp.core.domain.FileObject Fileobject}
 	 * @return the <code>FileObject</code> requested
 	 * @throws NoSuchJakeObjectException if the <code>FileObject</code> in question does not exist
 	 */

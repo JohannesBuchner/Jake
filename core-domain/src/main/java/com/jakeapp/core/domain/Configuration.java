@@ -6,8 +6,6 @@ import javax.persistence.Column;
 
 /**
  * Simple key/value representation of a config option.
- * Currently not used.
- * @author Simon
  */
 @Entity(name = "configuration")
 public class Configuration {
