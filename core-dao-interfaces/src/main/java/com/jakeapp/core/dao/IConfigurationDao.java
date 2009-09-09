@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.jakeapp.core.domain.Configuration;
 
-
 // FIXME: how about empty configurations. May I delete a configuration value
 // by setting it to ""? Do empty values show up in the list?
 /**
