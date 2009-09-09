@@ -170,7 +170,7 @@
     <distributionManagement>
         <repository>
             <id>repo</id>
-            <url>scp://johannes@dev.jakeapp.com/var/www/dev.jakeapp.com/htdocs/maven-repository/</url>
+            <url>scp://johannes@dev.jakeapp.com/var/www/jake/maven-repo/</url>
         </repository>
     </distributionManagement>
     <properties>
