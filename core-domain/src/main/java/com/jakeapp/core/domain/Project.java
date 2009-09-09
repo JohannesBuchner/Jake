@@ -27,6 +27,7 @@ import java.util.UUID;
 //@UniqueConstraint(columnNames = {"projectId"} )
 public class Project implements ILogable {
 	private static final long serialVersionUID = 4634971877310089896L;
+	
 	private String name;
 	private UUID projectId;
 	private File rootPath;

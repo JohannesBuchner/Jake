@@ -1,7 +1,8 @@
 package com.jakeapp.core.domain.exceptions;
 
+// FIXME: make the conditions for a valid project more explicit and precise. 
 /**
- * This Exception gets thrown if one tries to create a <code>Project</code> with invalid
+ * This Exception is raised if one tries to create a <code>Project</code> with invalid
  * data, e.g. the <code>UUID</code> is invalid, or the ProjectName is invalid, etc.
  */
 public class InvalidProjectException extends Exception {

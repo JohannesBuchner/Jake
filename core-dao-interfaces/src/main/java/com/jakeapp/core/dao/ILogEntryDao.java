@@ -6,10 +6,18 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
+import com.jakeapp.core.domain.FileObject;
+import com.jakeapp.core.domain.ILogable;
+import com.jakeapp.core.domain.Invitation;
+import com.jakeapp.core.domain.JakeObject;
+import com.jakeapp.core.domain.LogAction;
+import com.jakeapp.core.domain.Tag;
+import com.jakeapp.core.domain.TrustState;
 import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.*;
 import com.jakeapp.core.domain.logentries.LogEntry;
 
+// FIXME: why not split up this interface and add its functionality to the other 
+// interfaces? At least all the methods that don't give or take a LogEntry.
 /**
  * The interface for the logEntryDAO.
  */
@@ -26,35 +34,43 @@ public interface ILogEntryDao {
 
 
 	/**
+	 * Retrieve a </code>LogEntry</code>.
+	 * 
+	 * @param uuid the uuid of the requested </code>LogEntry</code>
 	 * @returns the LogEntry with the given UUID
-	 * @param uuid
 	 * @throws NoSuchLogEntryException
 	 */
 	LogEntry<? extends ILogable> get(UUID uuid, boolean includeUnprocessed) throws NoSuchLogEntryException;
 
 	/**
-	 * change the &quot;processed&quot; field of a logEntry
+	 * change the <code>processed</code> field of a logEntry
 	 * 
-	 * @param logEntry
+	 * @param logEntry the <code>LogEntry</code> that is to be changed.
 	 * @throws NoSuchLogEntryException 
 	 */
 	public void setProcessed(LogEntry<JakeObject> logEntry) throws NoSuchLogEntryException;
 
 
 	/**
+	 * Get all unprocessed <code>LogEntries</code>.
+	 * 
 	 * @return all unprocessed LogEntries of the Project
 	 */
 	public List<LogEntry<JakeObject>> getUnprocessed();
 
 
 	/**
+	 * Get the unprocessed <code>LogEntries</code> for a specific <code>JakeObject</code>.
+	 * 
 	 * @param jakeObject
-	 * @return the unprocessed LogEntries of the JakeObject
+	 * @return the unprocessed LogEntries of the specific JakeObject
 	 */
 	public List<LogEntry<JakeObject>> getUnprocessed(JakeObject jakeObject);
 
 
 	/**
+	 * Check if a <code>JakeObject</code> has unprocessed <code>LogEntries</code>
+	 * 
 	 * @param jakeObject
 	 * @return Whether unprocessed LogEntries of the JakeObject exist
 	 */
@@ -194,12 +210,12 @@ public interface ILogEntryDao {
 			boolean includeUnprocessed);
 
 
+	// FIXME: whats the includeUnprocessed option for?
 	/**
-	 * @param
+	 * @param includeUnprocessed
 	 * @return all fileObject that either don't have a
 	 *         {@link LogAction#JAKE_OBJECT_DELETE} <b>or</b> have a
 	 *         {@link LogAction#JAKE_OBJECT_NEW_VERSION} later than that.
-	 * @param includeUnprocessed
 	 */
 	public List<FileObject> getExistingFileObjects(boolean includeUnprocessed);
 
@@ -258,12 +274,13 @@ public interface ILogEntryDao {
 	 */
 	public boolean trusts(User a, User b);
 
+
 	/**
-	 * Does a trust b?
+	 * What's the <code>TrustState</code> from user a to user b?
 	 * 
 	 * @param a
 	 * @param b
-	 * @return
+	 * @return the <code>TrustState</code> as seen from user a.
 	 */
 	public TrustState trustsHow(User a, User b);
 

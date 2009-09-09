@@ -12,8 +12,10 @@ import java.util.List;
  */
 public interface IInvitationDao {
 
+	// FIXME: detail the cases when exceptions are thrown. see -> InvalidProjectException
 	/**
-	 * Stores a new Invitation into the Database
+	 * Stores a Invitation into the Database
+	 * 
 	 * @param invitation The Invitation to be stored
 	 * @return the stored Invitation
 	 * @throws InvalidProjectException if invalid data is passed
@@ -23,14 +25,18 @@ public interface IInvitationDao {
 
 	/**
 	 * Returns a list containing all unanswered Invitations
-	 * @return a (empty) List<Invitation>
+	 * 
+	 * @return a List of <code>Invitation</code>s, this list might as well be empty, if no 
+	 * invitations exist.
 	 */
 	public List<Invitation> getAll();
 	
 	/**
 	 * Returns a list containing all unanswered <code>Invitation</code>s for the specified <code>User</code>
+	 * 
 	 * @param user the <code>User</code> to get <code>Invitation</code>s for
-	 * @return a (empty) List<Invitation>
+	 * @return a List of <code>Invitation</code>s, this list might as well be empty, if no 
+	 * invitations exist for that user.
 	 */
 	public List<Invitation> getAll(User user);
 
@@ -39,6 +45,7 @@ public interface IInvitationDao {
 	 * Then return the stored project and remove the Invitation from the database.
 	 * LogEntries and other <i>per project</i> things cannot be done within this method, as they require
 	 * the project specific database.
+	 * 
 	 * @param invitation The Invitation to accept
 	 * @return the Project corresponding to this Invitation
 	 */
@@ -46,7 +53,8 @@ public interface IInvitationDao {
 
 
 	/**
-	 * Removes the Invitation from the databse.
+	 * Removes the Invitation from the database.
+	 * 
 	 * @param invitation The Invitation to be removed.
 	 */
 	public void reject(Invitation invitation);

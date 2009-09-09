@@ -6,10 +6,24 @@ import javax.persistence.Id;
 import java.util.UUID;
 import java.util.Date;
 import java.io.File;
-
+// FIXME: rename the field invitedOb to invitee to make things a little bit more
+// legible 
 /**
+ * <p>
  * This class is used to persist received <code>Invitation</code>s in the global database until they 
- * get either rejected or accepted.
+ * get either rejected or accepted.</p>
+ * 
+ * <p>
+ * An invitation consists of the following fields:
+ * <ul>
+ * <li><code>projectUUID</code>: the <code>UUID</code> of the associated project</li>
+ * <li><code>projectName</code>: the name of the associated project</li>
+ * <li><code>creation</code>: The <code>Date</code> of creation</li>
+ * <li><code>invitedOn</code>: the invitee of the invitation</li>
+ * <li><code>inviter</code>: the inviter of the invitation</li>
+ * <li><code>message</code>: the invitation message</li>
+ * <li><code>rootPath</code>: transient rootpath of the associated project</li>
+ * </ul>
  */
 @Entity(name = "invitation")
 public class Invitation {
@@ -25,6 +39,7 @@ public class Invitation {
 
 	/**
 	 * Constructor to re-create an <code>Invitation</code> with the specified values
+	 * 
 	 * @param projectUUID the <code>UUID</code> of the <code>Project</code> belonging to the <code>Invitation</code>
 	 * @param projectName the name of the <code>Project</code> belonging to the <code>Invitation</code>
 	 * @param creation the <code>Date</code> the <code>Invitation</code> was issued
@@ -43,6 +58,7 @@ public class Invitation {
 
 	/**
 	 * Constructor to create a new <code>Invitation</code> to the specific <code>Project</code>
+	 * 
 	 * @param project The <code>Project</code> belonging to the <code>Invitation</code>
 	 * @param inviter The <code>User</code> who sent the <code>Invitation</code>
 	 */
@@ -58,6 +74,7 @@ public class Invitation {
 	/**
 	 * Constructor to create the <code>Invitation</code> to the specific <code>Project</code> and a given
 	 * <code>rootPath</code>
+	 * 
 	 * @param project The <code>Project</code> belonging to the <code>Invitation</code>
 	 * @param inviter The <code>User</code> who sent the <code>Invitation</code>
 	 * @param rootPath The <code>rootPath</code> where the <code>Project</code> should be created.
@@ -73,7 +90,9 @@ public class Invitation {
 	}
 
 	/**
-	 * Gets the <code>UUID</code> of the <code>Project</code>.
+	 * Gets the <code>UUID</code> of the <code>Project</code> associated with 
+	 * the invitation
+	 * 
 	 * @return the <code>UUID</code> of the <code>Project</code>.
 	 */
 	public UUID getProjectUUID() {
@@ -86,6 +105,7 @@ public class Invitation {
 
 	/**
 	 * Get the name of the <code>Project</code>.
+	 * 
 	 * @return returns the name of the <code>Project</code>.
 	 */
 	public String getProjectName() {
@@ -94,6 +114,7 @@ public class Invitation {
 
 	/**
 	 * sets the name of the <code>Project</code>
+	 * 
 	 * @param projectName the name of the <code>Project</code>
 	 */
 	public void setProjectName(String projectName) {
@@ -101,6 +122,8 @@ public class Invitation {
 	}
 
 	/**
+	 * Get the date of creation of the invitation.
+	 * 
 	 * @return the <code>Date</code> this <code>Invitation</code> was issued.
 	 */
 	public Date getCreation() {
@@ -112,6 +135,8 @@ public class Invitation {
 	}
 
 	/**
+	 * Get the user who was invited.
+	 * 
 	 * @return the <code>User</code>Id which received the <code>Invitation</code>. 
 	 */
 	public User getInvitedOn() {
@@ -123,7 +148,9 @@ public class Invitation {
 	}
 
 	/**
-	 * @return the <code>User</code> which sent the <code>Invitation</code>.
+	 * Get the user who sent the invitation.
+	 * 
+	 * @return the <code>User</code> who sent the <code>Invitation</code>.
 	 */
 	public User getInviter() {
 		return inviter;
@@ -134,6 +161,8 @@ public class Invitation {
 	}
 
 	/**
+	 * Get the invitation message
+	 * 
 	 * @return the Message specified by the <code>User</code> who sent the <code>Invitation</code>
 	 */
 	public String getMessage() {

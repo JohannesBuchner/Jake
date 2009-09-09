@@ -22,6 +22,7 @@ public class User implements ILogable, Comparable<User> {
 
 	/**
 	 * Constructor specifying a certain <code>ProtocolType</code> and the corresponding UserId as a <code>String</code>
+	 * 
 	 * @param protocolType the <code>ProtocolType</code> this <code>User</code> belongs to.
 	 * @param userId a <code>String</code> representing the <code>User</code> on the service.
 	 */
