@@ -167,6 +167,14 @@
             </plugin>
         </plugins>
     </reporting>
+    <repositories>
+		<repository>
+			<id>jakeapp-maven2-repo</id>
+			<name>Maven2 Repository of jakeapp.com</name>
+			<url>http://maven.jakeapp.com/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
     <distributionManagement>
         <repository>
             <id>repo</id>
