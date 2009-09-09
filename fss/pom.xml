@@ -76,7 +76,7 @@
 		<repository>
 			<id>custom-repo</id>
 			<name>our own repo</name>
-			<url>http://dev.jakeapp.com/build/maven-repository/</url>
+			<url>http://maven.jakeapp.com/</url>
 			<layout>default</layout>
 		</repository>
 	</repositories>
