@@ -1,5 +1,14 @@
 #!/bin/bash
 
+# This script generates proxy code. 
+# @author Johannes Buchner
+# 
+# 
+# It looks at dao interfaces and generates classes which forward
+# all calls, but use SpringThreadBroker.
+# You only need to run this script (against each hibernate dao file)
+# when you change the interface.
+# 
 INFILE=$1
 THREADBROKER=$2
 
