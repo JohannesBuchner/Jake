@@ -12,8 +12,6 @@
     </description>
     <url>http://jakeapp.com/</url>
     <modules>
-	<module>ics</module>
-        <module>ics-xmpp</module>
         <module>core</module>
         <module>gui</module>
         <module>commander</module>
