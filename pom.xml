@@ -12,8 +12,6 @@
     </description>
     <url>http://jakeapp.com/</url>
     <modules>
-        <module>availablelater</module><!-- this needs to be here to let the makefile do its job -->
-	<module>fss</module><!-- this needs to be here to let the makefile do its job -->
 	<module>ics</module>
         <module>ics-xmpp</module>
         <module>core</module>
@@ -24,7 +22,6 @@
         <module>core-dao-hibernate-impl</module>
         <module>core-dao-hibernate-threading</module>
         <module>core-dao-tests-base</module>
-        <module>fss-tests-base</module>
     </modules>
     <developers>
         <developer>
