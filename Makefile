@@ -14,7 +14,6 @@ all: install
 
 help:
 	@cat Makefile|grep '^# ' |sed 's/^# \([^: \t]* *\): \(.*\)/\t\1\t\2/g'|sed 's/#\(.*\)#/\n[1;34m\1[0m/g'|sed 's/#//g'|sed 's/\t@\([^: \t]*\)/     \*\t[1;32m\1[0m/g'
-	@svn info |grep '^Revision: '|sed 's/Revision: / Repository revision: /g'
 
 # starting #
 
@@ -181,10 +180,6 @@ lazyclean:
 
 # others # 
 
-# up         : update to newest revision and scroll logs
-up:
-	@oldrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); svn up; newrev=$$(svn info |grep '^Revision: '|sed 's/Revision: //g'); [ "$$oldrev" == "$$newrev" ] || svn log -v -r$$oldrev:$$newrev|while read line; do echo "$$line"; sleep 0.3; echo "$$line"|grep -q -- "-----" && sleep 3; done
-
 generateDaos:
 	# use SpringThreadBroker.getInstance() for global dao's
 	bash generateDao.sh core/src/main/java/com/jakeapp/core/dao/HibernateConfigurationDao.java      "SpringThreadBroker.getInstance()"
@@ -203,4 +198,4 @@ generateDaos:
 # The dependency system does only work with the coreutils package, i.e., only on 
 #   Linux. 
 # 
-.PHONY: install jar packages package-win package-mac package-linux availablelater gui core fss fss-tests-base ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean up
+.PHONY: install jar packages package-win package-mac package-linux availablelater gui core fss fss-tests-base ics ics-xmpp commander start depstart instantquit quickstart console clean mrproper lazyclean
