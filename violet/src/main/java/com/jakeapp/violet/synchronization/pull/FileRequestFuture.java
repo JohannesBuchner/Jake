@@ -2,8 +2,6 @@ package com.jakeapp.violet.synchronization.pull;
 
 import java.util.concurrent.Semaphore;
 
-import javax.swing.event.ChangeListener;
-
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
@@ -28,7 +26,7 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> {
 
 	private Throwable innerException;
 
-	private IProjectsFileServices projectsFileServices;
+	private ProjectModel model;
 
 	private static Logger log = Logger.getLogger(FileRequestFuture.class);
 
@@ -51,13 +49,6 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> {
 			innerException = reason;
 		}
 
-		@Override
-		public void onlineStatusChanged(Project p) {
-		}
-
-		@Override
-		public void syncStateChanged(Project p, SyncState state) {
-		}
 	}
 
 	@Override
@@ -69,7 +60,7 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> {
 	public FileRequestFuture(ProjectModel model, JakeObject jo,
 			FileRequest request, ChangeListener changeListener) {
 		super();
-		this.transferService = ts;
+		this.model = model;
 		this.request = request;
 		this.changeListener = new FileProgressChangeListener(changeListener);
 		this.jo = jo;
@@ -81,7 +72,7 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> {
 	@Override
 	public IFileTransfer calculate() throws Exception {
 		INegotiationSuccessListener listener = new PullListener(this.jo,
-				changeListener);
+				model.getFss(), changeListener);
 		this.transferService.request(this.request,
 				new INegotiationSuccessListener() {
 					@Override

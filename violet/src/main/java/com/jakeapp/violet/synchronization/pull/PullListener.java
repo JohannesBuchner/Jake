@@ -1,10 +1,10 @@
 package com.jakeapp.violet.synchronization.pull;
 
 
-import javax.swing.event.ChangeListener;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.ics.filetransfer.TransferWatcherThread;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
@@ -18,9 +18,12 @@ public class PullListener implements INegotiationSuccessListener {
 
 	private JakeObject jo;
 
-	public PullListener(JakeObject jo, ChangeListener changeListener) {
+	private IFSService fss;
+
+	public PullListener(JakeObject jo, IFSService fss,  ChangeListener changeListener) {
 		this.changeListener = changeListener;
 		this.jo = jo;
+		this.fss = fss;
 	}
 
 	@Override
@@ -33,8 +36,7 @@ public class PullListener implements INegotiationSuccessListener {
 	public void succeeded(IFileTransfer ft) {
 		log.info("pulling negotiation succeeded");
 		this.changeListener.pullNegotiationDone(this.jo);
-		PullWatcher pw = new PullWatcher(this.jo, this.changeListener, ft,
-				this.projectsFileServices);
+		PullVerificationWatcher pw = new PullVerificationWatcher(this.jo, fss, this.changeListener, ft);
 
 		new Thread(new TransferWatcherThread(ft, pw)).start();
 	}

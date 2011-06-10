@@ -45,5 +45,5 @@ public interface RequestHandlePolicy {
 	 * @param project
 	 * @param from
 	 */
-	public boolean handleLogSyncRequest(Project project, User from);
+	public boolean handleLogSyncRequest(User from);
 }

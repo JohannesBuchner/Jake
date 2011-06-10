@@ -10,12 +10,14 @@ import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.availablelater.AvailableLaterWaiter;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
+import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.protocol.RequestFileMessage;
+import com.jakeapp.violet.synchronization.pull.ChangeListener;
 import com.jakeapp.violet.synchronization.pull.FileRequestFuture;
 import com.jakeapp.violet.synchronization.request.MessageMarshaller;
 
@@ -30,6 +32,8 @@ public class PullAction extends AvailableLaterObject<Void> {
 	private JakeObject jakeObject;
 	private UserOrderStrategy strategy;
 	private MessageMarshaller messageMarshaller;
+	private ChangeListener listener;
+	private Exception ex;
 
 	public PullAction(ProjectModel model, JakeObject jakeObject,
 			UserOrderStrategy strategy) {
@@ -59,21 +63,31 @@ public class PullAction extends AvailableLaterObject<Void> {
 		Collection<User> selected = strategy.selectUsers(user, users);
 
 		for (User u : selected) {
-		RequestFileMessage msg = new RequestFileMessage();
-		msg.setJakeObject(jakeObject);
-		msg.setProjectId(model.getProjectid());
-		msg.setUser(DI.getUserId(u.getUserId()));
-		String contentname = this.messageMarshaller.serialize(msg);
-		log.debug("content addressed with: " + contentname);
-		FileRequest fr = new FileRequest(contentname, false, msg.getUser());
+			RequestFileMessage msg = new RequestFileMessage();
+			msg.setJakeObject(jakeObject);
+			msg.setProjectId(model.getProjectid());
+			msg.setUser(DI.getUserId(u.getUserId()));
+			String contentname = this.messageMarshaller.serialize(msg);
+			log.debug("content addressed with: " + contentname);
+			FileRequest fr = new FileRequest(contentname, false, msg.getUser());
 
-		// this also reports to the corresponding ChangeListener and
-		// watches the FileTransfer and returns after the
-		// FileTransfer has
-		// either returned successfully or not successfully
-		log.debug("requesting " + fr);
-		return AvailableLaterWaiter.await(new FileRequestFuture(model, jakeObject, model.getTransfer(), 
-				this,
-				this));
+			// this also reports to the corresponding ChangeListener and
+			// watches the FileTransfer and returns after the
+			// FileTransfer has
+			// either returned successfully or not successfully
+			log.debug("requesting " + fr);
+			FileRequestFuture frf = new FileRequestFuture(model, jakeObject,
+					fr, this.listener);
+			try {
+				AvailableLaterWaiter.await(frf);
+				lastException = null;
+				break;
+			} catch (Exception e) {
+				lastException = e;
+			}
+		}
+		if (lastException != null)
+			throw lastException;
+		return innercontent;
 	}
 }

@@ -1,17 +1,13 @@
 package com.jakeapp.violet.synchronization.request;
 
-import com.jakeapp.availablelater.AvailableLaterWaiter;
-import com.jakeapp.core.DarkMagic;
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.*;
-import com.jakeapp.core.domain.exceptions.IllegalProtocolException;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.services.ICSManager;
-import com.jakeapp.core.services.futures.AllJakeObjectsFuture;
-import com.jakeapp.core.synchronization.helpers.MessageMarshaller;
-import com.jakeapp.core.util.ProjectApplicationContextFactory;
+import java.io.File;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+
 import com.jakeapp.jake.fss.FSService;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
 import com.jakeapp.jake.ics.filetransfer.AdditionalFileTransferData;
 import com.jakeapp.jake.ics.filetransfer.FileRequestFileMapper;
 import com.jakeapp.jake.ics.filetransfer.ITransferListener;
@@ -21,28 +17,17 @@ import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import com.jakeapp.jake.ics.status.ILoginStateListener;
-import com.jakeapp.jake.ics.status.IOnlineStatusListener;
+import com.jakeapp.violet.actions.project.AttributedCalculator;
+import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.model.JakeObject;
+import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
-import com.jakeapp.violet.synchronization.IInternalSyncService;
-import com.jakeapp.violet.synchronization.SyncServiceImpl;
-import com.jakeapp.violet.synchronization.attributes.Attributed;
-import com.jakeapp.violet.synchronization.change.ChangeListener;
-
-import org.apache.log4j.Logger;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import com.jakeapp.violet.model.attributes.Attributed;
+import com.jakeapp.violet.model.exceptions.NoSuchLogEntryException;
 
 public class ProjectRequestListener implements IMessageReceiveListener,
-		IOnlineStatusListener, ILoginStateListener, IncomingTransferListener,
-		FileRequestFileMapper {
+		IncomingTransferListener, FileRequestFileMapper {
 
 	private static Logger log = Logger.getLogger(ProjectRequestListener.class);
 
@@ -58,26 +43,21 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 
 	private static final String REQUEST_LOGS_MESSAGE = "<requestlogs/>";
 
-	private static final String NEW_FILE = "<newfile/>";
-
 	private static final String POKE_MESSAGE = "<poke/>"; // dup
-
-	private static final String NEW_NOTE = "<newnote/>";
-
-	private SyncServiceImpl syncService;
 
 	private MessageMarshaller messageMarshaller;
 
 	private ProjectModel model;
 
-	public ProjectRequestListener(ProjectModel model, SyncServiceImpl syncService,
-			MessageMarshaller messageMarshaller) {
-		this.syncService = syncService;
-		this.messageMarshaller = messageMarshaller;
+	private ISyncListener listener;
+
+	public ProjectRequestListener(ProjectModel model, ISyncListener listener) {
+		this.listener = listener;
+		this.messageMarshaller = DI.getImpl(MessageMarshaller.class);
 		this.model = model;
 	}
 
-	private String getProjectUUID(String content) {
+	private String extractProjectUUID(String content) {
 		int begin = content.indexOf(BEGIN_PROJECT_UUID)
 				+ BEGIN_PROJECT_UUID.length();
 		int end = content.indexOf(END_PROJECT_UUID);
@@ -91,13 +71,15 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 			String content) {
 
 		try {
-			String projectUUID = getProjectUUID(content);
+			User user = new User(from_userid.getUserId());
+			String projectUUID = extractProjectUUID(content);
 			if (content == null)
 				return;
 
 			log.info("Received a message for project " + projectUUID);
 
-			if (projectUUID == null || !projectUUID.equals(model.getProjectid())) {
+			if (projectUUID == null
+					|| !projectUUID.equals(model.getProjectid())) {
 				log.debug("Discarding message because it's not for this project");
 				return;
 			}
@@ -112,42 +94,19 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 				log.info("Received poke from " + from_userid.getUserId());
 				log.debug("This means we should sync logs!");
 
-				User user = getICSManager().getFrontendUserId(p, from_userid);
-				try {
-					syncService.startLogSync(p, user);
-				} catch (IllegalProtocolException e) {
-					// This should neeeeeeeeever happen
-					log.fatal(
-							"Received an unexpected IllegalProtocolException while trying to perform logsync",
-							e);
-				}
-
-				try {
-					// inform the gui that we have new data
-					this.syncService.getProjectChangeListener()
-							.syncStateChanged(this.p,
-									ChangeListener.SyncState.SYNCING);
-				} catch (Exception ex) {
-					log.warn("Notifying the gui about JakeObject-Changes failed:"
-							+ ex);
-				}
-
+				listener.poke(user);
 			} else if (message.startsWith(REQUEST_LOGS_MESSAGE)) {
 				log.info("Received logs request from "
 						+ from_userid.getUserId());
-
-				syncService.sendLogs(p, from_userid);
+				List<LogEntry> logs = model.getLog().getAll(true);
+				String logsstr = messageMarshaller.packLogEntries(
+						model.getProjectid(), logs);
+				model.getIcs().getMsgService()
+						.sendMessage(from_userid, logsstr);
 			} else if (message.startsWith(LOGENTRIES_MESSAGE)) {
+				listener.startReceiving(user);
 				this.handleReceivedLogEntries(from_userid, message);
-				// inform the gui that we have new data
-				try {
-					this.syncService.getProjectChangeListener()
-							.syncStateChanged(this.p,
-									ChangeListener.SyncState.DONE);
-				} catch (Exception ex) {
-					log.warn("Notifying the gui about JakeObject-Changes failed:"
-							+ ex);
-				}
+				listener.finishedReceiving(user);
 			} else
 				log.warn("We got a unknown/unhandled Message: " + message);
 		} catch (Exception e) {
@@ -160,7 +119,6 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 	 * @param message
 	 * @throws Exception
 	 */
-	@Transactional
 	private void handleReceivedLogEntries(
 			com.jakeapp.jake.ics.UserId from_userid, String message)
 			throws Exception {
@@ -171,172 +129,25 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 				+ BEGIN_LOGENTRY.length(),
 				message.length() - END_LOGENTRY.length());
 
-		List<LogEntry<? extends ILogable>> logEntries = this.messageMarshaller
+		List<LogEntry> logEntries = this.messageMarshaller
 				.unpackLogEntries(les);
-
-		Map<String, FileObject> fileObjects = getAllFileObjects();
 
 		log.info("got " + logEntries.size() + " to add/process.");
 
-		for (LogEntry<? extends ILogable> entry : logEntries) {
+		for (LogEntry entry : logEntries) {
 			try {
-				if (entry.getBelongsTo() instanceof FileObject) {
-					FileObject fo = (FileObject) entry.getBelongsTo();
-					adjustUUID(fileObjects, entry, fo);
-				}
-				if (entry.getBelongsTo() instanceof Tag) {
-					FileObject fo = (FileObject) ((Tag) entry.getBelongsTo())
-							.getObject();
-					adjustUUID(fileObjects, entry, fo);
-				}
-				// TODO: do the same with tags.
-				log.debug("Deserialized successfully, it is a "
-						+ entry.getLogAction() + " for object UUID "
-						+ entry.getObjectuuid());
-				try {
-					db.getLogEntryDao(p).create(entry);
-
-					if (entry.getBelongsTo() instanceof NoteObject) {
-						// TODO do it differently - implement conflict
-						// management!
-						storeIncomingNote(entry);
-					}
-				} catch (IllegalArgumentException ignored) {
-					// duplicate entry: we already have this entry
-				}
+				if (log.isDebugEnabled())
+					log.debug("Deserialized successfully, it is " + entry + "");
+				model.getLog().add(entry);
 			} catch (Throwable t) {
 				log.debug("Failed to deserialize and/or save", t);
 			}
 		}
 	}
 
-	/**
-	 * @param entry
-	 */
-	@Transactional
-	private void storeIncomingNote(LogEntry<? extends ILogable> entry) {
-		// TODO process DELETE_NOTE
-		log.debug("persisting noteobject");
-		try {
-			db.getNoteObjectDao(p).persist(
-			// pull note that does already exist
-					this.syncService.pullObject((NoteObject) (entry
-							.getBelongsTo())));
-		} catch (IllegalArgumentException iaex) {
-			try {
-				// pull note that is completely new and does not exist in the db
-				// yet
-				db.getNoteObjectDao(p).persist(
-						(NoteObject) (entry.getBelongsTo()));
-			} catch (Exception ex) {
-				log.warn(ex);
-			}
-		} catch (Exception ex) {
-			log.warn("storing note failed");
-			log.warn(ex);
-		}
-		// TODO notify gui (later version)
-	}
-
-	/**
-	 * We do not want local files and remote files with the same relpath to have
-	 * different UUIDs. So we check if we already have a file with that relpath
-	 * and adjust incoming LogEntries accordingly.
-	 * 
-	 * @param fileObjects
-	 * @param entry
-	 * @param fo
-	 */
-	@DarkMagic
-	private void adjustUUID(Map<String, FileObject> fileObjects,
-			LogEntry<? extends ILogable> entry, FileObject fo) {
-		if (entry.getBelongsTo() instanceof FileObject) {
-			if (fileObjects.containsKey(fo.getRelPath())) {
-				UUID localuuid = fileObjects.get(fo.getRelPath()).getUuid();
-				log.info("adjusting uuid of incoming fileObject Entry: "
-						+ fo.getUuid() + " --> " + localuuid);
-				fo = new FileObject(localuuid, fo.getProject(), fo.getRelPath());
-				((LogEntry<FileObject>) entry).setBelongsTo(fo);
-			}
-			if (entry.getObjectuuid() == null
-					|| ((LogEntry<FileObject>) entry).getBelongsTo().getUuid() == null)
-				throw new IllegalArgumentException(
-						"logentry has null uuid for FileObject");
-		}
-		if (entry.getBelongsTo() instanceof Tag) {
-			if (fileObjects.containsKey(fo.getRelPath())) {
-				UUID localuuid = fileObjects.get(fo.getRelPath()).getUuid();
-				log.info("adjusting uuid of incoming fileObject Entry: "
-						+ fo.getUuid() + " --> " + localuuid);
-				fo = new FileObject(localuuid, fo.getProject(), fo.getRelPath());
-				((Tag) entry.getBelongsTo()).setObject(fo);
-				((LogEntry<Tag>) entry)
-						.setBelongsTo((Tag) entry.getBelongsTo());
-			}
-			if (entry.getObjectuuid() == null
-					|| ((LogEntry<FileObject>) entry).getBelongsTo().getUuid() == null)
-				throw new IllegalArgumentException(
-						"logentry has null uuid for FileObject");
-		}
-	}
-
-	private Map<String, FileObject> getAllFileObjects() throws Exception {
-		Collection<JakeObject> allObjects = AvailableLaterWaiter
-				.await(new AllJakeObjectsFuture(db, p));
-		Map<String, FileObject> fileObjects = new HashMap<String, FileObject>();
-		for (JakeObject jo : allObjects) {
-			if (jo instanceof FileObject) {
-				FileObject fo = (FileObject) jo;
-				fileObjects.put(fo.getRelPath(), fo);
-			}
-		}
-		return fileObjects;
-	}
-
-	@Override
-	public void onlineStatusChanged(com.jakeapp.jake.ics.UserId userid) {
-		// log.trace("Online status of " + userid
-		// .getUserId() + " possibly changed... (Project " + p + ")");
-		// fixme: send this event up to gui!
-
-		// fixme: causes infinite loop - only send events up if there's really a
-		// change!!
-		// this.syncService.getProjectChangeListener().onlineStatusChanged(p);
-	}
-
-	public void loginHappened() {
-		log.info("We logged in with project " + this.p);
-		try {
-			getICSManager().getTransferService(p).startServing(this, this);
-		} catch (NotLoggedInException e) {
-			log.error("error starting file serving", e);
-		}
-	}
-
-	public void logoutHappened() {
-		log.info("We logged out with project " + this.p);
-
-		try {
-			// only stop the transfer service if it exists.
-			if (getICSManager().hasTransferService(p)) {
-				getICSManager().getTransferService(p).stopServing();
-			}
-		} catch (NotLoggedInException e) {
-			// ignore
-		}
-	}
-
-	@Override
-	public void connectionStateChanged(ConnectionState le, Exception ex) {
-		if (ConnectionState.LOGGED_IN == le) {
-			loginHappened();
-		} else if (ConnectionState.LOGGED_OUT == le) {
-			logoutHappened();
-		}
-	}
-
-	private FileObject getFileObjectForRequest(String filerequest) {
-		if (!p.getProjectId().equals(
+	private JakeObject getJakeObjectForRequest(String filerequest)
+			throws SQLException {
+		if (!model.getProjectid().equals(
 				this.messageMarshaller.getProjectUUIDFromRequestMessage(
 						filerequest).toString())) {
 			log.debug("got request for a different project");
@@ -344,37 +155,33 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 		}
 		UUID leuuid = this.messageMarshaller
 				.getLogEntryUUIDFromRequestMessage(filerequest);
-		LogEntry<? extends ILogable> le;
+		LogEntry le;
 		try {
-			le = db.getLogEntryDao(p).get(leuuid);
+			le = model.getLog().getById(leuuid, false);
 		} catch (NoSuchLogEntryException e) {
 			log.debug("we don't know about this version");
 			return null;
 		}
 
-		if (le.getLogAction() != LogAction.JAKE_OBJECT_NEW_VERSION) {
-			log.debug("the requested logentry is not a version");
-			return null;
-		}
-
 		log.debug("got request for file belonging to entry " + leuuid);
 
-		FileObject fo = (FileObject) le.getBelongsTo();
+		JakeObject fo = le.getWhat();
 
-		LogEntry<JakeObject> version;
+		LogEntry version;
 		try {
-			version = db.getLogEntryDao(p).getLastVersionOfJakeObject(fo);
+			version = model.getLog().getLastOfJakeObject(fo, false);
 		} catch (NoSuchLogEntryException e1) {
 			log.debug("we don't have a version");
 			return null;
 		}
-		if (!version.getUuid().equals(leuuid)) {
-			log.debug("we have a other last version");
+		if (!version.getId().equals(leuuid)) {
+			log.debug("we have a different last version");
 			return null;
 		}
-		Attributed<FileObject> status;
+		Attributed status;
 		try {
-			status = syncService.getJakeObjectSyncStatus(fo);
+			status = AttributedCalculator.calculateAttributed(model.getFss(),
+					model.getLog(), fo);
 		} catch (Exception e) {
 			log.debug("status of the requested object is weird", e);
 			return null;
@@ -390,7 +197,7 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 	public boolean accept(FileRequest req) {
 		try {
 			log.info("incoming request: " + req);
-			FileObject fo = getFileObjectForRequest(req.getFileName());
+			JakeObject fo = getJakeObjectForRequest(req.getFileName());
 			if (fo == null) {
 				// reason has already been logged.
 				return false;
@@ -443,12 +250,13 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 		// this is a interesting function. watch this:
 		try {
 			log.info("incoming request: " + req);
-			FileObject fo = getFileObjectForRequest(req.getFileName());
+			JakeObject fo = getJakeObjectForRequest(req.getFileName());
 			if (fo == null) {
 				// reason has already been logged.
 				return null;
 			}
-			File origfile = syncService.getFile(fo);
+			File origfile = new File(model.getFss()
+					.getFullpath(fo.getRelPath()));
 			log.info("original file at " + origfile);
 			File tempfile = new File(getDeliveryDirectory(), req.getFileName());
 

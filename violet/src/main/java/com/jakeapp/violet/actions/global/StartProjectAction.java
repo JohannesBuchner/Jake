@@ -40,15 +40,16 @@ public class StartProjectAction extends AvailableLaterObject<Context> {
 		IFSService fss = DI.getImpl(IFSService.class);
 		fss.setRootPath(dir);
 		model.setFss(fss);
-		ICService ics = DI.getImplForProject(ICService.class, dir);
-		model.setIcs(ics);
 		model.setPreferences(DI.getPreferencesImpl(new File(fss.getRootPath(),
 				DI.getProperty("project.preferenceFilename"))));
+		ICService ics = DI.getImplForProject(ICService.class,
+				model.getProjectid());
+		model.setIcs(ics);
 
 		model.setTransfer(createTransferMethod(ics.getMsgService(),
 				DI.getUserId(model.getUserid()), ics));
 
-		model.setLog(DI.getImplForProject(Log.class, fss.getRootPath()));
+		model.setLog(DI.getImplForProject(Log.class, model.getProjectid()));
 
 		Actions actions = new Actions(model);
 

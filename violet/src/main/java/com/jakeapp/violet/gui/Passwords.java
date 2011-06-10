@@ -1,5 +1,6 @@
 package com.jakeapp.violet.gui;
 
+import java.io.IOException;
 import java.util.Observable;
 
 import com.jakeapp.violet.model.Model;
@@ -27,15 +28,18 @@ public abstract class Passwords extends Observable implements Model {
 	 *            User id
 	 * @param pw
 	 *            Password
+	 * @throws IOException
 	 */
-	protected abstract void storeForUser(String user, String pw);
+	protected abstract void storeForUser(String user, String pw)
+			throws IOException;
 
 	/**
 	 * remove password if stored.
 	 * 
 	 * @param user
 	 *            User id
+	 * @throws IOException
 	 */
-	protected abstract void forgetForUser(String user);
+	protected abstract void forgetForUser(String user) throws IOException;
 
 }

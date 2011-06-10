@@ -9,8 +9,7 @@ import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.protocol.ProjectInvitationHandler;
-import com.jakeapp.violet.synchronization.SyncServiceImpl;
-import com.jakeapp.violet.synchronization.request.MessageMarshaller;
+import com.jakeapp.violet.synchronization.request.ISyncListener;
 import com.jakeapp.violet.synchronization.request.ProjectRequestListener;
 
 /**
@@ -32,14 +31,16 @@ public class LoginAction extends AvailableLaterObject<Void> {
 	private boolean offline;
 	private LoginView view;
 	private long port;
+	private ISyncListener requests;
 
 	public LoginAction(User user, String pw, long port, boolean offline,
-			LoginView view) {
+			LoginView view, ISyncListener requests) {
 		this.pw = pw;
 		this.user = user;
 		this.offline = offline;
 		this.port = port;
 		this.view = view;
+		this.requests = requests;
 	}
 
 	/**
@@ -58,12 +59,8 @@ public class LoginAction extends AvailableLaterObject<Void> {
 			ics.getStatusService().addLoginStateListener(view);
 			ics.getUsersService().registerOnlineStatusListener(view);
 
-			MessageMarshaller messageMarshaller = DI
-					.getImpl(MessageMarshaller.class);
-			SyncServiceImpl syncService = DI.getImplForProject(
-					SyncServiceImpl.class, model.getProjectid());
 			ProjectRequestListener prl = new ProjectRequestListener(model,
-					syncService, messageMarshaller);
+					requests);
 			model.getIcs().getMsgService().registerReceiveMessageListener(prl);
 
 			ics.getStatusService().login(DI.getUserId(user.getUserId()), pw,
