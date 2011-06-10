@@ -1,15 +1,16 @@
 package com.jakeapp.violet.protocol;
 
-import com.jakeapp.violet.model.JakeObject;
+import com.jakeapp.violet.model.LogEntry;
 
 public class RequestFileMessage extends Message {
-	private JakeObject jakeObject;
+	private LogEntry logEntry;
 
-	public JakeObject getJakeObject() {
-		return jakeObject;
+	public LogEntry getLogEntry() {
+		return logEntry;
 	}
 
-	public void setJakeObject(JakeObject jakeObject) {
-		this.jakeObject = jakeObject;
+	public void setLogEntry(LogEntry logEntry) {
+		this.logEntry = logEntry;
 	}
+
 }

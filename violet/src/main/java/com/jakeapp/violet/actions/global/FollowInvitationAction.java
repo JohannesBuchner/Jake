@@ -9,6 +9,7 @@ import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.ProjectDir;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.KnownProperty;
 import com.jakeapp.violet.gui.Projects;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.ProjectPreferences;
@@ -37,7 +38,7 @@ public class FollowInvitationAction extends AvailableLaterObject<Void> {
 	@Override
 	public Void calculate() throws Exception {
 		ProjectPreferences prefs = DI.getPreferencesImpl(new File(dir, DI
-				.getProperty("project.preferenceFilename")));
+				.getProperty(KnownProperty.PROJECT_FILENAMES_PREFERENCES)));
 		prefs.set("id", projectid.toString());
 		prefs.set("inviter", user);
 		projects.add(dir);

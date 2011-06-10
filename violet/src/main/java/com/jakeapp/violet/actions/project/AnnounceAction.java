@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.jake.fss.HashValue;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.ProjectModel;
@@ -34,14 +35,12 @@ public class AnnounceAction extends AvailableLaterObject<Void> {
 	 */
 	@Override
 	public Void calculate() throws Exception {
-		java.util.Date today = new java.util.Date();
-		Timestamp now = new java.sql.Timestamp(today.getTime());
-		String hash = null;
+		HashValue hash = null;
 		if (!delete) {
 			hash = model.getFss().calculateHashOverFile(what.getRelPath());
 		}
-		LogEntry le = new LogEntry(UUID.randomUUID(), now, model.getUser(),
-				what, why, hash, true);
+		LogEntry le = new LogEntry(null, null, model.getUser(), what, why,
+				hash.toString(), true);
 		this.model.getLog().add(le);
 		return null;
 	}

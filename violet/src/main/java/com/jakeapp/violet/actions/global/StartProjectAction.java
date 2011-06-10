@@ -14,9 +14,11 @@ import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFa
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.violet.actions.Actions;
 import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.KnownProperty;
 import com.jakeapp.violet.model.Context;
 import com.jakeapp.violet.model.Log;
 import com.jakeapp.violet.model.ProjectModelImpl;
+import com.jakeapp.violet.model.ProjectPreferences;
 
 /**
  * <code>AvailableLaterObject</code> which is responsible for starting or
@@ -40,8 +42,10 @@ public class StartProjectAction extends AvailableLaterObject<Context> {
 		IFSService fss = DI.getImpl(IFSService.class);
 		fss.setRootPath(dir);
 		model.setFss(fss);
-		model.setPreferences(DI.getPreferencesImpl(new File(fss.getRootPath(),
-				DI.getProperty("project.preferenceFilename"))));
+		ProjectPreferences prefs = DI.getPreferencesImpl(new File(fss.getRootPath(),
+ DI
+				.getProperty(KnownProperty.PROJECT_FILENAMES_PREFERENCES)));
+		model.setPreferences(prefs);
 		ICService ics = DI.getImplForProject(ICService.class,
 				model.getProjectid());
 		model.setIcs(ics);
@@ -60,7 +64,7 @@ public class StartProjectAction extends AvailableLaterObject<Context> {
 			UserId user, ICService ics) {
 		IFileTransferService fcfts;
 		fcfts = new FailoverCapableFileTransferService();
-		if ("true".equals(DI.getProperty("filetransfers.sockets")))
+		if ("true".equals(DI.getProperty(KnownProperty.ICS_USE_SOCKETS)))
 			fcfts.addTransferMethod(new SimpleSocketFileTransferFactory(), msg,
 					user);
 

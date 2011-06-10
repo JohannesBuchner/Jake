@@ -36,10 +36,11 @@ public class PullAction extends AvailableLaterObject<Void> {
 	private Exception ex;
 
 	public PullAction(ProjectModel model, JakeObject jakeObject,
-			UserOrderStrategy strategy) {
+			ChangeListener listener, UserOrderStrategy strategy) {
 		this.model = model;
 		this.jakeObject = jakeObject;
 		this.strategy = strategy;
+		this.listener = listener;
 		this.messageMarshaller = DI.getImpl(MessageMarshaller.class);
 	}
 
@@ -64,7 +65,7 @@ public class PullAction extends AvailableLaterObject<Void> {
 
 		for (User u : selected) {
 			RequestFileMessage msg = new RequestFileMessage();
-			msg.setJakeObject(jakeObject);
+			msg.setLogEntry(le);
 			msg.setProjectId(model.getProjectid());
 			msg.setUser(DI.getUserId(u.getUserId()));
 			String contentname = this.messageMarshaller.serialize(msg);

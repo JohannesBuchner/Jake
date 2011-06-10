@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.KnownProperty;
 import com.jakeapp.violet.model.ILogModificationListener.ModifyActions;
 import com.jakeapp.violet.model.exceptions.NoSuchLogEntryException;
 
@@ -37,19 +38,21 @@ public class LogImpl implements Log {
 	public void connect() throws Exception {
 		// open db
 		try {
-			Class.forName("org." + DI.getProperty("jdbcdb") + ".Driver");
+			Class.forName("org." + DI.getProperty(KnownProperty.JDBCDB)
+					+ ".Driver");
 			conn = DriverManager.getConnection(
-					"jdbc:" + DI.getProperty("jdbcdb") + ":"
+					"jdbc:" + DI.getProperty(KnownProperty.JDBCDB) + ":"
 							+ file.getAbsolutePath(),
-					DI.getProperty("jdbcuser"), DI.getProperty("jdbcpassword"));
+					DI.getProperty(KnownProperty.JDBCUSER),
+					DI.getProperty(KnownProperty.JDBCPASSWORD));
 			// if it doesn't exist:
 			Statement stmt = conn.createStatement();
 			// create schema of table
-			stmt.execute(DI.getProperty("db.createlogtable"));
+			stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGTABLE));
 
-			stmt.execute(DI.getProperty("db.createlogindexwhat"));
+			stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGINDEXWHEN));
 			// create index on relpath
-			stmt.execute(DI.getProperty("db.createlogindexwhen"));
+			stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGINDEXWHAT));
 		} catch (Exception e) {
 			throw new IllegalStateException("could not initialize db", e);
 		}
@@ -65,7 +68,7 @@ public class LogImpl implements Log {
 
 	@Override
 	public void add(LogEntry logEntry) throws SQLException {
-		PreparedStatement addStmt = getPrepared("db.insertlog");
+		PreparedStatement addStmt = getPrepared(KnownProperty.DB_INSERTLOG);
 		addStmt.setObject(0, logEntry.getId());
 		addStmt.setTimestamp(1, logEntry.getWhen());
 		addStmt.setString(2, logEntry.getWho().getUserId());
@@ -79,7 +82,7 @@ public class LogImpl implements Log {
 	@Override
 	public LogEntry getById(UUID uuid, boolean includeUnprocessed)
 			throws NoSuchLogEntryException, SQLException {
-		PreparedStatement stmt = getPrepared("db.getlogbyid");
+		PreparedStatement stmt = getPrepared(KnownProperty.DB_GETLOGBYID);
 		stmt.setObject(0, uuid);
 		stmt.setBoolean(1, includeUnprocessed);
 		ResultSet rs = stmt.executeQuery();
@@ -99,7 +102,7 @@ public class LogImpl implements Log {
 	@Override
 	public void setProcessed(LogEntry logEntry) throws NoSuchLogEntryException,
 			SQLException {
-		PreparedStatement stmt = getPrepared("db.setprocessed");
+		PreparedStatement stmt = getPrepared(KnownProperty.DB_SETPROCESSEDBYID);
 		stmt.setObject(0, logEntry.getId());
 		if (stmt.executeUpdate() == 0) {
 			throw new NoSuchLogEntryException();
@@ -163,23 +166,23 @@ public class LogImpl implements Log {
 			if (includeProcessed)
 				// for getAll() calls
 				if (includeUnprocessed)
-					stmt = getPrepared("db.getall");
+					stmt = getPrepared(KnownProperty.DB_GETALL);
 				else
-					stmt = getPrepared("db.getprocessed");
+					stmt = getPrepared(KnownProperty.DB_GETPROCESSED);
 			else if (includeUnprocessed)
 				// for getUnprocessed calls
-				stmt = getPrepared("db.getunprocessed");
+				stmt = getPrepared(KnownProperty.DB_GETUNPROCESSED);
 		} else {
 			if (includeUnprocessed)
 				if (includeProcessed)
 					// for getAllOfJakeObject(jo) calls
-					stmt = getPrepared("db.getallforwhat");
+					stmt = getPrepared(KnownProperty.DB_GETALLFORWHAT);
 				else
 					// for getUnprocessed(jo) calls
-					stmt = getPrepared("db.getunprocessedforwhat");
+					stmt = getPrepared(KnownProperty.DB_GETUNPROCESSEDFORWHAT);
 			else if (includeProcessed)
 				// for getAllOfJakeObject(jo) calls
-				stmt = getPrepared("db.getprocessedforwhat");
+				stmt = getPrepared(KnownProperty.DB_GETPROCESSEDFORWHAT);
 		}
 		if (stmt == null) {
 			if (!includeProcessed && !includeUnprocessed) {
@@ -192,14 +195,15 @@ public class LogImpl implements Log {
 		return stmt;
 	}
 
-	private Map<String, PreparedStatement> queries = new HashMap<String, PreparedStatement>();
+	private Map<KnownProperty, PreparedStatement> queries = new HashMap<KnownProperty, PreparedStatement>();
 	private Set<ILogModificationListener> listeners = new HashSet<ILogModificationListener>();
 
-	private PreparedStatement getPrepared(String queryid) throws SQLException {
-		PreparedStatement q = queries.get(queryid);
+	private PreparedStatement getPrepared(KnownProperty key)
+			throws SQLException {
+		PreparedStatement q = queries.get(key);
 		if (q == null) {
-			q = conn.prepareStatement(DI.getProperty(queryid));
-			queries.put(queryid, q);
+			q = conn.prepareStatement(DI.getProperty(key));
+			queries.put(key, q);
 		}
 		return q;
 	}
@@ -228,9 +232,9 @@ public class LogImpl implements Log {
 			throws SQLException {
 		PreparedStatement stmt;
 		if (includeUnprocessed)
-			stmt = getPrepared("db.getrelpathsprocessed");
+			stmt = getPrepared(KnownProperty.DB_GETRELPATHSPROCESSED);
 		else
-			stmt = getPrepared("db.getrelpaths");
+			stmt = getPrepared(KnownProperty.DB_GETRELPATHS);
 		ResultSet rs = stmt.executeQuery();
 		ArrayList<JakeObject> all = new ArrayList<JakeObject>();
 		while (rs.next()) {
@@ -250,12 +254,11 @@ public class LogImpl implements Log {
 
 	@Override
 	public void setAllPreviousProcessed(LogEntry logEntry) throws SQLException {
-		PreparedStatement stmt = getPrepared("db.setprocessedForWhat");
+		PreparedStatement stmt = getPrepared(KnownProperty.DB_SETPROCESSEDFORWHAT);
 		stmt.setObject(0, logEntry.getWhat());
 		stmt.executeUpdate();
 		for (ILogModificationListener l : this.listeners) {
-			l.logModified(logEntry.getWhat(),
-					ModifyActions.MODIFIED);
+			l.logModified(logEntry.getWhat(), ModifyActions.MODIFIED);
 		}
 	}
 

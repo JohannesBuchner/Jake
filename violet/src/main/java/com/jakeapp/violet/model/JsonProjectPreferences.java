@@ -24,7 +24,8 @@ public class JsonProjectPreferences extends ProjectPreferences {
 	protected void load() {
 		this.preferences.clear();
 		try {
-			this.preferences.putAll(mapper.readValue(f, Map.class));
+			if (f.exists())
+				this.preferences.putAll(mapper.readValue(f, Map.class));
 		} catch (IOException e) {
 			log.info(e);
 		}

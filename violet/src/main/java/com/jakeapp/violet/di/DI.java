@@ -3,6 +3,7 @@ package com.jakeapp.violet.di;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 import com.jakeapp.jake.ics.ICService;
@@ -13,25 +14,33 @@ import com.jakeapp.violet.gui.Projects;
 import com.jakeapp.violet.model.JsonProjectPreferences;
 import com.jakeapp.violet.model.ProjectPreferences;
 import com.jakeapp.violet.model.User;
+import com.jakeapp.violet.synchronization.request.MessageMarshaller;
 
-public abstract class DI {
+public class DI {
+	private static HashMap<Class, Creator> map = new HashMap<Class, Creator>();
+	private static HashMap<Class, ProjectDependentCreator> mapPerProject = new HashMap<Class, ProjectDependentCreator>();
+
 	static {
 		register(Projects.class, new Creator<Projects>() {
-			Projects projects = new JsonProjects(new File(".jakeprojects"));
+			Projects projects = null;
 
 			@Override
 			public Projects create() {
+				if (projects == null) {
+					projects = new JsonProjects(
+							new File(
+									DI.getProperty(KnownProperty.GLOBAL_SETTINGS_DIR),
+									DI.getProperty(KnownProperty.GLOBAL_PROJECTS_FILENAME)));
+				}
 				return projects;
 			}
 
 		});
+		register(MessageMarshaller.class, new MessageMarshaller());
 	}
 
 	private DI() {
 	}
-
-	private static HashMap<Class, Creator> map = new HashMap<Class, Creator>();
-	private static HashMap<Class, ProjectDependentCreator> mapPerProject = new HashMap<Class, ProjectDependentCreator>();
 
 	public static <C> C getImpl(Class<C> c) {
 		Creator<C> creator = map.get(c);
@@ -53,6 +62,15 @@ public abstract class DI {
 		map.put(c, creator);
 	}
 
+	public static <C> void register(Class<C> c, final C instance) {
+		map.put(c, new Creator<C>() {
+			@Override
+			public C create() {
+				return instance;
+			}
+		});
+	}
+
 	public static UserId getUserId(String userId) {
 		return new XmppUserId(userId);
 	}
@@ -61,56 +79,39 @@ public abstract class DI {
 		return new JsonProjectPreferences(file);
 	}
 
-	public static String getProperty(String string) {
-		// TODO: call a DI injection for "properties" which loads a ini file or
-		// smth
+	private static Properties properties = new Properties();
+	static {
+		properties.putAll(DBQueries.getProperties());
+		properties.put(KnownProperty.JDBCDB, "h2");
+		properties.put(KnownProperty.JDBCUSER, "sa");
+		properties.put(KnownProperty.JDBCPASSWORD, "");
+		properties.put(KnownProperty.PROJECT_FILENAMES_LOG, ".jakelog");
+		properties
+				.put(KnownProperty.PROJECT_FILENAMES_PREFERENCES, ".jakeconf");
+		properties.put(KnownProperty.ICS_RESOURCE_NAME, "Jake");
+		properties
+				.put(KnownProperty.ICS_RESOURCE_PROJECT_PREFIX, "JakeProject");
+		properties.put(KnownProperty.GLOBAL_PROJECTS_FILENAME, "projects");
+		// properties.put(KnownProperty.ICS_USE_SOCKETS, "true");
+		// properties.put(KnownProperty.USE_TRASH, "true");
 
-		if (string.equals("jdbcdb"))
-			return "h2";
-		if (string.equals("jdbcuser"))
-			return "sa";
-		if (string.equals("jdbcpassword"))
-			return "";
-		if (string.equals("project.logFilename"))
-			return ".jakelog";
-		if (string.equals("project.preferenceFilename"))
-			return ".jakeconf";
-		if (string.equals("db.createlogtable")) {
-			return "CREATE TABLE IF NOT EXISTS log (" + " UUID id, "
-					+ " Timestamp when, " + " String who, " + " String what, "
-					+ " String why, " + " String how, " + " Boolean known"
-					+ ")";
+		File path;
+		if (System.getenv("APPDATA") == null) {
+			path = new File(System.getenv("HOME"), "Jake");
+		} else {
+			path = new File(System.getenv("APPDATA"), ".Jake");
 		}
-		if (string.equals("db.createlogindexwhen")) {
-			return "CREATE INDEX IF NOT EXISTS whenindex ON log (when)";
-		}
-		if (string.equals("db.createlogindexwhat")) {
-			return "CREATE INDEX IF NOT EXISTS whatindex ON log (what)";
-		}
-		if (string.equals("db.insertlog"))
-			return "INSERT INTO log (id, when, who, what, why, how, known) VALUES (?, ?, ?, ?, ?, ?, ?)";
-		if (string.equals("db.getlogbyid"))
-			return "SELECT id, when, who, what, why, how, known FROM log WHERE id=?";
-		if (string.equals("db.getrelpathsprocessed"))
-			return "SELECT what FROM log WHERE known=true";
-		if (string.equals("db.getrelpaths"))
-			return "SELECT what FROM log";
-		if (string.equals("db.setprocessedForWhat"))
-			return "UPDATE log SET known = true WHERE what = ?";
-		if (string.equals("db.getall"))
-			return "SELECT id, when, who, what, why, how, known FROM log";
-		if (string.equals("db.getprocessed"))
-			return "SELECT id, when, who, what, why, how, known FROM log WHERE known = true";
-		if (string.equals("db.getunprocessed"))
-			return "SELECT id, when, who, what, why, how, known FROM log WHERE known = false";
-		if (string.equals("db.getallforwhat"))
-			return "SELECT id, when, who, what, why, how, known FROM log WHERE what = ?";
-		if (string.equals("db.getunprocessedforwhat"))
-			return "SELECT id, when, who, what, why, how, known FROM log WHERE what = ? and known = false";
-		if (string.equals("db.getprocessedforwhat"))
-			return "SELECT id, when, who, what, why, how, known FROM log WHERE what = ? and known = true";
-		if (string.equals("db.setprocessed"))
-			return "UPDATE log SET known = true WHERE id = ?";
+		path.mkdirs();
+
+		properties.put(KnownProperty.GLOBAL_SETTINGS_DIR, path.getPath());
+		properties.putAll(System.getProperties());
+	}
+
+	public static String getProperty(KnownProperty key) {
+		return properties.getProperty(key.v);
+	}
+
+	public static String getProperty(String string) {
 		throw new IllegalArgumentException("keyword " + string + " not defined");
 	}
 

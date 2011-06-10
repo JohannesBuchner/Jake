@@ -6,6 +6,7 @@ import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.violet.actions.global.LoginView;
 import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.KnownProperty;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.protocol.ProjectInvitationHandler;
@@ -63,8 +64,11 @@ public class LoginAction extends AvailableLaterObject<Void> {
 					requests);
 			model.getIcs().getMsgService().registerReceiveMessageListener(prl);
 
-			ics.getStatusService().login(DI.getUserId(user.getUserId()), pw,
-					DI.getProperty("ics.genericresource"), port);
+			ics.getStatusService().login(
+					DI.getUserId(user.getUserId()),
+					pw,
+					DI.getProperty(KnownProperty.ICS_RESOURCE_PROJECT_PREFIX)
+							+ model.getProjectid().toString(), port);
 		}
 		return null;
 	}

@@ -59,7 +59,7 @@ public class MessageMarshaller {
 
 	public String serialize(RequestFileMessage msg) {
 		// can't use XML characters
-		return msg.getProjectId() + "." + msg.getJakeObject().getRelPath();
+		return msg.getProjectId() + "." + msg.getLogEntry().getId();
 	}
 
 	private String getUUIDStringForProject(UUID projectid) {

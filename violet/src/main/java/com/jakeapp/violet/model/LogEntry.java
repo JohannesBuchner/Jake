@@ -1,19 +1,38 @@
 package com.jakeapp.violet.model;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.UUID;
+
+import org.mockito.exceptions.misusing.NullInsteadOfMockException;
 
 public class LogEntry {
 
 	public LogEntry(UUID id, Timestamp when, User who, JakeObject what,
-			String why, String how, Boolean known) {
+			String why, String how, boolean known) {
 		super();
-		this.id = id;
-		this.when = when;
+		if (id == null)
+			this.id = UUID.randomUUID();
+		else
+			this.id = id;
+		if (when == null)
+			this.when = new Timestamp(new Date().getTime());
+		else
+			this.when = when;
+		if (who == null)
+			throw new NullPointerException();
 		this.who = who;
+		if (what == null)
+			throw new NullPointerException();
 		this.what = what;
-		this.why = why;
-		this.how = how;
+		if (why == null)
+			this.why = "";
+		else
+			this.why = why;
+		if (how == null)
+			this.how = "";
+		else
+			this.how = how;
 		this.known = known;
 	}
 
@@ -46,6 +65,10 @@ public class LogEntry {
 	 */
 	private Boolean known;
 
+	public UUID getId() {
+		return id;
+	}
+
 	public Timestamp getWhen() {
 		return when;
 	}
@@ -70,7 +93,58 @@ public class LogEntry {
 		return known;
 	}
 
-	public UUID getId() {
-		return id;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LogEntry other = (LogEntry) obj;
+		if (how == null) {
+			if (other.how != null)
+				return false;
+		} else if (!how.equals(other.how))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (known == null) {
+			if (other.known != null)
+				return false;
+		} else if (!known.equals(other.known))
+			return false;
+		if (what == null) {
+			if (other.what != null)
+				return false;
+		} else if (!what.equals(other.what))
+			return false;
+		if (when == null) {
+			if (other.when != null)
+				return false;
+		} else if (!when.equals(other.when))
+			return false;
+		if (who == null) {
+			if (other.who != null)
+				return false;
+		} else if (!who.equals(other.who))
+			return false;
+		if (why == null) {
+			if (other.why != null)
+				return false;
+		} else if (!why.equals(other.why))
+			return false;
+		return true;
 	}
 }

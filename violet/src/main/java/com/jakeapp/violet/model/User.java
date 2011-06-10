@@ -22,4 +22,16 @@ public class User {
 	public String toString() {
 		return userid.toString();
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!userid.equals(obj.toString()))
+			return false;
+		return true;
+	}
+
 }

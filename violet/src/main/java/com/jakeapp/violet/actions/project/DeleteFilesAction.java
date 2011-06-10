@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.KnownProperty;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.Log;
 import com.jakeapp.violet.model.ProjectModel;
@@ -33,7 +34,7 @@ public class DeleteFilesAction extends AvailableLaterObject<Void> {
 		stepsDone = 1;
 		this.getListener().statusUpdate(stepsDone * 1. / totalSteps, "init");
 		this.trash = true;
-		if ("false".equals(DI.getProperty("usetrash")))
+		if ("false".equals(DI.getProperty(KnownProperty.USE_TRASH)))
 			this.trash = false;
 	}
 

@@ -5,6 +5,7 @@ import org.apache.log4j.Logger;
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.KnownProperty;
 import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.protocol.ProjectInvitationHandler;
 
@@ -49,7 +50,7 @@ public class GoOnlineAction extends AvailableLaterObject<LoginView> {
 
 
 			ics.getStatusService().login(DI.getUserId(user.getUserId()), pw,
-					DI.getProperty("ics.genericresource"), port);
+					DI.getProperty(KnownProperty.ICS_RESOURCE_NAME), port);
 		}
 		return view;
 	}
