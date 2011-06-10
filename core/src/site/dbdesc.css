@@ -1,7 +1,0 @@
-table.dbdesc{	width: 40em;	border: 1px solid #080;	border-width: 1px 0;}
-table.dbdesc th{	border-bottom: 1px solid #080;}
-table.dbdesc td{	border: none;}
-table.dbdesc td, table.dbdesc th{	width: 15em;}
-table.dbdesc th{	font-style: italic;	font-weight: normal; }
-table.dbdesc td.option{	text-align: center;}
-table.dbdesc td.type{	text-transform: uppercase;}
