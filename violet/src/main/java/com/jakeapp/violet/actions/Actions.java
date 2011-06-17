@@ -3,6 +3,7 @@ package com.jakeapp.violet.actions;
 import java.util.List;
 
 import com.jakeapp.availablelater.AvailableErrorObject;
+import com.jakeapp.availablelater.AvailableLater;
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.availablelater.AvailableNowObject;
 import com.jakeapp.violet.model.ProjectModel;
@@ -18,7 +19,7 @@ public class Actions {
 		this.model = model;
 	}
 
-	public AvailableLaterObject<Void> launchFile(String filename) {
+	public AvailableLater<Void> launchFile(String filename) {
 		try {
 			model.getFss().launchFile(filename);
 			return new AvailableNowObject<Void>(null);

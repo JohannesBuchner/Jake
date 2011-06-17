@@ -89,6 +89,6 @@ public class PullAction extends AvailableLaterObject<Void> {
 		}
 		if (lastException != null)
 			throw lastException;
-		return innercontent;
+		return null;
 	}
 }

@@ -21,16 +21,21 @@ import com.jakeapp.violet.model.ProjectModel;
  * @author johannes
  */
 public class AllJakeObjectsViewAction extends
-		AvailableLaterObject<AllJakeObjectsView> implements
-		IFileModificationListener, ILogModificationListener {
+	AvailableLaterObject<AllJakeObjectsView> implements
+	IFileModificationListener, ILogModificationListener {
 
 	private static Logger log = Logger
-			.getLogger(AllJakeObjectsViewAction.class);
+		.getLogger(AllJakeObjectsViewAction.class);
 
 	private ProjectModel model;
 
+	private AllJakeObjectsView view;
+
+	private Set<JakeObject> objects = new HashSet<JakeObject>();
+
 	public AllJakeObjectsViewAction(ProjectModel model) {
 		this.model = model;
+		this.view = new AllJakeObjectsView(model, objects);
 		this.model.getFss().addModificationListener(this);
 		this.model.getLog().addModificationListener(this);
 	}
@@ -40,7 +45,6 @@ public class AllJakeObjectsViewAction extends
 	 */
 	@Override
 	public AllJakeObjectsView calculate() {
-		Set<JakeObject> objects = new HashSet<JakeObject>();
 		try {
 			objects.addAll(this.model.getLog().getExistingFileObjects(true));
 		} catch (SQLException e) {
@@ -48,24 +52,24 @@ public class AllJakeObjectsViewAction extends
 		}
 		try {
 			List<String> files = this.model.getFss().recursiveListFiles();
-			for (String s : files) {
-				objects.add(new JakeObject(s));
+			for (String relpath : files) {
+				objects.add(new JakeObject(relpath));
 			}
 		} catch (IOException e) {
 			log.error(e);
 		}
-		return new AllJakeObjectsView(model, objects);
+		return view;
 	}
 
 	@Override
 	public void logModified(JakeObject jo, ModifyActions action) {
-		this.get().onModification(jo);
+		view.onModification(jo);
 	}
 
 	@Override
 	public void fileModified(String relpath,
-			com.jakeapp.jake.fss.IModificationListener.ModifyActions action) {
-		this.get().onModification(new JakeObject(relpath));
+		com.jakeapp.jake.fss.IModificationListener.ModifyActions action) {
+		view.onModification(new JakeObject(relpath));
 	}
 
 }

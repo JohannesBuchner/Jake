@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.availablelater.StatusUpdate;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.violet.model.ProjectModel;
 
@@ -30,7 +31,7 @@ public class ImportFilesAction extends AvailableLaterObject<Void> {
 		nsteps = files.size() + 1;
 		steps = 1;
 		this.destFolderRelPath = destFolderRelPath;
-		this.listener.statusUpdate(nsteps * 1. / steps, "init");
+		this.setStatus(new StatusUpdate(nsteps * 1. / steps, "init"));
 	}
 
 	@Override
@@ -41,7 +42,7 @@ public class ImportFilesAction extends AvailableLaterObject<Void> {
 			log.debug("Importing a file!");
 			fss.importFile(file, destFolderRelPath);
 			steps++;
-			this.listener.statusUpdate(nsteps * 1. / steps, "init");
+			this.setStatus(new StatusUpdate(nsteps * 1. / steps, "importing"));
 		}
 		return null;
 	}

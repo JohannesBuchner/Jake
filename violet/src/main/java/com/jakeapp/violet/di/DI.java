@@ -40,6 +40,7 @@ public class DI {
 	}
 
 	private DI() {
+		// not initializable
 	}
 
 	public static <C> C getImpl(Class<C> c) {

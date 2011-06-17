@@ -31,7 +31,7 @@ public class CreateAccountActionTest {
 		DI.register(ICService.class, ics);
 		action = new CreateAccountAction(user, pw);
 
-		new AvailableLaterWaiter<Void>(action).get();
+		AvailableLaterWaiter.await(action);
 		Mockito.verify(status)
 				.createAccount(DI.getUserId(user.getUserId()), pw);
 		Mockito.verifyNoMoreInteractions(status);
@@ -49,7 +49,7 @@ public class CreateAccountActionTest {
 		DI.register(ICService.class, ics);
 		action = new CreateAccountAction(user, pw);
 
-		new AvailableLaterWaiter<Void>(action).get();
+		AvailableLaterWaiter.await(action);
 		Mockito.verifyNoMoreInteractions(status);
 	}
 }

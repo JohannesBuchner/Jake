@@ -28,6 +28,8 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> {
 
 	private ProjectModel model;
 
+	protected IFileTransfer fileTransfer;
+
 	private static Logger log = Logger.getLogger(FileRequestFuture.class);
 
 	protected class FileProgressChangeListener extends ChangeListenerProxy {
@@ -54,11 +56,11 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "]" + "transferService="
-				+ transferService + ", request=" + request + ", jo=" + jo + "]";
+			+ transferService + ", request=" + request + ", jo=" + jo + "]";
 	}
 
 	public FileRequestFuture(ProjectModel model, JakeObject jo,
-			FileRequest request, ChangeListener changeListener) {
+		FileRequest request, ChangeListener changeListener) {
 		super();
 		this.model = model;
 		this.request = request;
@@ -71,22 +73,22 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> {
 
 	@Override
 	public IFileTransfer calculate() throws Exception {
-		INegotiationSuccessListener listener = new PullListener(this.jo,
-				model.getFss(), changeListener);
+		INegotiationSuccessListener listener =
+			new PullListener(this.jo, model.getFss(), changeListener);
 		this.transferService.request(this.request,
-				new INegotiationSuccessListener() {
-					@Override
-					public void failed(Throwable reason) {
-						FileRequestFuture.this.innerException = reason;
-						FileRequestFuture.this.sem.release();
-					}
+			new INegotiationSuccessListener() {
+				@Override
+				public void failed(Throwable reason) {
+					FileRequestFuture.this.innerException = reason;
+					FileRequestFuture.this.sem.release();
+				}
 
-					@Override
-					public void succeeded(IFileTransfer ft) {
-						FileRequestFuture.this.setInnercontent(ft);
-						FileRequestFuture.this.sem.release();
-					}
-				});
+				@Override
+				public void succeeded(IFileTransfer ft) {
+					FileRequestFuture.this.fileTransfer = ft;
+					FileRequestFuture.this.sem.release();
+				}
+			});
 		log.debug("waiting for negotiation-success-listener");
 
 		sem.acquire();
@@ -99,11 +101,6 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> {
 			throw (Exception) this.innerException;
 		}
 
-		try {
-			listener.succeeded(getInnercontent());
-		} catch (Exception ignored) {
-		}
-
 		log.debug("waiting for PullListener");
 		sem.acquire();
 		if (this.innerException != null) {
@@ -111,6 +108,6 @@ public class FileRequestFuture extends AvailableLaterObject<IFileTransfer> {
 			throw (Exception) this.innerException;
 		}
 
-		return this.getInnercontent();
+		return fileTransfer;
 	}
 }

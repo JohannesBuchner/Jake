@@ -30,7 +30,7 @@ public class CreateDeleteProjectActionTest {
 		DI.register(Projects.class, projects);
 		action = new CreateDeleteProjectAction(dir, false);
 
-		new AvailableLaterWaiter<Void>(action).get();
+		AvailableLaterWaiter.await(action);
 		Mockito.verify(projects).add(dir);
 		Mockito.verifyNoMoreInteractions(projects);
 	}
@@ -42,7 +42,7 @@ public class CreateDeleteProjectActionTest {
 		DI.register(Projects.class, projects);
 		action = new CreateDeleteProjectAction(dir, true);
 
-		new AvailableLaterWaiter<Void>(action).get();
+		AvailableLaterWaiter.await(action);
 		Mockito.verify(projects).remove(dir);
 		Mockito.verifyNoMoreInteractions(projects);
 	}

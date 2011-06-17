@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.availablelater.StatusUpdate;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
 import com.jakeapp.jake.fss.exceptions.NotAFileException;
@@ -38,7 +39,7 @@ public class FileInfoAction extends AvailableLaterObject<List<Attributed>> {
 		this.files = files;
 		stepsDone = 1;
 		totalSteps = files.size() + 1;
-		this.getListener().statusUpdate(stepsDone * 1. / totalSteps, "init");
+		this.setStatus(new StatusUpdate(totalSteps * 1. / stepsDone, "init"));
 	}
 
 	/**
@@ -54,8 +55,7 @@ public class FileInfoAction extends AvailableLaterObject<List<Attributed>> {
 			attributed.add(AttributedCalculator.calculateAttributed(fss, log, fo));
 
 			stepsDone++;
-			this.getListener().statusUpdate(stepsDone * 1. / totalSteps,
-					"working");
+			this.setStatus(new StatusUpdate(totalSteps * 1. / stepsDone, "working"));
 		}
 
 		return attributed;

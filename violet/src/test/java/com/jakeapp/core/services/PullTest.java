@@ -205,7 +205,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 		PullAction action = new PullAction(model, fo,
 				new TracingChangeListener(), new SimpleUserOrderStrategy());
-		new AvailableLaterWaiter<Void>(action);
+		AvailableLaterWaiter.await(action);
 
 		Assert.assertTrue(tracer.await("pullNegotiationDone", 10,
 				TimeUnit.MILLISECONDS));
@@ -230,7 +230,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 		PullAction action = new PullAction(model, fo,
 				new TracingChangeListener(), new SimpleUserOrderStrategy());
 
-		new AvailableLaterWaiter<Void>(action);
+		AvailableLaterWaiter.await(action);
 		Assert.assertTrue(tracer.await("pullNegotiationDone", 10,
 				TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());

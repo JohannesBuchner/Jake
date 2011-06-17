@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.availablelater.AvailableLaterWaiter;
+import com.jakeapp.availablelater.StatusUpdate;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.di.KnownProperty;
@@ -26,13 +28,13 @@ public class DeleteFilesAction extends AvailableLaterObject<Void> {
 	private String why;
 
 	public DeleteFilesAction(ProjectModel model,
-			Collection<JakeObject> toDelete, String why) {
+		Collection<JakeObject> toDelete, String why) {
 		this.model = model;
 		this.toDelete = toDelete;
 		this.why = why;
 		totalSteps = toDelete.size() + 1;
 		stepsDone = 1;
-		this.getListener().statusUpdate(stepsDone * 1. / totalSteps, "init");
+		this.setStatus(new StatusUpdate(totalSteps * 1. / stepsDone, "init"));
 		this.trash = true;
 		if ("false".equals(DI.getProperty(KnownProperty.USE_TRASH)))
 			this.trash = false;
@@ -46,8 +48,8 @@ public class DeleteFilesAction extends AvailableLaterObject<Void> {
 		IFSService fss = this.model.getFss();
 
 		for (JakeObject fo : toDelete) {
-			AnnounceAction subaction = new AnnounceAction(model, fo, why, true);
-			subaction.get();
+			AvailableLaterWaiter
+				.await(new AnnounceAction(model, fo, why, true));
 
 			if (trash) {
 				fss.trashFile(fo.getRelPath());
@@ -55,8 +57,8 @@ public class DeleteFilesAction extends AvailableLaterObject<Void> {
 				fss.deleteFile(fo.getRelPath());
 			}
 			stepsDone++;
-			this.getListener().statusUpdate(stepsDone * 1. / totalSteps,
-					"working");
+			this.setStatus(new StatusUpdate(totalSteps * 1. / stepsDone,
+				"working"));
 		}
 
 		return null;

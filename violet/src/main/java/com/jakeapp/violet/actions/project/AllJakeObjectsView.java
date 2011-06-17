@@ -18,7 +18,8 @@ public class AllJakeObjectsView {
 
 	private static Logger log = Logger.getLogger(AllJakeObjectsView.class);
 	private Set<JakeObject> objects = new HashSet<JakeObject>();
-	private HashSet<IJakeObjectModificationListener> listeners = new HashSet<IJakeObjectModificationListener>();
+	private HashSet<IJakeObjectModificationListener> listeners =
+		new HashSet<IJakeObjectModificationListener>();
 
 	public AllJakeObjectsView(ProjectModel model, Set<JakeObject> initial) {
 		this.objects = initial;
