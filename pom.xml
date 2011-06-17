@@ -1,202 +1,165 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>com.jakeapp.jake</groupId>
-    <artifactId>parent</artifactId>
-    <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
-    <name>Jake</name>
-    <description>Jake is a collaboration tool for sharing a project folder between
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.jakeapp.jake</groupId>
+	<artifactId>jake-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>1.0-SNAPSHOT</version>
+	<name>Jake</name>
+	<description>
+		Jake is a collaboration tool for sharing a project folder between
         project members.
     </description>
-    <url>http://jakeapp.com/</url>
-    <modules>
-        <module>core</module>
-        <module>gui</module>
-        <module>commander</module>
-        <module>core-dao-interfaces</module>
-        <module>core-domain</module>
-        <module>core-dao-hibernate-impl</module>
-        <module>core-dao-hibernate-threading</module>
-        <module>core-dao-tests-base</module>
-    </modules>
-    <developers>
-        <developer>
-            <id>chris</id>
-            <name>Christian Sutter</name>
-            <email>chris@doublesignal.com</email>
-            <roles>
-                <role>Team coordinator</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>johannes</id>
-            <name>Johannes Buchner</name>
-            <email>e0625457@student.tuwien.ac.at</email>
-            <roles>
-                <role>Documentation</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>simon</id>
-            <name>Simon Wallner</name>
-            <email>contact@simonwallner.at</email>
-            <roles>
-                <role>Team coordinator</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>peter</id>
-            <name>Peter Steinberger</name>
-            <email>peter.steinberger@student.tuwien.ac.at</email>
-            <roles>
-                <role>second team coordinator</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>philipp</id>
-            <name>Philipp Knobelspies</name>
-            <email>philipp.knobelspies@googlemail.com</email>
-            <roles>
-                <role>second technical architect (first semester)</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>christopher</id>
-            <name>Christopher Cerny</name>
-            <email>cerny.christopher@gmx.at</email>
-            <roles>
-                <role>second technical architect (second semester)</role>
-            </roles>
-        </developer>
-        <developer>
-            <id>dominik</id>
-            <name>Dominik Dorn</name>
-            <email>mail.2008@dominikdorn.com</email>
-            <roles>
-                <role>Testing</role>
-            </roles>
-        </developer>
-    </developers>
-    <pluginRepositories>
-        <pluginRepository>
-            <id>onejar-maven-plugin.googlecode.com</id>
-            <url>http://onejar-maven-plugin.googlecode.com/svn/mavenrepo</url>
-        </pluginRepository>
-    </pluginRepositories>
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.jakeapp.gui.swing.JakeMainApp</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <dependencyManagement>
-        <dependencies>
-            <!-- Internal -->
-            <dependency>
-                <groupId>com.doublesignal.sepm.jake</groupId>
-                <artifactId>sepm-jake-core</artifactId>
-                <version>${pom.version}</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-    <!-- Dependencies used by all modules -->
-    <dependencies>
-        <dependency>
-            <!-- Logging, commons-logging version 1.1 has log4j as transitive dependency! -->
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>1.1</version>
-        </dependency>
-        <!-- Database -->
-        <!-- koennen wir ja noch durch apache derby ersetzen... -->
-        <dependency>
-            <groupId>hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>${hsqldb.version}</version>
-        </dependency>
-        <!-- For testing -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring-test.version}</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-    <reporting>
-        <plugins>
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </reporting>
-    <repositories>
+	<licenses>
+		<license>
+			<name>GPL 3</name>
+			<url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<modules>
+		<module>violet</module>
+		<module>gui</module>
+		<module>commander</module>
+	</modules>
+	<url>http://jakeapp.sourceforge.net/</url>
+	<developers>
+		<developer>
+			<id>johannes</id>
+			<name>Johannes Buchner</name>
+			<email>buchner.johannes@gmx.at</email>
+			<roles>
+				<role>Lead developer</role>
+				<role>Maintainer</role>
+				<role>Architect</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>chris</id>
+			<name>Christian Sutter</name>
+			<email>chris@doublesignal.com</email>
+		</developer>
+		<developer>
+			<id>simon</id>
+			<name>Simon Wallner</name>
+			<email>contact@simonwallner.at</email>
+			<roles>
+				<role>Team coordinator</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>peter</id>
+			<name>Peter Steinberger</name>
+			<email>peter.steinberger@student.tuwien.ac.at</email>
+			<roles>
+				<role>second team coordinator</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>philipp</id>
+			<name>Philipp Knobelspies</name>
+			<email>philipp.knobelspies@googlemail.com</email>
+			<roles>
+				<role>second technical architect (first semester)</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>christopher</id>
+			<name>Christopher Cerny</name>
+			<email>cerny.christopher@gmx.at</email>
+			<roles>
+				<role>second technical architect (second semester)</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>dominik</id>
+			<name>Dominik Dorn</name>
+			<email>mail.2008@dominikdorn.com</email>
+			<roles>
+				<role>Testing</role>
+			</roles>
+		</developer>
+	</developers>
+	<distributionManagement>
+		<site>
+			<id>sourceforge</id>
+			<url>scp://shell.sourceforge.net/home/project-web/jakeapp/htdocs/violet</url>
+		</site>
 		<repository>
-			<id>jakeapp-maven2-repo</id>
-			<name>Maven2 Repository of jakeapp.com</name>
-			<url>http://maven.jakeapp.com/</url>
-			<layout>default</layout>
+			<id>sourceforge</id>
+			<name>SourceForge</name>
+			<url>sftp://frs.sourceforge.net:/home/frs/project/j/ja/jakeapp/releases
+			</url>
+		</repository>
+	</distributionManagement>
+	<scm>
+		<connection>scm:git:git://jakeapp.git.sourceforge.net/gitroot/jakeapp/violet/</connection>
+		<developerConnection>scm:git:ssh://johannesbuchner@jakeapp.git.sourceforge.net/gitroot/jakeapp/violet/</developerConnection>
+		<url>http://jakeapp.git.sourceforge.net/</url>
+	</scm>
+	<repositories>
+		<repository>
+			<id>jakeapp releases</id>
+			<url>http://jakeapp.sourceforge.net/proxy.php?r=</url>
 		</repository>
 	</repositories>
-    <distributionManagement>
-        <repository>
-            <id>repo</id>
-            <url>scp://johannes@dev.jakeapp.com/var/www/jake/maven-repo/</url>
-        </repository>
-    </distributionManagement>
-    <properties>
-        <spring.version>2.5.6</spring.version>
-        <spring-test.version>2.5.6</spring-test.version>
-        <junit.version>4.4</junit.version>
-        <jmock.version>2.5.1</jmock.version>
-        <hsqldb.version>1.8.0.1</hsqldb.version>
-        <mockito.version>1.7</mockito.version>
-        <jpa.version>1.0</jpa.version>
-
-        <javassist.version>3.8.0.GA</javassist.version>
-        <sl4j-log4j12.version>1.5.6</sl4j-log4j12.version>
-        <sl4j-api.version>1.5.6</sl4j-api.version>
-
-        <log4j.version>1.2.14</log4j.version>
-
-        <hibernate-core.version>3.3.1.GA</hibernate-core.version>
-        <!--<hibernate.version>3.3.0.ga</hibernate.version>-->
-        <hibernate-annotations.version>3.4.0.GA</hibernate-annotations.version>
-        <hibernate-commons-annotations.version>3.3.0.ga</hibernate-commons-annotations.version>
-        <hibernate-entitymanager.version>3.4.0.GA</hibernate-entitymanager.version>
-    </properties>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<configuration>
+						<source>1.6</source>
+						<target>1.6</target>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-install-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>install</goal>
+						</goals>
+						<configuration>
+							<createChecksum>true</createChecksum>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+		</plugins>
+	</reporting>
+	<properties>
+		<junit.version>4.4</junit.version>
+		<log4j.version>1.2.14</log4j.version>
+		<jmock.version>2.5.1</jmock.version>
+		<mockito.version>1.7</mockito.version>
+	</properties>
 </project>
-
-
