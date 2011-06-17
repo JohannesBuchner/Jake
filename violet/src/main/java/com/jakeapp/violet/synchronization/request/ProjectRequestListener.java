@@ -260,8 +260,8 @@ public class ProjectRequestListener implements IMessageReceiveListener,
 			log.info("original file at " + origfile);
 			File tempfile = new File(getDeliveryDirectory(), req.getFileName());
 
-			FSService.writeFileStreamAbs(tempfile.getAbsolutePath(),
-					FSService.readFileStreamAbs(origfile.getAbsolutePath()));
+			FSService.writeFileStreamAbs(tempfile,
+					FSService.readFileStreamAbs(origfile));
 
 			log.info("we accept the request and provided the file at "
 					+ tempfile);

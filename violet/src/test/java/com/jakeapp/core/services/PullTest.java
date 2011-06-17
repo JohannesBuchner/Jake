@@ -220,7 +220,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 		@SuppressWarnings("deprecation")
 		StringBufferInputStream sbis = new StringBufferInputStream("Foo bar");
 
-		FSService.writeFileStreamAbs(tmpfile.getAbsolutePath(), sbis);
+		FSService.writeFileStreamAbs(tmpfile, sbis);
 		Assert.assertTrue(tmpfile.length() > 6);
 
 		responderSetup(tmpfile);
