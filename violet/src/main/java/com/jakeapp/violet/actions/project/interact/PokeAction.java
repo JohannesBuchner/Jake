@@ -17,7 +17,9 @@ import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 public class PokeAction extends AvailableLaterObject<Void> {
 
 	private static final Logger log = Logger.getLogger(PokeAction.class);
+
 	private ProjectModel model;
+
 	private User user;
 
 	public PokeAction(ProjectModel model, User user) {
@@ -31,10 +33,9 @@ public class PokeAction extends AvailableLaterObject<Void> {
 	@Override
 	public Void calculate() throws Exception {
 		ICService ics = this.model.getIcs();
-		IMessageMarshaller messageMarshaller =
-			DI.getImpl(MessageMarshaller.class);
-		PokeMessage msg =
-			PokeMessage.createPokeMessage(model.getProjectid(),
+		IMessageMarshaller messageMarshaller = DI
+				.getImpl(MessageMarshaller.class);
+		PokeMessage msg = PokeMessage.createPokeMessage(model.getProjectid(),
 				DI.getUserId(user.getUserId()), null);
 
 		String message = messageMarshaller.serialize(msg);

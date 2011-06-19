@@ -7,10 +7,14 @@ package com.jakeapp.violet.model;
  * @author johannes
  */
 public interface IJakeObjectModificationListener {
-    /**
-     * method to be implemented by an modification listener to get notified of changes
-     * @param file the FileObject changed
-     */
-    void modified(JakeObject jo);
-	
+
+	/**
+	 * method to be implemented by an modification listener to get notified of
+	 * changes
+	 * 
+	 * @param file
+	 *            the FileObject changed
+	 */
+	void modified(JakeObject jo);
+
 }

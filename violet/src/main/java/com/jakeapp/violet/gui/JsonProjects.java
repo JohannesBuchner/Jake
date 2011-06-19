@@ -14,7 +14,9 @@ import com.jakeapp.jake.fss.ProjectDir;
  * The string name refers to the ProjectDir
  */
 public class JsonProjects extends Projects {
+
 	private File f;
+
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	public JsonProjects(File f) {

@@ -21,15 +21,17 @@ import com.jakeapp.violet.actions.Actions;
  *    Actions ---> View
  * </pre>
  * 
- * Furthermore, a view can provoke an action call. Never is the view
- * allowed to modify the model.
+ * Furthermore, a view can provoke an action call. Never is the view allowed to
+ * modify the model.
  * 
- * Actions are NOT blocking calls with a return value. 
- * They are stateful operations that can be observed.
+ * Actions are NOT blocking calls with a return value. They are stateful
+ * operations that can be observed.
  * 
  */
 public class Context {
+
 	private final ProjectModel model;
+
 	private final Actions actions;
 
 	public Context(ProjectModel model, Actions actions) {

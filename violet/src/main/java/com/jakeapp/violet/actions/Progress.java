@@ -11,7 +11,9 @@ public class Progress extends Observable {
 	}
 
 	protected Double progress;
+
 	protected String step;
+
 	protected ActionState state;
 
 	public Double getProgress() {
@@ -30,6 +32,6 @@ public class Progress extends Observable {
 		setChanged();
 		this.progress = progress;
 		this.step = step;
-		this.state  = state;
+		this.state = state;
 	}
 }

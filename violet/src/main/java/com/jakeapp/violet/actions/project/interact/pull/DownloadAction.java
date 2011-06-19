@@ -22,13 +22,17 @@ import com.jakeapp.violet.model.User;
  * <code>ISyncService</code>
  */
 public class DownloadAction extends AvailableLaterObject<File> {
+
 	private static final Logger log = Logger.getLogger(DownloadAction.class);
+
 	private ProjectModel model;
+
 	private JakeObject jakeObject;
+
 	private UserOrderStrategy strategy;
 
 	public DownloadAction(ProjectModel model, JakeObject jakeObject,
-		UserOrderStrategy strategy) {
+			UserOrderStrategy strategy) {
 		this.model = model;
 		this.jakeObject = jakeObject;
 		this.strategy = strategy;
@@ -40,6 +44,6 @@ public class DownloadAction extends AvailableLaterObject<File> {
 	@Override
 	public File calculate() throws Exception {
 		return AvailableLaterWaiter.await(new FailoverFileRequestAction(model,
-			jakeObject, strategy, false));
+				jakeObject, strategy, false));
 	}
 }

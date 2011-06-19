@@ -51,7 +51,7 @@ class FileRequestAction extends AvailableLaterObject<File> {
 	protected IFileTransfer fileTransfer;
 
 	private IRequestMarshaller requestMarshaller = DI
-		.getImpl(IRequestMarshaller.class);
+			.getImpl(IRequestMarshaller.class);
 
 	private LogEntry logEntry;
 
@@ -64,6 +64,7 @@ class FileRequestAction extends AvailableLaterObject<File> {
 	private boolean storeInFss;
 
 	private INegotiationSuccessListener helperNegotiationListener;
+
 	private ITransferListener helperListener;
 
 	private static Logger log = Logger.getLogger(FileRequestAction.class);
@@ -71,18 +72,18 @@ class FileRequestAction extends AvailableLaterObject<File> {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + "]" + "transferService="
-			+ transferService + ", request=" + request + "]";
+				+ transferService + ", request=" + request + "]";
 	}
 
 	public FileRequestAction(ProjectModel model, User peer, LogEntry logEntry,
-		boolean storeInFss) {
+			boolean storeInFss) {
 		super();
 		this.model = model;
 		this.helperListener = new ITransferListener() {
 
 			@Override
 			public void onFailure(AdditionalFileTransferData transfer,
-				String error) {
+					String error) {
 				innerException = new Exception(error);
 				sem.release();
 			}
@@ -94,7 +95,7 @@ class FileRequestAction extends AvailableLaterObject<File> {
 
 			@Override
 			public void onUpdate(AdditionalFileTransferData transfer,
-				Status status, double progress) {
+					Status status, double progress) {
 				setStatus(new StatusUpdate(progress, status.toString()));
 			}
 		};
@@ -130,13 +131,11 @@ class FileRequestAction extends AvailableLaterObject<File> {
 
 		if (model.getFss().fileExists(jo.getRelPath())) {
 			log.debug("requesting a delta");
-			this.msg =
-				RequestFileMessage.createRequestDeltaMessage(
+			this.msg = RequestFileMessage.createRequestDeltaMessage(
 					model.getProjectid(), user, logEntry);
 		} else {
 			log.debug("requesting the full file");
-			this.msg =
-				RequestFileMessage.createRequestFileMessage(
+			this.msg = RequestFileMessage.createRequestFileMessage(
 					model.getProjectid(), user, logEntry);
 		}
 		String contentname = this.requestMarshaller.serialize(msg);
@@ -144,7 +143,7 @@ class FileRequestAction extends AvailableLaterObject<File> {
 		this.request = new FileRequest(contentname, false, msg.getUser());
 
 		this.transferService.request(this.request,
-			this.helperNegotiationListener);
+				this.helperNegotiationListener);
 		log.debug("waiting for negotiation-success-listener");
 		sem.acquire();
 
@@ -174,8 +173,8 @@ class FileRequestAction extends AvailableLaterObject<File> {
 			log.debug("merging delta " + local);
 			Rdiff rdiff = new Rdiff();
 			rdiff.rebuildFile(new File(fss.getFullpath(jo.getRelPath())),
-				new FileInputStream(this.fileTransfer.getLocalFile()),
-				new FileOutputStream(merge));
+					new FileInputStream(this.fileTransfer.getLocalFile()),
+					new FileOutputStream(merge));
 			local = merge;
 		} else {
 			local = this.fileTransfer.getLocalFile();

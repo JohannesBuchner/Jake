@@ -8,6 +8,7 @@ import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
  * implementation so that the data structures can actually be set
  */
 public class ProjectModelImpl extends ProjectModel {
+
 	public void setFss(IFSService fss) {
 		this.fss = fss;
 	}

@@ -24,18 +24,18 @@ import com.jakeapp.violet.protocol.files.IRequestMarshaller;
 import com.jakeapp.violet.protocol.files.RequestFileMessage;
 
 public class BlockingFileTransfer {
+
 	private static Logger log = Logger.getLogger(BlockingFileTransfer.class);
 
 	public static InputStream requestFile(ProjectModel model,
-		IRequestMarshaller requestMarshaller, RequestFileMessage msg,
-		final INegotiationSuccessListener listener)
-		throws InterruptedException, NotLoggedInException {
-		ITransferMethod method =
-			model
+			IRequestMarshaller requestMarshaller, RequestFileMessage msg,
+			final INegotiationSuccessListener listener)
+			throws InterruptedException, NotLoggedInException {
+		ITransferMethod method = model
 				.getIcs()
 				.getTransferMethodFactory()
 				.getTransferMethod(model.getIcs().getMsgService(),
-					model.getIcs().getStatusService().getUserid());
+						model.getIcs().getStatusService().getUserid());
 
 		String filename = requestMarshaller.serialize(msg);
 
@@ -65,14 +65,14 @@ public class BlockingFileTransfer {
 		s.acquire();
 		if (!success.get()) {
 			log.debug("other side didn't send a signature, so "
-				+ "we can't provide a delta.");
+					+ "we can't provide a delta.");
 			return null;
 		}
 		new Thread(new TransferWatcher(ft.getValue(), new ITransferListener() {
 
 			@Override
 			public void onUpdate(AdditionalFileTransferData transfer,
-				Status status, double progress) {
+					Status status, double progress) {
 				// don't care
 			}
 
@@ -84,7 +84,7 @@ public class BlockingFileTransfer {
 
 			@Override
 			public void onFailure(AdditionalFileTransferData transfer,
-				String error) {
+					String error) {
 				success.set(false);
 				s.release();
 			}
@@ -92,7 +92,7 @@ public class BlockingFileTransfer {
 		s.acquire();
 		if (!success.get()) {
 			log.debug("other side didn't complete to send a "
-				+ "signature, so we can't provide a delta.");
+					+ "signature, so we can't provide a delta.");
 			return null;
 		}
 		// got the signature in

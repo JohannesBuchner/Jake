@@ -12,6 +12,7 @@ import com.jakeapp.violet.model.Model;
  * passwords.
  */
 public abstract class Passwords extends Observable implements Model {
+
 	/**
 	 * load password, if available
 	 * 

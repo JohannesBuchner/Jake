@@ -10,6 +10,7 @@ import com.jakeapp.violet.model.ProjectModel;
 public class LaunchFileAction extends AvailableLaterObject<Void> {
 
 	private JakeObject file;
+
 	private ProjectModel model;
 
 	public LaunchFileAction(ProjectModel model, JakeObject file) {

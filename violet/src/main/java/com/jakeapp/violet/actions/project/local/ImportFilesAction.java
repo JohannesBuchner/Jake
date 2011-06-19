@@ -16,12 +16,17 @@ import com.jakeapp.violet.model.ProjectModel;
  * specific <code>IFSService</code>
  */
 public class ImportFilesAction extends AvailableLaterObject<Void> {
+
 	private static final Logger log = Logger.getLogger(ImportFilesAction.class);
 
 	private ProjectModel model;
+
 	private List<File> files;
+
 	private String destFolderRelPath;
+
 	private int nsteps;
+
 	private int steps;
 
 	public ImportFilesAction(ProjectModel model, List<File> files,

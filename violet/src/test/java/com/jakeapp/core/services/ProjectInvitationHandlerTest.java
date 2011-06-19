@@ -19,11 +19,15 @@ import com.jakeapp.violet.protocol.invites.IProjectInvitationListener;
 import com.jakeapp.violet.protocol.invites.ProjectInvitationHandler;
 
 public class ProjectInvitationHandlerTest {
+
 	private ProjectInvitationHandler projectInvitationHandler;
+
 	private UserId other = DI.getUserId("someone@localhost");
+
 	private IProjectInvitationListener projectInvitationListener;
 
 	private UUID projectid = new UUID(31, 124);
+
 	private String projectname = "myproject";
 
 	@Before

@@ -16,7 +16,9 @@ public class ListUsersViewAction extends AvailableLaterObject<Void> {
 
 	private static final Logger log = Logger
 			.getLogger(ListUsersViewAction.class);
+
 	private ProjectModel model;
+
 	private UsersView view;
 
 	public ListUsersViewAction(ProjectModel model, UsersView view) {

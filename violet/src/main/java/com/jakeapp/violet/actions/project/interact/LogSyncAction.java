@@ -29,16 +29,21 @@ import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 public class LogSyncAction extends AvailableLaterObject<Boolean> {
 
 	private static final Logger log = Logger.getLogger(LogSyncAction.class);
+
 	private ProjectModel model;
+
 	private User user;
+
 	private IRequestMarshaller requestMarshaller = DI
-		.getImpl(IRequestMarshaller.class);
+			.getImpl(IRequestMarshaller.class);
+
 	private ILogEntryMarshaller logEntryMarshaller = DI
-		.getImpl(ILogEntryMarshaller.class);
+			.getImpl(ILogEntryMarshaller.class);
+
 	private INegotiationSuccessListener listener;
 
 	public LogSyncAction(ProjectModel model, User user,
-		INegotiationSuccessListener listener) {
+			INegotiationSuccessListener listener) {
 		this.model = model;
 		this.user = user;
 		this.listener = listener;
@@ -50,18 +55,16 @@ public class LogSyncAction extends AvailableLaterObject<Boolean> {
 	@Override
 	public Boolean calculate() throws Exception {
 		UserId peer = DI.getUserId(user.getUserId());
-		RequestFileMessage msg =
-			RequestFileMessage.createRequestLogsMessage(model.getProjectid(),
-				peer);
+		RequestFileMessage msg = RequestFileMessage.createRequestLogsMessage(
+				model.getProjectid(), peer);
 		requestMarshaller.serialize(msg);
-		InputStream is =
-			BlockingFileTransfer.requestFile(model, requestMarshaller, msg,
-				listener);
+		InputStream is = BlockingFileTransfer.requestFile(model,
+				requestMarshaller, msg, listener);
 		if (is == null) {
 			return false;
 		}
 		mergeLogEntries(logEntryMarshaller.unpackLogEntries(
-			model.getProjectid(), is));
+				model.getProjectid(), is));
 
 		return true;
 	}
@@ -88,16 +91,16 @@ public class LogSyncAction extends AvailableLaterObject<Boolean> {
 			if (!uuids.contains(le.getId())) {
 				count++;
 				try {
-					IMessageMarshaller messageMarshaller =
-						DI.getImpl(MessageMarshaller.class);
-					PokeMessage msg =
-						PokeMessage.createPokeMessage(model.getProjectid(),
+					IMessageMarshaller messageMarshaller = DI
+							.getImpl(MessageMarshaller.class);
+					PokeMessage msg = PokeMessage.createPokeMessage(
+							model.getProjectid(),
 							DI.getUserId(user.getUserId()), null);
 
 					String message = messageMarshaller.serialize(msg);
 					log.debug("Sending message: \"" + message + "\"");
 					model.getIcs().getMsgService()
-						.sendMessage(msg.getUser(), message);
+							.sendMessage(msg.getUser(), message);
 				} catch (Exception e) {
 					// best-effort, fail-fast -- we don't want a pile of
 					// useless messages

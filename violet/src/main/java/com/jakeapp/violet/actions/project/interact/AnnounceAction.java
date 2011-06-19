@@ -27,15 +27,20 @@ import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 public class AnnounceAction extends AvailableLaterObject<Void> {
 
 	private static final Logger log = Logger.getLogger(AnnounceAction.class);
+
 	private String why;
+
 	private JakeObject what;
+
 	private ProjectModel model;
+
 	private boolean delete;
+
 	private IMessageMarshaller messageMarshaller = DI
-		.getImpl(IMessageMarshaller.class);
+			.getImpl(IMessageMarshaller.class);
 
 	public AnnounceAction(ProjectModel model, JakeObject what, String why,
-		boolean delete) {
+			boolean delete) {
 		this.why = why;
 		this.what = what;
 		this.model = model;
@@ -51,8 +56,7 @@ public class AnnounceAction extends AvailableLaterObject<Void> {
 		if (!delete) {
 			hash = model.getFss().calculateHashOverFile(what.getRelPath());
 		}
-		LogEntry le =
-			new LogEntry(null, null, model.getUser(), what, why,
+		LogEntry le = new LogEntry(null, null, model.getUser(), what, why,
 				hash.toString(), true);
 		this.model.getLog().add(le);
 		for (UserId u : this.model.getIcs().getUsersService().getUsers()) {
@@ -62,12 +66,11 @@ public class AnnounceAction extends AvailableLaterObject<Void> {
 	}
 
 	private void notifyUser(LogEntry le, UserId u) {
-		PokeMessage msg =
-			PokeMessage.createPokeMessage(model.getProjectid(),
+		PokeMessage msg = PokeMessage.createPokeMessage(model.getProjectid(),
 				DI.getUserId(model.getUserid()), le);
 		try {
 			model.getIcs().getMsgService()
-				.sendMessage(u, messageMarshaller.serialize(msg));
+					.sendMessage(u, messageMarshaller.serialize(msg));
 		} catch (Exception e) {
 			// notifying is best-effort, not critical
 			log.debug("notifying " + u + " failed.");

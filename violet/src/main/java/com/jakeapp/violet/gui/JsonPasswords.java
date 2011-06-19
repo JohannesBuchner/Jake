@@ -13,6 +13,7 @@ public class JsonPasswords extends Passwords {
 	private static final Logger log = Logger.getLogger(JsonPasswords.class);
 
 	private File f;
+
 	private ObjectMapper objectMapper = new ObjectMapper();
 
 	public JsonPasswords(File f) {

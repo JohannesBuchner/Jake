@@ -16,6 +16,7 @@ import com.jakeapp.violet.model.attributes.Attributed;
 import com.jakeapp.violet.model.exceptions.NoSuchLogEntryException;
 
 public class AttributedCalculator {
+
 	public static Attributed calculateAttributed(IFSService fss, Log log,
 			JakeObject fo) throws SQLException, InvalidFilenameException {
 		LogEntry lastVersionLogEntry = null;

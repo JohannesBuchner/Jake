@@ -12,7 +12,9 @@ public abstract class ProgressingRunnable<V> extends Observable implements
 			"init");
 
 	protected Exception exception = null;
+
 	protected V value;
+
 	protected Semaphore s = new Semaphore(0);
 
 	@Override

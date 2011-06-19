@@ -12,6 +12,7 @@ import com.jakeapp.violet.protocol.files.RequestFileMessage.RequestType;
  * of files requested.
  */
 public class RequestMarshaller implements IRequestMarshaller {
+
 	private static final String FIELD_SEPERATOR = ".";
 
 	private static Logger log = Logger.getLogger(RequestMarshaller.class);
@@ -27,7 +28,7 @@ public class RequestMarshaller implements IRequestMarshaller {
 	public String serialize(RequestFileMessage msg) {
 		// can't use XML characters
 		return msg.getProjectId() + FIELD_SEPERATOR + msg.getType()
-			+ FIELD_SEPERATOR + msg.getIdentifier();
+				+ FIELD_SEPERATOR + msg.getIdentifier();
 	}
 
 	/*
@@ -39,7 +40,7 @@ public class RequestMarshaller implements IRequestMarshaller {
 	 */
 	@Override
 	public RequestFileMessage decodeRequestFileMessage(String incomingMessage,
-		UserId from) {
+			UserId from) {
 		try {
 			String[] parts = incomingMessage.split("\\" + FIELD_SEPERATOR, 3);
 			RequestType t = RequestFileMessage.RequestType.valueOf(parts[1]);

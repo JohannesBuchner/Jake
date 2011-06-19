@@ -12,9 +12,13 @@ import com.jakeapp.jake.fss.ProjectDir;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 
 public class JsonProjectsTest extends TmpdirEnabledTestCase {
+
 	private File f;
+
 	private JsonProjects projects;
+
 	private ProjectDir dir1;
+
 	private ProjectDir dir2;
 
 	@Before

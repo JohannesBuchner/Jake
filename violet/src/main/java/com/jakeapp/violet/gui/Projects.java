@@ -17,7 +17,9 @@ import com.jakeapp.violet.model.Model;
  * The string name refers to the ProjectDir
  */
 public abstract class Projects extends Observable implements Model {
+
 	protected Collection<ProjectDir> projects = new ArrayList<ProjectDir>();
+
 	private final static Logger log = Logger.getLogger(Projects.class);
 
 	public Projects() {

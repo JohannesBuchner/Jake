@@ -42,8 +42,8 @@ public class StartProjectAction extends AvailableLaterObject<Context> {
 		IFSService fss = DI.getImpl(IFSService.class);
 		fss.setRootPath(dir);
 		model.setFss(fss);
-		ProjectPreferences prefs = DI.getPreferencesImpl(new File(fss.getRootPath(),
- DI
+		ProjectPreferences prefs = DI.getPreferencesImpl(new File(fss
+				.getRootPath(), DI
 				.getProperty(KnownProperty.PROJECT_FILENAMES_PREFERENCES)));
 		model.setPreferences(prefs);
 		ICService ics = DI.getImplForProject(ICService.class,

@@ -20,6 +20,7 @@ import com.jakeapp.violet.protocol.invites.ProjectInvitationHandler;
 public class InviteUserAction extends AvailableLaterObject<Boolean> {
 
 	private static final Logger log = Logger.getLogger(InviteUserAction.class);
+
 	private ProjectModel model;
 
 	public InviteUserAction(ProjectModel model) {

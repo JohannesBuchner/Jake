@@ -17,6 +17,7 @@ import com.jakeapp.violet.model.User;
 public class CreateDeleteProjectActionTest {
 
 	private CreateDeleteProjectAction action;
+
 	ProjectDir dir = new ProjectDir("this/is/mydir");
 
 	@Before

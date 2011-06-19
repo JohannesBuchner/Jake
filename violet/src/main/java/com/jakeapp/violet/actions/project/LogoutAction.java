@@ -11,6 +11,7 @@ import com.jakeapp.violet.model.ProjectModel;
 public class LogoutAction extends AvailableLaterObject<Void> {
 
 	private static final Logger log = Logger.getLogger(LogoutAction.class);
+
 	private ProjectModel model;
 
 	public LogoutAction(ProjectModel model) {

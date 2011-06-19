@@ -7,6 +7,7 @@ import java.util.UUID;
 import com.jakeapp.violet.model.exceptions.NoSuchLogEntryException;
 
 public interface Log {
+
 	/*
 	 * here should be something smart, e.g. the query functions on the log
 	 */
@@ -41,7 +42,7 @@ public interface Log {
 	 * @throws SQLException
 	 */
 	LogEntry getById(UUID uuid, boolean includeUnprocessed)
-		throws NoSuchLogEntryException;
+			throws NoSuchLogEntryException;
 
 	/**
 	 * change the <code>processed</code> field of a logEntry. Note that the
@@ -112,7 +113,7 @@ public interface Log {
 	 * @throws SQLException
 	 */
 	List<LogEntry> getAllOfJakeObject(JakeObject jakeObject,
-		boolean includeUnprocessed);
+			boolean includeUnprocessed);
 
 	/**
 	 * Retrieves the most recent <code>LogEntry</code> of any LogAction for a
@@ -129,7 +130,7 @@ public interface Log {
 	 * @throws SQLException
 	 */
 	LogEntry getLastOfJakeObject(JakeObject jakeObject,
-		boolean includeUnprocessed) throws NoSuchLogEntryException;
+			boolean includeUnprocessed) throws NoSuchLogEntryException;
 
 	/**
 	 * @param includeUnprocessed

@@ -21,11 +21,11 @@ import com.jakeapp.violet.model.ProjectModel;
  * @author johannes
  */
 public class AllJakeObjectsViewAction extends
-	AvailableLaterObject<AllJakeObjectsView> implements
-	IFileModificationListener, ILogModificationListener {
+		AvailableLaterObject<AllJakeObjectsView> implements
+		IFileModificationListener, ILogModificationListener {
 
 	private static Logger log = Logger
-		.getLogger(AllJakeObjectsViewAction.class);
+			.getLogger(AllJakeObjectsViewAction.class);
 
 	private ProjectModel model;
 
@@ -64,7 +64,7 @@ public class AllJakeObjectsViewAction extends
 
 	@Override
 	public void fileModified(String relpath,
-		com.jakeapp.jake.fss.IModificationListener.ModifyActions action) {
+			com.jakeapp.jake.fss.IModificationListener.ModifyActions action) {
 		view.onModification(new JakeObject(relpath));
 	}
 

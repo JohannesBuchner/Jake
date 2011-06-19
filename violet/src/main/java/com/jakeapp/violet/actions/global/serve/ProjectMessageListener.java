@@ -16,7 +16,7 @@ public class ProjectMessageListener implements IMessageReceiveListener {
 	private static Logger log = Logger.getLogger(ProjectMessageListener.class);
 
 	private IMessageMarshaller messageMarshaller = DI
-		.getImpl(IMessageMarshaller.class);
+			.getImpl(IMessageMarshaller.class);
 
 	private ProjectModel model;
 
@@ -30,11 +30,11 @@ public class ProjectMessageListener implements IMessageReceiveListener {
 
 	@Override
 	public void receivedMessage(com.jakeapp.jake.ics.UserId from_userid,
-		String content) {
+			String content) {
 		try {
 			User user = new User(from_userid.getUserId());
-			PokeMessage msg =
-				messageMarshaller.decodePokeMessage(content, from_userid);
+			PokeMessage msg = messageMarshaller.decodePokeMessage(content,
+					from_userid);
 			log.info("Received a message for project " + msg.getProjectId());
 
 			if (!isForThisProject(msg))
@@ -54,7 +54,7 @@ public class ProjectMessageListener implements IMessageReceiveListener {
 
 	private boolean isForThisProject(Message msg) {
 		if (msg == null || msg.getProjectId() == null
-			|| !msg.getProjectId().equals(model.getProjectid())) {
+				|| !msg.getProjectId().equals(model.getProjectid())) {
 			log.debug("Discarding message because it's not for this project");
 			return false;
 		}

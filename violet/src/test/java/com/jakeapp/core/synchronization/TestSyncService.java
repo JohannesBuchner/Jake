@@ -23,7 +23,9 @@ import com.jakeapp.violet.model.attributes.SyncStatus;
 public class TestSyncService extends TmpdirEnabledTestCase {
 
 	private static final String ORIGINAL_CONTENT = "mycontent";
+
 	private static final String hash = "be23baf848cb92aabbc648b89a92cb68e434369b87fe0415b2642b2ec0ddff7a7fb52f3dc9786a712acc127822356d79f0260ed1570084a4baab806ec513d1ab";
+
 	private static final String MODIFIED_CONTENT = "hello foo bar\nbla";
 
 	private JakeObject jo = new JakeObject("my/foo");

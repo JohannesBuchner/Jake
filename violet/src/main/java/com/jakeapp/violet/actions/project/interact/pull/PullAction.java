@@ -14,13 +14,17 @@ import com.jakeapp.violet.model.ProjectModel;
  * <code>ISyncService</code>
  */
 public class PullAction extends AvailableLaterObject<Void> {
+
 	private static final Logger log = Logger.getLogger(PullAction.class);
+
 	private ProjectModel model;
+
 	private JakeObject jakeObject;
+
 	private UserOrderStrategy strategy;
 
 	public PullAction(ProjectModel model, JakeObject jakeObject,
-		UserOrderStrategy strategy) {
+			UserOrderStrategy strategy) {
 		this.model = model;
 		this.jakeObject = jakeObject;
 		this.strategy = strategy;
@@ -32,7 +36,7 @@ public class PullAction extends AvailableLaterObject<Void> {
 	@Override
 	public Void calculate() throws Exception {
 		AvailableLaterWaiter.await(new FailoverFileRequestAction(model,
-			jakeObject, strategy, true));
+				jakeObject, strategy, true));
 		return null;
 	}
 }

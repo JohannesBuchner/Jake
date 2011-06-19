@@ -25,18 +25,31 @@ import com.jakeapp.violet.model.ProjectPreferences;
 import com.jakeapp.violet.model.User;
 
 public class JsonProjectPreferencesTest extends TmpdirEnabledTestCase {
+
 	private File f;
+
 	private JsonProjectPreferences prefs;
+
 	private String key1 = "my!#@^!@Key";
+
 	private String value1 = "myT$%!HJU^value";
+
 	private String key_bool = "foo";
+
 	private String value_boole = "true";
+
 	private String key_id = "id";
+
 	private UUID projectid = new UUID(12, 41);
+
 	private String value_id = projectid.toString();
+
 	private String key_name = "name";
+
 	private String value_name = "my awesome project";
+
 	private String key_user = "user";
+
 	private String value_user = "me@localhost";
 
 	@Before

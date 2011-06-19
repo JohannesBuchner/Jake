@@ -14,7 +14,9 @@ import com.jakeapp.violet.model.User;
 public class CreateAccountAction extends AvailableLaterObject<Void> {
 
 	private String pw;
+
 	private UserId user;
+
 	private ICService ics = DI.getImpl(ICService.class);
 
 	public CreateAccountAction(User user, String pw) {

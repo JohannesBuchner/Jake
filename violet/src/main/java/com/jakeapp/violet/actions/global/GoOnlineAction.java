@@ -15,11 +15,17 @@ import com.jakeapp.violet.protocol.invites.ProjectInvitationHandler;
 public class GoOnlineAction extends AvailableLaterObject<LoginView> {
 
 	private static final Logger log = Logger.getLogger(GoOnlineAction.class);
+
 	private User user;
+
 	private String pw;
+
 	private boolean offline;
+
 	private long port;
+
 	private LoginView view;
+
 	// this is the general ics
 	private ICService ics;
 

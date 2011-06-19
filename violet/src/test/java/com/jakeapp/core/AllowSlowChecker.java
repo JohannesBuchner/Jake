@@ -17,7 +17,8 @@ public class AllowSlowChecker implements Checker {
 		String prop = System.getProperty(ALLOWSLOWTESTS_PROPERTY);
 		if (prop == null || prop.isEmpty() || prop.equals("false")) {
 			log.warn("Skipping slow tests. ");
-			log.info("To allow them run with -D" + ALLOWSLOWTESTS_PROPERTY + "=true");
+			log.info("To allow them run with -D" + ALLOWSLOWTESTS_PROPERTY
+					+ "=true");
 			return false;
 		}
 		return true;

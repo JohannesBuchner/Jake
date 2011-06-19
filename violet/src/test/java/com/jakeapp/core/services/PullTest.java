@@ -60,7 +60,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 	private User member = new User("a@b");
 
 	private LogEntry le = new LogEntry(null, null, member, fo, "blabla", "bla",
-		true);
+			true);
 
 	@Mock
 	private IFileTransferService fileTransferService;
@@ -72,6 +72,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 	@Mock
 	private ProjectModel model;
+
 	ProjectRequestListener prl;
 
 	@Before
@@ -83,7 +84,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 		when(model.getFss()).thenReturn(fss);
 		ICService icservice = new MockICService();
 		icservice.getStatusService().login(DI.getUserId(member.getUserId()),
-			member.toString(), "foo", 0L);
+				member.toString(), "foo", 0L);
 		when(model.getIcs()).thenReturn(icservice);
 		Log log = mock(Log.class);
 		when(model.getLog()).thenReturn(log);
@@ -102,11 +103,11 @@ public class PullTest extends TmpdirEnabledTestCase {
 		mockTransferMethod = new ITransferMethod() {
 
 			private final Logger log = Logger
-				.getLogger("Mocked ITransferMethod");
+					.getLogger("Mocked ITransferMethod");
 
 			@Override
 			public void request(final FileRequest inrequest,
-				INegotiationSuccessListener nsl) {
+					INegotiationSuccessListener nsl) {
 				log.debug("request: " + inrequest);
 
 				log.debug("declaring success");
@@ -116,7 +117,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 						this.request = inrequest;
 						this.localFile = file;
 						this.request.setData(new AdditionalFileTransferData(
-							this.localFile));
+								this.localFile));
 						this.status = Status.complete;
 						this.amountWritten = inrequest.getFileSize();
 					}
@@ -134,7 +135,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 			@Override
 			public void startServing(IncomingTransferListener l,
-				FileRequestFileMapper mapper) throws NotLoggedInException {
+					FileRequestFileMapper mapper) throws NotLoggedInException {
 
 			}
 
@@ -145,24 +146,23 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 		};
 
-		ITransferMethodFactory transferMethodFactory =
-			new ITransferMethodFactory() {
+		ITransferMethodFactory transferMethodFactory = new ITransferMethodFactory() {
 
-				@Override
-				public ITransferMethod getTransferMethod(
+			@Override
+			public ITransferMethod getTransferMethod(
 					IMsgService negotiationService, UserId user) {
-					return mockTransferMethod;
-				}
+				return mockTransferMethod;
+			}
 
-			};
+		};
 		SimpleFakeMessageExchanger sfme = new SimpleFakeMessageExchanger();
 		MockUserId backendUser = new MockUserId(member.getUserId());
 		model.getIcs().getStatusService()
-			.login(backendUser, backendUser.getUserId(), null, 0);
+				.login(backendUser, backendUser.getUserId(), null, 0);
 		IMsgService msg = sfme.addUser(backendUser);
 		fileTransferService = new FailoverCapableFileTransferService();
 		fileTransferService.addTransferMethod(transferMethodFactory, msg,
-			backendUser);
+				backendUser);
 
 		when(model.getTransfer()).thenReturn(fileTransferService);
 	}
@@ -173,12 +173,12 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 		Assert.assertNotNull(model.getLog().getLastOfJakeObject(fo, false));
 
-		PullAction action =
-			new PullAction(model, fo, new SimpleUserOrderStrategy());
+		PullAction action = new PullAction(model, fo,
+				new SimpleUserOrderStrategy());
 		AvailableLaterWaiter.await(action);
 
 		Assert.assertTrue(tracer.await("pullNegotiationDone", 10,
-			TimeUnit.MILLISECONDS));
+				TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 		Assert.assertFalse(model.getFss().fileExists(fo.getRelPath()));
 	}
@@ -197,17 +197,17 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 		Assert.assertNotNull(model.getLog().getLastOfJakeObject(fo, true));
 
-		PullAction action =
-			new PullAction(model, fo, new SimpleUserOrderStrategy());
+		PullAction action = new PullAction(model, fo,
+				new SimpleUserOrderStrategy());
 
 		AvailableLaterWaiter.await(action);
 		Assert.assertTrue(tracer.await("pullNegotiationDone", 10,
-			TimeUnit.MILLISECONDS));
+				TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 
 		Assert.assertTrue(model.getFss().fileExists(fo.getRelPath()));
 		Assert.assertEquals(tmpfile.length(),
-			model.getFss().getFileSize(fo.getRelPath()));
+				model.getFss().getFileSize(fo.getRelPath()));
 
 	}
 

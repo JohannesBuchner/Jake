@@ -11,9 +11,12 @@ import com.jakeapp.violet.model.ProjectModel;
 public class ChangePropertyAction extends AvailableLaterObject<Void> {
 
 	private static final Logger log = Logger
-		.getLogger(ChangePropertyAction.class);
+			.getLogger(ChangePropertyAction.class);
+
 	private ProjectModel model;
+
 	private String value;
+
 	private String key;
 
 	public static String getProjectNameKey() {

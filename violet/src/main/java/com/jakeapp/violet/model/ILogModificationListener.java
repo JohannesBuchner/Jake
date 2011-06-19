@@ -6,16 +6,23 @@ package com.jakeapp.violet.model;
  * @author johannes
  */
 public interface ILogModificationListener {
+
 	/**
 	 * Actions that can occur for a logentry in the log.
 	 */
-	public enum ModifyActions { CREATED, DELETED, MODIFIED }
+	public enum ModifyActions {
+		CREATED, DELETED, MODIFIED
+	}
 
-    /**
-     * method to be implemented by an modification listener to get notified of changes
-     * @param file the FileObject changed
-     * @param action the action that happend (created, deleted, modified..)
-     */
-    void logModified(JakeObject jo, ModifyActions action);
-	
+	/**
+	 * method to be implemented by an modification listener to get notified of
+	 * changes
+	 * 
+	 * @param file
+	 *            the FileObject changed
+	 * @param action
+	 *            the action that happend (created, deleted, modified..)
+	 */
+	void logModified(JakeObject jo, ModifyActions action);
+
 }

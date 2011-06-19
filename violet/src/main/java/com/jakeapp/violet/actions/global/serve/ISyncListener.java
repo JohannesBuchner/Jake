@@ -62,6 +62,6 @@ public interface ISyncListener {
 	 * @param progress
 	 */
 	void sendingUpdateProgress(User user, String fileName, String status,
-		double progress);
+			double progress);
 
 }

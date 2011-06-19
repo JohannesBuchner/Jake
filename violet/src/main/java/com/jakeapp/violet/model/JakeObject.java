@@ -1,6 +1,7 @@
 package com.jakeapp.violet.model;
 
 public class JakeObject {
+
 	private String relpath;
 
 	public JakeObject(String relpath) {

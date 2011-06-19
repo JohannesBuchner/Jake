@@ -20,16 +20,21 @@ import com.jakeapp.violet.protocol.invites.ProjectInvitationHandler;
 public class LoginAction extends AvailableLaterObject<Void> {
 
 	private static final Logger log = Logger.getLogger(LoginAction.class);
+
 	private ProjectModel model;
 
 	private User user;
+
 	private String pw;
+
 	private LoginView view;
+
 	private long port;
+
 	private ISyncListener requests;
 
 	public LoginAction(User user, String pw, long port, LoginView view,
-		ISyncListener requests) {
+			ISyncListener requests) {
 		this.pw = pw;
 		this.user = user;
 		this.port = port;
@@ -50,18 +55,16 @@ public class LoginAction extends AvailableLaterObject<Void> {
 		ics.getStatusService().addLoginStateListener(view);
 		ics.getUsersService().registerOnlineStatusListener(view);
 
-		ProjectRequestListener prl =
-			new ProjectRequestListener(model, requests);
-		ProjectMessageListener pml =
-			new ProjectMessageListener(model, requests);
+		ProjectRequestListener prl = new ProjectRequestListener(model, requests);
+		ProjectMessageListener pml = new ProjectMessageListener(model, requests);
 		model.getIcs().getMsgService().registerReceiveMessageListener(pml);
 		model.getTransfer().startServing(prl, prl);
 
 		ics.getStatusService().login(
-			DI.getUserId(user.getUserId()),
-			pw,
-			DI.getProperty(KnownProperty.ICS_RESOURCE_PROJECT_PREFIX)
-				+ model.getProjectid().toString(), port);
+				DI.getUserId(user.getUserId()),
+				pw,
+				DI.getProperty(KnownProperty.ICS_RESOURCE_PROJECT_PREFIX)
+						+ model.getProjectid().toString(), port);
 		return null;
 	}
 }

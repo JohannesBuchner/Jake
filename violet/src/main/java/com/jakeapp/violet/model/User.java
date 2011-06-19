@@ -1,6 +1,7 @@
 package com.jakeapp.violet.model;
 
 public class User {
+
 	private String userid;
 
 	public User(String userid) {

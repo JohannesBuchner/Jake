@@ -13,10 +13,13 @@ import com.jakeapp.violet.model.User;
  * @author johannes, peter
  */
 public class JakeObjectStatus {
+
 	static final Logger log = Logger.getLogger(JakeObjectStatus.class);
 
 	private Existence existence;
+
 	private SyncStatus syncStatus;
+
 	private LogEntry lastVersionLogEntry;
 
 	/**

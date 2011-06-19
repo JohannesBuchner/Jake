@@ -10,6 +10,7 @@ import com.jakeapp.violet.protocol.Message;
  * Newsflash about a new log entry.
  */
 public class PokeMessage extends Message {
+
 	private LogEntry logEntry;
 
 	public LogEntry getLogEntry() {
@@ -27,7 +28,7 @@ public class PokeMessage extends Message {
 	}
 
 	public static PokeMessage createPokeMessage(UUID projectId, UserId user,
-		LogEntry logEntry) {
+			LogEntry logEntry) {
 		return new PokeMessage(projectId, user, logEntry);
 	}
 }

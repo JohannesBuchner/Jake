@@ -24,18 +24,29 @@ import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.model.exceptions.NoSuchLogEntryException;
 
 public class LogImplTest extends TmpdirEnabledTestCase {
+
 	private File f;
+
 	private Log log;
 
 	private Boolean known = true;
+
 	private String how = "1234567898765432123456789";
+
 	private String why = "because I want";
+
 	private JakeObject what = new JakeObject("my/file.txt");
+
 	private User me = new User("me@localhost");
+
 	private User who = new User("someone@localhost");
+
 	private Timestamp when1 = new Timestamp(12000000);
+
 	private Timestamp when2 = new Timestamp(12001000);
+
 	private Timestamp when3 = new Timestamp(12002000);
+
 	private UUID id = new UUID(12, 31);
 
 	@Before
@@ -43,7 +54,7 @@ public class LogImplTest extends TmpdirEnabledTestCase {
 		super.setup();
 
 		String filename = DI.getProperty(KnownProperty.PROJECT_FILENAMES_LOG);
-		
+
 		f = new File(tmpdir, filename);
 		LogImpl log = new LogImpl();
 		log.setFile(tmpdir);

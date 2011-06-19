@@ -21,15 +21,21 @@ import com.jakeapp.violet.model.ProjectModel;
 public class DeleteFilesAction extends AvailableLaterObject<Void> {
 
 	private static final Logger log = Logger.getLogger(DeleteFilesAction.class);
+
 	private Collection<JakeObject> toDelete;
+
 	private ProjectModel model;
+
 	private boolean trash;
+
 	private int totalSteps;
+
 	private int stepsDone;
+
 	private String why;
 
 	public DeleteFilesAction(ProjectModel model,
-		Collection<JakeObject> toDelete, String why) {
+			Collection<JakeObject> toDelete, String why) {
 		this.model = model;
 		this.toDelete = toDelete;
 		this.why = why;
@@ -50,7 +56,7 @@ public class DeleteFilesAction extends AvailableLaterObject<Void> {
 
 		for (JakeObject fo : toDelete) {
 			AvailableLaterWaiter
-				.await(new AnnounceAction(model, fo, why, true));
+					.await(new AnnounceAction(model, fo, why, true));
 
 			if (trash) {
 				fss.trashFile(fo.getRelPath());
@@ -59,7 +65,7 @@ public class DeleteFilesAction extends AvailableLaterObject<Void> {
 			}
 			stepsDone++;
 			this.setStatus(new StatusUpdate(totalSteps * 1. / stepsDone,
-				"working"));
+					"working"));
 		}
 
 		return null;

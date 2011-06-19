@@ -21,9 +21,13 @@ public class FollowInvitationAction extends AvailableLaterObject<Void> {
 
 	private static final Logger log = Logger
 			.getLogger(FollowInvitationAction.class);
+
 	private Projects projects = DI.getImpl(Projects.class);
+
 	private ProjectDir dir;
+
 	private String user;
+
 	private UUID projectid;
 
 	public FollowInvitationAction(ProjectDir dir, String user, UUID projectid) {

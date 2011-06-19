@@ -13,8 +13,11 @@ import com.jakeapp.violet.model.LogEntry;
 public class Attributed extends JakeObjectStatus {
 
 	static final Logger log = Logger.getLogger(Attributed.class);
+
 	private JakeObject jakeObject;
+
 	private long lastModificationDate;
+
 	private long size;
 
 	/**

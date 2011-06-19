@@ -18,7 +18,9 @@ import com.jakeapp.violet.model.ProjectModel;
 public class CreateDeleteProjectAction extends AvailableLaterObject<Void> {
 
 	private ProjectDir dir;
+
 	private Projects projects = DI.getImpl(Projects.class);
+
 	private boolean delete;
 
 	public CreateDeleteProjectAction(ProjectDir dir, boolean delete) {

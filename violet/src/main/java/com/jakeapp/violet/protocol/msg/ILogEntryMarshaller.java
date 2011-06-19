@@ -19,7 +19,7 @@ public interface ILogEntryMarshaller {
 	 * @throws IOException
 	 */
 	public abstract void packLogEntries(UUID projectid, List<LogEntry> logs,
-		OutputStream os) throws IOException;
+			OutputStream os) throws IOException;
 
 	/**
 	 * de-serialize the log entries
@@ -30,7 +30,7 @@ public interface ILogEntryMarshaller {
 	 * @throws IOException
 	 */
 	public abstract List<LogEntry> unpackLogEntries(UUID projectid,
-		InputStream is) throws IOException;
+			InputStream is) throws IOException;
 
 	public abstract String serializeLogEntry(LogEntry le) throws IOException;
 

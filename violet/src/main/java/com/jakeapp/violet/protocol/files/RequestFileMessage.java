@@ -16,7 +16,9 @@ import com.jakeapp.violet.protocol.Message;
  * - signature (type = "signature"). signature:relpath -- relpath is identifier
  */
 public class RequestFileMessage extends Message {
+
 	private RequestType type;
+
 	private String identifier;
 
 	public enum RequestType {
@@ -51,7 +53,7 @@ public class RequestFileMessage extends Message {
 	}
 
 	RequestFileMessage(UUID projectId, UserId user, RequestType type,
-		String identifier) {
+			String identifier) {
 		super(projectId, user);
 		setType(type);
 		setIdentifier(identifier);
@@ -69,9 +71,9 @@ public class RequestFileMessage extends Message {
 	 * @return the message
 	 */
 	public static RequestFileMessage createRequestFileMessage(UUID projectId,
-		UserId user, LogEntry le) {
+			UserId user, LogEntry le) {
 		return new RequestFileMessage(projectId, user, RequestType.FILE, le
-			.getId().toString());
+				.getId().toString());
 	}
 
 	/**
@@ -86,7 +88,7 @@ public class RequestFileMessage extends Message {
 	 * @return the message
 	 */
 	public static RequestFileMessage createRequestLogsMessage(UUID projectId,
-		UserId user) {
+			UserId user) {
 		return new RequestFileMessage(projectId, user, RequestType.LOGS, "");
 	}
 
@@ -102,9 +104,9 @@ public class RequestFileMessage extends Message {
 	 * @return the message
 	 */
 	public static RequestFileMessage createRequestDeltaMessage(UUID projectId,
-		UserId user, LogEntry le) {
+			UserId user, LogEntry le) {
 		return new RequestFileMessage(projectId, user, RequestType.DELTA, le
-			.getId().toString());
+				.getId().toString());
 	}
 
 	/**
@@ -120,8 +122,8 @@ public class RequestFileMessage extends Message {
 	 * @return the message
 	 */
 	public static RequestFileMessage createRequestSignatureMessage(
-		UUID projectId, UserId user, LogEntry le) {
+			UUID projectId, UserId user, LogEntry le) {
 		return new RequestFileMessage(projectId, user, RequestType.SIGNATURE,
-			le.getId().toString());
+				le.getId().toString());
 	}
 }

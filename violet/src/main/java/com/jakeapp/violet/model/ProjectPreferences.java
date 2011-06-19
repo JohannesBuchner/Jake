@@ -9,6 +9,7 @@ import java.util.Observable;
  * The string name refers to the ProjectDir
  */
 public abstract class ProjectPreferences extends Observable implements Model {
+
 	protected Map<String, String> preferences = new HashMap<String, String>();
 
 	public ProjectPreferences() {

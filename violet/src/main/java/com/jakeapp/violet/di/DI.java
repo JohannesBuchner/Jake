@@ -17,11 +17,14 @@ import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 
 public class DI {
+
 	private static HashMap<Class, Creator> map = new HashMap<Class, Creator>();
+
 	private static HashMap<Class, ProjectDependentCreator> mapPerProject = new HashMap<Class, ProjectDependentCreator>();
 
 	static {
 		register(Projects.class, new Creator<Projects>() {
+
 			Projects projects = null;
 
 			@Override
@@ -65,6 +68,7 @@ public class DI {
 
 	public static <C> void register(Class<C> c, final C instance) {
 		map.put(c, new Creator<C>() {
+
 			@Override
 			public C create() {
 				return instance;

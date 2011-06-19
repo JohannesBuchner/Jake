@@ -15,7 +15,9 @@ import com.jakeapp.violet.gui.Projects;
  */
 public class GetProjectsAction extends
 		AvailableLaterObject<Collection<ProjectDir>> {
+
 	private static final Logger log = Logger.getLogger(GetProjectsAction.class);
+
 	private Projects projects = DI.getImpl(Projects.class);
 
 	public GetProjectsAction() {

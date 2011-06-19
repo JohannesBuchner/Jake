@@ -26,19 +26,26 @@ import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 
 public class PacketsTest {
 
-	private static final String REQUEST_MSG =
-		"00000000-0000-0015-0000-00000000002a.file.00000000-0000-002a-0000-000000000015";
+	private static final String REQUEST_MSG = "00000000-0000-0015-0000-00000000002a.file.00000000-0000-002a-0000-000000000015";
 
 	private IMessageMarshaller mm = new MessageMarshaller();
+
 	private ILogEntryMarshaller lm = new LogEntryMarshaller();
+
 	private IRequestMarshaller rm = new RequestMarshaller();
 
 	private UUID projectid = new UUID(21, 42);
+
 	private UUID leid = new UUID(42, 21);
+
 	private Timestamp time = new Timestamp(new Date().getTime());
+
 	private User user = new User("me@localhost");
+
 	private String commitmsg = "fdsafdsafsafsd";
+
 	private String hash = "1234124125124313123124125124";
+
 	private JakeObject fo = new JakeObject("/my/file");
 
 	private LogEntry le;
@@ -55,35 +62,35 @@ public class PacketsTest {
 	public void testPoke() throws IOException {
 		PokeMessage msg = PokeMessage.createPokeMessage(projectid, userid, le);
 		Assert.assertEquals("00000000-0000-0015-0000-00000000002a.",
-			mm.serialize(msg));
+				mm.serialize(msg));
 	}
 
 	@Test
 	public void testRequestLogs() {
-		RequestFileMessage msg =
-			RequestFileMessage.createRequestLogsMessage(projectid, userid);
+		RequestFileMessage msg = RequestFileMessage.createRequestLogsMessage(
+				projectid, userid);
 		Assert.assertEquals("00000000-0000-0015-0000-00000000002a.logs.",
-			rm.serialize(msg));
+				rm.serialize(msg));
 	}
 
 	@Test
 	public void testRequestFile() {
-		RequestFileMessage msg =
-			RequestFileMessage.createRequestFileMessage(projectid, userid, le);
+		RequestFileMessage msg = RequestFileMessage.createRequestFileMessage(
+				projectid, userid, le);
 		Assert.assertEquals(REQUEST_MSG, rm.serialize(msg));
 	}
 
 	@Test
 	public void testDecodeUUIDRequestFile() {
-		RequestFileMessage req =
-			rm.decodeRequestFileMessage(REQUEST_MSG, userid);
+		RequestFileMessage req = rm.decodeRequestFileMessage(REQUEST_MSG,
+				userid);
 		Assert.assertEquals(le.getId(), UUID.fromString(req.getIdentifier()));
 	}
 
 	@Test
 	public void testDecodeProjectUUIDRequestFile() {
-		RequestFileMessage req =
-			rm.decodeRequestFileMessage(REQUEST_MSG, userid);
+		RequestFileMessage req = rm.decodeRequestFileMessage(REQUEST_MSG,
+				userid);
 		Assert.assertEquals(projectid, req.getProjectId());
 	}
 

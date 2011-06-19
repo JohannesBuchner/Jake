@@ -16,7 +16,9 @@ import com.jakeapp.violet.model.ProjectModel;
 public class UserInfoAction extends AvailableLaterObject<UserInfo> {
 
 	private static final Logger log = Logger.getLogger(UserInfoAction.class);
+
 	private ProjectModel model;
+
 	private UserId userid;
 
 	public UserInfoAction(ProjectModel model, UserId userid) {

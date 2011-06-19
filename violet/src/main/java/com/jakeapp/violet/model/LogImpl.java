@@ -27,7 +27,9 @@ import com.jakeapp.violet.model.exceptions.NoSuchLogEntryException;
  * 
  */
 public class LogImpl implements Log {
+
 	private Connection conn;
+
 	private File file;
 
 	public void setFile(File file) {
@@ -39,14 +41,13 @@ public class LogImpl implements Log {
 		// open db
 		try {
 			Class.forName("org." + DI.getProperty(KnownProperty.JDBCDB)
-				+ ".Driver");
+					+ ".Driver");
 		} catch (ClassNotFoundException e) {
 			throw new IllegalStateException(e);
 		}
-		conn =
-			DriverManager.getConnection(
+		conn = DriverManager.getConnection(
 				"jdbc:" + DI.getProperty(KnownProperty.JDBCDB) + ":"
-					+ file.getAbsolutePath(),
+						+ file.getAbsolutePath(),
 				DI.getProperty(KnownProperty.JDBCUSER),
 				DI.getProperty(KnownProperty.JDBCPASSWORD));
 		// if it doesn't exist:
@@ -86,7 +87,7 @@ public class LogImpl implements Log {
 
 	@Override
 	public LogEntry getById(UUID uuid, boolean includeUnprocessed)
-		throws NoSuchLogEntryException {
+			throws NoSuchLogEntryException {
 		PreparedStatement stmt = getPrepared(KnownProperty.DB_GETLOGBYID);
 		try {
 			stmt.setObject(0, uuid);
@@ -105,8 +106,8 @@ public class LogImpl implements Log {
 	private LogEntry resultToLogEntry(ResultSet rs) {
 		try {
 			return new LogEntry((UUID) rs.getObject(0), rs.getTimestamp(0),
-				new User(rs.getString(1)), new JakeObject(rs.getString(2)),
-				rs.getString(3), rs.getString(4), rs.getBoolean(5));
+					new User(rs.getString(1)), new JakeObject(rs.getString(2)),
+					rs.getString(3), rs.getString(4), rs.getBoolean(5));
 		} catch (SQLException e) {
 			throw new IllegalStateException(e);
 		}
@@ -153,9 +154,9 @@ public class LogImpl implements Log {
 	}
 
 	private List<LogEntry> getAll(boolean includeUnprocessed,
-		boolean includeProcessed, JakeObject jo) {
-		PreparedStatement stmt =
-			getStatement(includeUnprocessed, includeProcessed, jo);
+			boolean includeProcessed, JakeObject jo) {
+		PreparedStatement stmt = getStatement(includeUnprocessed,
+				includeProcessed, jo);
 		try {
 			ResultSet rs = stmt.executeQuery();
 			ArrayList<LogEntry> all = new ArrayList<LogEntry>();
@@ -169,7 +170,8 @@ public class LogImpl implements Log {
 	}
 
 	private LogEntry getLast(boolean includeUnprocessed,
-		boolean includeProcessed, JakeObject jo) throws NoSuchLogEntryException {
+			boolean includeProcessed, JakeObject jo)
+			throws NoSuchLogEntryException {
 		List<LogEntry> all = getAll(includeUnprocessed, includeProcessed, jo);
 		if (all.isEmpty())
 			throw new NoSuchLogEntryException();
@@ -177,7 +179,7 @@ public class LogImpl implements Log {
 	}
 
 	private PreparedStatement getStatement(boolean includeUnprocessed,
-		boolean includeProcessed, JakeObject jo) {
+			boolean includeProcessed, JakeObject jo) {
 		PreparedStatement stmt = null;
 		if (jo == null) {
 			if (includeProcessed)
@@ -204,18 +206,17 @@ public class LogImpl implements Log {
 		if (stmt == null) {
 			if (!includeProcessed && !includeUnprocessed) {
 				throw new IllegalArgumentException(
-					"neither processed nor unprocessed? "
-						+ "you are asking for the impossible!");
+						"neither processed nor unprocessed? "
+								+ "you are asking for the impossible!");
 			}
 			throw new IllegalStateException("query not found!");
 		}
 		return stmt;
 	}
 
-	private Map<KnownProperty, PreparedStatement> queries =
-		new HashMap<KnownProperty, PreparedStatement>();
-	private Set<ILogModificationListener> listeners =
-		new HashSet<ILogModificationListener>();
+	private Map<KnownProperty, PreparedStatement> queries = new HashMap<KnownProperty, PreparedStatement>();
+
+	private Set<ILogModificationListener> listeners = new HashSet<ILogModificationListener>();
 
 	private PreparedStatement getPrepared(KnownProperty key) {
 		PreparedStatement q = queries.get(key);
@@ -237,13 +238,13 @@ public class LogImpl implements Log {
 
 	@Override
 	public List<LogEntry> getAllOfJakeObject(JakeObject jakeObject,
-		boolean includeUnprocessed) {
+			boolean includeUnprocessed) {
 		return getAll(includeUnprocessed, true, jakeObject);
 	}
 
 	@Override
 	public LogEntry getLastOfJakeObject(JakeObject jakeObject,
-		boolean includeUnprocessed) throws NoSuchLogEntryException {
+			boolean includeUnprocessed) throws NoSuchLogEntryException {
 		return getLast(includeUnprocessed, true, jakeObject);
 	}
 
@@ -276,8 +277,7 @@ public class LogImpl implements Log {
 
 	@Override
 	public void setAllPreviousProcessed(LogEntry logEntry) {
-		PreparedStatement stmt =
-			getPrepared(KnownProperty.DB_SETPROCESSEDFORWHAT);
+		PreparedStatement stmt = getPrepared(KnownProperty.DB_SETPROCESSEDFORWHAT);
 		try {
 			stmt.setObject(0, logEntry.getWhat());
 			stmt.executeUpdate();

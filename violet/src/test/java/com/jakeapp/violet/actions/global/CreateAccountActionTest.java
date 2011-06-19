@@ -15,7 +15,9 @@ import com.jakeapp.violet.model.User;
 public class CreateAccountActionTest {
 
 	private String pw = "secret";
+
 	private User user = new User("me@localhost");
+
 	private CreateAccountAction action;
 
 	@Before

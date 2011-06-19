@@ -41,26 +41,32 @@ public class LogEntry {
 	 * Id of the log entry
 	 */
 	private UUID id;
+
 	/**
 	 * Time stamp of the action
 	 */
 	private Timestamp when;
+
 	/**
 	 * User Id of the culprit
 	 */
 	private User who;
+
 	/**
 	 * reference to the object modified (i.e. the relpath of the file)
 	 */
 	private JakeObject what;
+
 	/**
 	 * an optional commit msg.
 	 */
 	private String why;
+
 	/**
 	 * a hash of the file if not empty
 	 */
 	private String how;
+
 	/**
 	 * true if we have processed this log entry.
 	 */

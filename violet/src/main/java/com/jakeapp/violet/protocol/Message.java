@@ -8,6 +8,7 @@ import com.jakeapp.jake.ics.UserId;
  * A project-related message
  */
 public abstract class Message {
+
 	public Message(UUID projectId, UserId user) {
 		super();
 		this.projectId = projectId;
@@ -15,6 +16,7 @@ public abstract class Message {
 	}
 
 	private UUID projectId;
+
 	private UserId user;
 
 	public void setProjectId(UUID projectId) {

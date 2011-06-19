@@ -25,7 +25,7 @@ public class MessageMarshaller implements IMessageMarshaller {
 	private static Logger log = Logger.getLogger(MessageMarshaller.class);
 
 	private ILogEntryMarshaller logEntryMarshaller = DI
-		.getImpl(LogEntryMarshaller.class);
+			.getImpl(LogEntryMarshaller.class);
 
 	/*
 	 * (non-Javadoc)
@@ -36,7 +36,7 @@ public class MessageMarshaller implements IMessageMarshaller {
 	 */
 	@Override
 	public PokeMessage decodePokeMessage(String s, UserId from)
-		throws IOException {
+			throws IOException {
 		log.debug("unpacking string " + s);
 		String[] parts = s.split("\\" + FIELD_SEPERATOR, 3);
 		if (parts.length != 3)
@@ -47,8 +47,8 @@ public class MessageMarshaller implements IMessageMarshaller {
 		LogEntry le = null;
 		if (parts[1].length() != 0)
 			le = logEntryMarshaller.deSerializeLogEntry(parts[1]);
-		PokeMessage msg =
-			PokeMessage.createPokeMessage(UUID.fromString(parts[0]), from, le);
+		PokeMessage msg = PokeMessage.createPokeMessage(
+				UUID.fromString(parts[0]), from, le);
 		return msg;
 	}
 
@@ -65,7 +65,7 @@ public class MessageMarshaller implements IMessageMarshaller {
 		if (msg.getLogEntry() != null)
 			leString = logEntryMarshaller.serializeLogEntry(msg.getLogEntry());
 		return msg.getProjectId().toString() + FIELD_SEPERATOR + POKE_MESSAGE
-			+ FIELD_SEPERATOR + leString;
+				+ FIELD_SEPERATOR + leString;
 	}
 
 }

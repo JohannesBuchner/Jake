@@ -13,10 +13,15 @@ import com.jakeapp.violet.di.DI;
  * and all modifications that are valid within the data model.
  */
 public abstract class ProjectModel {
+
 	protected IFSService fss;
+
 	protected Log log;
+
 	protected ProjectPreferences preferences;
+
 	protected ICService ics;
+
 	protected IFileTransferService transfer;
 
 	public Log getLog() {

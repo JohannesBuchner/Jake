@@ -23,7 +23,9 @@ public class SuggestUsersToInviteAction extends
 
 	private static final Logger log = Logger
 			.getLogger(SuggestUsersToInviteAction.class);
+
 	private User user;
+
 	private ICService ics;
 
 	public SuggestUsersToInviteAction(User user) {

@@ -16,7 +16,7 @@ public interface IMessageMarshaller {
 	 * @throws IOException
 	 */
 	public abstract PokeMessage decodePokeMessage(String s, UserId from)
-		throws IOException;
+			throws IOException;
 
 	/**
 	 * serialize the poke message

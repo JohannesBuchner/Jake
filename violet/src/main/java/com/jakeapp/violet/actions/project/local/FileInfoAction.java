@@ -29,9 +29,13 @@ import com.jakeapp.violet.model.exceptions.NoSuchLogEntryException;
 public class FileInfoAction extends AvailableLaterObject<List<Attributed>> {
 
 	private static final Logger log = Logger.getLogger(FileInfoAction.class);
+
 	private Collection<JakeObject> files;
+
 	private ProjectModel model;
+
 	private int totalSteps;
+
 	private int stepsDone;
 
 	public FileInfoAction(ProjectModel model, Collection<JakeObject> files) {
@@ -52,10 +56,12 @@ public class FileInfoAction extends AvailableLaterObject<List<Attributed>> {
 		List<Attributed> attributed = new ArrayList<Attributed>();
 
 		for (JakeObject fo : files) {
-			attributed.add(AttributedCalculator.calculateAttributed(fss, log, fo));
+			attributed.add(AttributedCalculator.calculateAttributed(fss, log,
+					fo));
 
 			stepsDone++;
-			this.setStatus(new StatusUpdate(totalSteps * 1. / stepsDone, "working"));
+			this.setStatus(new StatusUpdate(totalSteps * 1. / stepsDone,
+					"working"));
 		}
 
 		return attributed;

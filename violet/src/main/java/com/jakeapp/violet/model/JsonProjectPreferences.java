@@ -11,9 +11,12 @@ import org.codehaus.jackson.map.ObjectMapper;
  * The string name refers to the ProjectDir
  */
 public class JsonProjectPreferences extends ProjectPreferences {
+
 	private File f;
+
 	private static final Logger log = Logger
 			.getLogger(JsonProjectPreferences.class);
+
 	private ObjectMapper mapper = new ObjectMapper();
 
 	public JsonProjectPreferences(File f) {

@@ -20,14 +20,20 @@ import com.jakeapp.violet.model.User;
  * Requests the file from one user at a time, until success
  */
 class FailoverFileRequestAction extends AvailableLaterObject<File> {
-	private static final Logger log = Logger.getLogger(FailoverFileRequestAction.class);
+
+	private static final Logger log = Logger
+			.getLogger(FailoverFileRequestAction.class);
+
 	private ProjectModel model;
+
 	private JakeObject jakeObject;
+
 	private UserOrderStrategy strategy;
+
 	private boolean storeInFss;
 
 	public FailoverFileRequestAction(ProjectModel model, JakeObject jakeObject,
-		UserOrderStrategy strategy, boolean storeInFss) {
+			UserOrderStrategy strategy, boolean storeInFss) {
 		this.model = model;
 		this.jakeObject = jakeObject;
 		this.strategy = strategy;
@@ -40,8 +46,8 @@ class FailoverFileRequestAction extends AvailableLaterObject<File> {
 	@Override
 	public File calculate() throws Exception {
 		Exception lastException = null;
-		Iterable<UserId> userIds =
-			model.getIcs().getUsersService().getAllUsers();
+		Iterable<UserId> userIds = model.getIcs().getUsersService()
+				.getAllUsers();
 		List<User> users = new ArrayList<User>();
 		for (UserId e : userIds) {
 			users.add(new User(e.getUserId()));
@@ -58,7 +64,8 @@ class FailoverFileRequestAction extends AvailableLaterObject<File> {
 
 		for (User u : selected) {
 			log.debug("requesting " + le);
-			FileRequestAction frf = new FileRequestAction(model, u, le, storeInFss);
+			FileRequestAction frf = new FileRequestAction(model, u, le,
+					storeInFss);
 			try {
 				return AvailableLaterWaiter.await(frf);
 			} catch (Exception e) {

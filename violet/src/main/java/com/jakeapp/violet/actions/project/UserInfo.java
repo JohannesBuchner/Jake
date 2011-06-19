@@ -11,9 +11,13 @@ import com.jakeapp.violet.model.User;
 public class UserInfo {
 
 	private Boolean online;
+
 	private String nickName;
+
 	private String firstName;
+
 	private String lastName;
+
 	private UserId userid;
 
 	public Boolean getOnline() {

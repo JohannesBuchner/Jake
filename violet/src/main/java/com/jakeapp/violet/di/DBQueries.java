@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 public class DBQueries {
+
 	public static Properties getProperties() {
 		Map<KnownProperty, String> p = new HashMap<KnownProperty, String>();
 		p.put(KnownProperty.DB_CREATELOGTABLE,

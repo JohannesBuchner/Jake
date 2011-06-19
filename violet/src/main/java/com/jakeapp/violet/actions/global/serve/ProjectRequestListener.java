@@ -38,14 +38,15 @@ import com.jakeapp.violet.protocol.files.RequestFileMessage.RequestType;
 import com.jakeapp.violet.protocol.msg.ILogEntryMarshaller;
 
 public class ProjectRequestListener implements IncomingTransferListener,
-	FileRequestFileMapper {
+		FileRequestFileMapper {
 
 	private static Logger log = Logger.getLogger(ProjectRequestListener.class);
 
 	private IRequestMarshaller requestMarshaller = DI
-		.getImpl(IRequestMarshaller.class);
+			.getImpl(IRequestMarshaller.class);
+
 	private ILogEntryMarshaller logEntryMarshaller = DI
-		.getImpl(ILogEntryMarshaller.class);
+			.getImpl(ILogEntryMarshaller.class);
 
 	private ProjectModel model;
 
@@ -89,8 +90,7 @@ public class ProjectRequestListener implements IncomingTransferListener,
 		}
 		Attributed status;
 		try {
-			status =
-				AttributedCalculator.calculateAttributed(model.getFss(),
+			status = AttributedCalculator.calculateAttributed(model.getFss(),
 					model.getLog(), fo);
 		} catch (Exception e) {
 			log.debug("status of the requested object is weird", e);
@@ -107,15 +107,14 @@ public class ProjectRequestListener implements IncomingTransferListener,
 	public boolean accept(FileRequest fr) {
 		try {
 			log.info("incoming request: " + fr);
-			RequestFileMessage req =
-				requestMarshaller.decodeRequestFileMessage(fr.getFileName(),
-					fr.getPeer());
+			RequestFileMessage req = requestMarshaller
+					.decodeRequestFileMessage(fr.getFileName(), fr.getPeer());
 
 			if (!canHandleFileRequest(req)) {
 				return false;
 			}
 			if (!listener.acceptSending(req.getUser(),
-				new JakeObject(req.getIdentifier()))) {
+					new JakeObject(req.getIdentifier()))) {
 				return false;
 			}
 
@@ -134,26 +133,26 @@ public class ProjectRequestListener implements IncomingTransferListener,
 
 			@Override
 			public void onFailure(AdditionalFileTransferData transfer,
-				String error) {
+					String error) {
 				log.warn("transmitting failed: " + error);
 				listener.sendingFailed(new User(t.getPeer().getUserId()), t
-					.getFileRequest().getFileName(), error);
+						.getFileRequest().getFileName(), error);
 			}
 
 			@Override
 			public void onSuccess(AdditionalFileTransferData transfer) {
 				log.info("transmitting was successful");
 				listener.sendingSucceeded(new User(t.getPeer().getUserId()), t
-					.getFileRequest().getFileName());
+						.getFileRequest().getFileName());
 			}
 
 			@Override
 			public void onUpdate(AdditionalFileTransferData transfer,
-				Status status, double progress) {
+					Status status, double progress) {
 				log.debug("transmitting update: " + progress + " - " + status);
 				listener.sendingUpdateProgress(
-					new User(t.getPeer().getUserId()), t.getFileRequest()
-						.getFileName(), status.toString(), progress);
+						new User(t.getPeer().getUserId()), t.getFileRequest()
+								.getFileName(), status.toString(), progress);
 			}
 
 		})).start();
@@ -174,8 +173,8 @@ public class ProjectRequestListener implements IncomingTransferListener,
 			return true;
 		} else {
 			if (req.getType() == RequestType.FILE
-				|| req.getType() == RequestType.SIGNATURE
-				|| req.getType() == RequestType.DELTA) {
+					|| req.getType() == RequestType.SIGNATURE
+					|| req.getType() == RequestType.DELTA) {
 				LogEntry le = getLogEntryForRequest(req);
 				if (le == null) {
 					return false;
@@ -195,8 +194,8 @@ public class ProjectRequestListener implements IncomingTransferListener,
 				} else {
 					try {
 						if (!model.getFss()
-							.calculateHashOverFile(fo.getRelPath())
-							.equals(hash)) {
+								.calculateHashOverFile(fo.getRelPath())
+								.equals(hash)) {
 							log.debug("file was modified locally, so can't send it");
 							return false;
 						}
@@ -219,8 +218,7 @@ public class ProjectRequestListener implements IncomingTransferListener,
 	public File getFileForRequest(FileRequest fr) {
 		try {
 			log.info("incoming request: " + fr);
-			File od =
-				File.createTempFile(fr.getPeer().getUserId(), "",
+			File od = File.createTempFile(fr.getPeer().getUserId(), "",
 					getDeliveryDirectory());
 			od.delete();
 			od.mkdir();
@@ -229,9 +227,8 @@ public class ProjectRequestListener implements IncomingTransferListener,
 			tempfile.deleteOnExit();
 			OutputStream os = new FileOutputStream(tempfile);
 
-			RequestFileMessage req =
-				requestMarshaller.decodeRequestFileMessage(fr.getFileName(),
-					fr.getPeer());
+			RequestFileMessage req = requestMarshaller
+					.decodeRequestFileMessage(fr.getFileName(), fr.getPeer());
 
 			if (!canHandleFileRequest(req))
 				return null;
@@ -240,18 +237,18 @@ public class ProjectRequestListener implements IncomingTransferListener,
 				List<LogEntry> logs = model.getLog().getAll(true);
 
 				logEntryMarshaller.packLogEntries(model.getProjectid(), logs,
-					new GZIPOutputStream(os));
+						new GZIPOutputStream(os));
 				return tempfile;
 			} else {
 				if (req.getType() == RequestType.FILE
-					|| req.getType() == RequestType.SIGNATURE
-					|| req.getType() == RequestType.DELTA) {
-					LogEntry le =
-						model.getLog().getById(req.getProjectId(), false);
+						|| req.getType() == RequestType.SIGNATURE
+						|| req.getType() == RequestType.DELTA) {
+					LogEntry le = model.getLog().getById(req.getProjectId(),
+							false);
 					String hash = le.getHow();
 					JakeObject fo = le.getWhat();
-					File origfile =
-						new File(model.getFss().getFullpath(fo.getRelPath()));
+					File origfile = new File(model.getFss().getFullpath(
+							fo.getRelPath()));
 					log.info("original file at " + origfile);
 
 					if (req.getType() == RequestType.DELTA) {
@@ -259,13 +256,12 @@ public class ProjectRequestListener implements IncomingTransferListener,
 						// what a smart-ass
 						// he has to send his signature first, so lets ask him
 						log.debug("requesting signature");
-						RequestFileMessage msg =
-							RequestFileMessage.createRequestSignatureMessage(
-								model.getProjectid(), fr.getPeer(), le);
+						RequestFileMessage msg = RequestFileMessage
+								.createRequestSignatureMessage(
+										model.getProjectid(), fr.getPeer(), le);
 
-						InputStream fis =
-							BlockingFileTransfer.requestFile(model,
-								requestMarshaller, msg, null);
+						InputStream fis = BlockingFileTransfer.requestFile(
+								model, requestMarshaller, msg, null);
 						if (fis == null) {
 							log.debug("requesting signatures did not succeed.");
 							return null;
@@ -286,14 +282,14 @@ public class ProjectRequestListener implements IncomingTransferListener,
 					} else {
 						// just ship the file
 						if (!model.getFss()
-							.calculateHashOverFile(fo.getRelPath())
-							.equals(hash)) {
+								.calculateHashOverFile(fo.getRelPath())
+								.equals(hash)) {
 							log.debug("can not provide file as we modified it.");
 							return null;
 						}
 						// copy the whole file
 						FSService.writeFileStreamAbs(tempfile,
-							FSService.readFileStreamAbs(origfile));
+								FSService.readFileStreamAbs(origfile));
 						log.debug("file duplicated");
 					}
 				} else {

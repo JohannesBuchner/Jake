@@ -11,10 +11,14 @@ import org.junit.Test;
 
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
 
-public class JsonPasswordsTest extends TmpdirEnabledTestCase{
+public class JsonPasswordsTest extends TmpdirEnabledTestCase {
+
 	private File f;
+
 	private JsonPasswords pw;
+
 	private String user = "foobar.this.is.a.long.username+\" weird \\\t characters ";
+
 	private String userpw = "foobar.this.is.a.long.password </html\\\\~>";
 
 	@Before
