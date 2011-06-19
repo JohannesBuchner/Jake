@@ -8,8 +8,8 @@
 	<name>Jake</name>
 	<description>
 		Jake is a collaboration tool for sharing a project folder between
-        project members.
-    </description>
+		project members.
+	</description>
 	<licenses>
 		<license>
 			<name>GPL 3</name>
@@ -17,12 +17,7 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-	<modules>
-		<module>violet</module>
-		<module>gui</module>
-		<module>commander</module>
-	</modules>
-	<url>http://jakeapp.sourceforge.net/</url>
+	<url>http://jakeapp.sourceforge.net/jake/</url>
 	<developers>
 		<developer>
 			<id>johannes</id>
@@ -88,8 +83,7 @@
 		<repository>
 			<id>sourceforge</id>
 			<name>SourceForge</name>
-			<url>sftp://frs.sourceforge.net:/home/frs/project/j/ja/jakeapp/releases
-			</url>
+			<url>sftp://frs.sourceforge.net:/home/frs/project/j/ja/jakeapp/maven/releases</url>
 		</repository>
 	</distributionManagement>
 	<scm>
@@ -98,6 +92,10 @@
 		<url>http://jakeapp.git.sourceforge.net/</url>
 	</scm>
 	<repositories>
+		<repository>
+			<id>maven repo</id>
+			<url>http://repo1.maven.org/maven2/</url>
+		</repository>
 		<repository>
 			<id>jakeapp releases</id>
 			<url>http://jakeapp.sourceforge.net/proxy.php?r=</url>
@@ -145,14 +143,47 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
+			<!--<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pdf-plugin</artifactId>
+				<version>1.1</version>
+				<executions>
+					<execution>
+						<id>pdf</id>
+						<phase>site</phase>
+						<goals>
+							<goal>pdf</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.reporting.outputDirectory}</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
 		</plugins>
 	</build>
 	<reporting>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
 				<version>2.4</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>project-team</report>
+							<report>license</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				<configuration>
+					<customBundle>${project.basedir}/src/site/custom/project-info-report.properties</customBundle>
+				</configuration>
 			</plugin>
 		</plugins>
 	</reporting>

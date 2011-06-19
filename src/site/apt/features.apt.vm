@@ -1,0 +1,41 @@
+        -----------
+        Features
+
+About Jake
+
+  Jake, what does it do? What does it do differently than other "synchronizers" or version control systems?
+
+* Properties of Jake for End Users
+
+   Jake is a client application for collaboratively working on a folder.
+
+   *  Synchronizes a project folder between project members
+   
+   * Works on any computer and looks good
+   
+   * Is easy to use
+   
+   * No need to setup a server or anything complex. Start Jake, invite people, add your folder.
+   
+   * Secure
+   
+   * Works with file of any type, not just Office documents.
+   
+   * Users don't have to be online all the time.
+
+* Properties of Jake for Developers, IT management and Security Personal
+
+   * Cross-platform (Windows, MacOS, Linux)
+
+   * No central data storage server.
+   
+   * Data exchange is based on XMPP, a standardized protocol. This communication is encrypted from and to the XMPP server. Foreign users can not gain access to the data unless they have access to the XMPP server. You can use your own XMPP server (e.g. ejabberd) if you can not trust anyone else with your data.
+   
+   * Since you can use your own XMPP server, you can use Jake in a company internally, without connection to the Internet. Your data never leaves the building.
+   
+   * Supports direct, decentral communication.
+   
+   * Web of trust between users.
+   
+   * Open source, no ad/spyware or anything weird.
+

@@ -1,15 +1,14 @@
 package com.jakeapp.violet.actions;
 
-import java.util.List;
-
-import com.jakeapp.availablelater.AvailableErrorObject;
-import com.jakeapp.availablelater.AvailableLater;
-import com.jakeapp.availablelater.AvailableLaterObject;
-import com.jakeapp.availablelater.AvailableNowObject;
 import com.jakeapp.violet.model.ProjectModel;
 
 /**
- * Actions a user can perform -- the 
+ * It was originally thought that this would be a exhaustive list of actions
+ * that the gui can perform.
+ * 
+ * But it isn't, to avoid duplicate code. Pick the actions from
+ * com.jakeapp.violet.actions.project
+ * 
  */
 public class Actions {
 
@@ -17,24 +16,6 @@ public class Actions {
 
 	public Actions(ProjectModel model) {
 		this.model = model;
-	}
-
-	public AvailableLater<Void> launchFile(String filename) {
-		try {
-			model.getFss().launchFile(filename);
-			return new AvailableNowObject<Void>(null);
-		} catch (Exception e) {
-			return new AvailableErrorObject<Void>(e);
-		}
-	}
-
-	public AvailableLaterObject<List<String>> listAllFiles() {
-		return new AvailableLaterObject<List<String>>() {
-			@Override
-			public List<String> calculate() throws Exception {
-				return model.getFss().recursiveListFiles();
-			}
-		};
 	}
 
 }

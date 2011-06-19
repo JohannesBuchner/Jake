@@ -1,0 +1,211 @@
+
+/* 
+
+  from http://colorschemedesigner.com/#0040ziyoow0w0
+ 
+ 1 = normal, 
+ 2 = bleak
+ 3 = dark
+ 4 = 5 = light
+
+red, violet, green-brown, green
+ */
+$primary-1: #C25252; 
+$primary-2:  #925252; 
+$primary-3:  #7E1B1B; 
+$primary-4:  #E17F7F; 
+$primary-5:  #E19999; 
+
+$secondary-a-1:  #6E3981; 
+$secondary-a-2:  #563861; 
+$secondary-a-3:  #431354; 
+$secondary-a-4:  #AB70C0; 
+$secondary-a-5:  #B085C0; 
+
+$secondary-b-1:  #B9C051; 
+$secondary-b-2:  #8C9051; 
+$secondary-b-3:  #777D1A; 
+$secondary-b-4:  #D9DF7E; 
+$secondary-b-5:  #DBDF98; 
+
+$complement-1:  #419B41; 
+$complement-2:  #427542; 
+$complement-3:  #156515; 
+$complement-4:  #74CD74; 
+$complement-5:  #8CCD8C; 
+
+$bg: $secondary-b-5;
+$bg: black;
+$bg: #010;
+$fg: white;
+$headersbg: $secondary-b-2;
+$headersbg: $complement-3;
+$headersfg: white;
+$header2bg: $headersbg;
+$header2fg: $headersfg;
+$header3bg: $headersbg;
+$header3fg: $headersfg;
+$header4bg: $headersbg;
+$header4fg: $headersfg;
+
+$navigationbg: $secondary-a-3;
+$navigationfg: white;
+$navigationhoverbg: $secondary-a-1;
+$navigationhoverfg: white;
+$navigationactivebg: $navigationbg;
+$navigationactivefg: $secondary-a-5;
+
+$navigationbg: #000600;
+$navigationfg: white;
+$navigationhoverbg:  $secondary-a-3;
+$navigationhoverfg:  $secondary-a-4;
+$navigationactivebg: $navigationbg;
+$navigationactivefg: $secondary-a-5;
+$navigationvisitedbg: $navigationbg;
+$navigationvisitedfg: $secondary-a-4;
+/*$navigationvisitedfg: $navigationfg;*/
+
+$navigationexternalfg: $secondary-a-4;
+
+
+body {
+	color: black;
+	font-family: "Georgia","Times New Roman","Times","serif";
+	background: #171A0F;
+	background: $bg;
+	font-size: large;
+	#breadcrumbs {
+		background: $complement-1;
+		border: 0;
+	}
+	
+	#contentBox {
+		background: $bg;
+		margin-right: 0;
+		color: $fg;
+	}
+	
+}
+table {
+	font-size: small;
+}
+
+a.externalLink {
+	color: $navigationexternalfg;
+}
+
+a {
+	text-decoration: none;
+	color: white;
+	color: $navigationfg;
+}
+
+a:hover {
+	color: $navigationhoverfg;
+}
+a:visited {
+	color: $navigationvisitedfg;
+}
+
+h1, h2, h3, h4{
+	margin: 0;
+	border-bottom: 1px solid white;
+	margin-bottom: 1em;
+	color: $headersfg;
+	background-color: $headersbg;
+	padding: 0.5em;
+	border: none;
+}
+
+.section {
+	padding: 1em;
+	padding-top: 0;
+	margin-top: 0;
+	margin-left: 1em;
+}
+
+h2 {
+	margin-right: 0;
+	background-color: #CCC;
+	background-color: $header2bg;
+	color: $header2fg;
+}
+h2:hover {
+	background-image: url('images/teaser_01.png');
+	background-position: right bottom;
+	background-repeat:no-repeat;
+}
+
+h3 {
+	color: #6d6d6d;
+	color: $header3fg;
+	background-color: #DDD;
+	background-color: $header3bg;
+}
+
+h4 {
+	color: $header4fg;
+	background-color: #EEE;
+	background-color: $header3bg;
+}
+
+#breadcrumbs, #breadcrumbs div {
+	margin: 0 0;
+	padding: 0 0;
+}
+
+#contentBox {
+	padding: 0;
+}
+
+
+.poweredBy {
+	display:none
+}
+
+#navcolumn {
+	background-color: #999;
+	background-color: $navigationbg;
+	color: $navigationfg;
+	colro: white;
+}
+#navcolumn ul {
+	padding: 1em;
+}
+
+#navcolumn h5 {
+	font-family: "Trebuchet MS";
+	font-weight: bold;
+	font-size: xx-small;
+	font-variant: small-caps;
+	padding: 0;
+	margin-bottom: 0;
+	color: $navigationfg;
+}
+
+#navcolumn li {
+	font-family: "Trebuchet MS";
+	font-size: small;
+	font-weight: bold;
+	background-color: #AAA;
+	background-color: $navigationactivebg;
+	color: $navigationactivefg;
+}
+#navcolumn li a {
+	display: block;
+	color: $navigationfg;
+}
+
+#navcolumn li a:hover {
+	background-color: $navigationhoverbg;
+	color: $navigationhoverfg;
+}
+#navcolumn li a:visited {
+	color: $navigationvisitedfg;
+	background-color: $navigationvisitedbg;
+} 
+
+table {
+	color: black;
+}
+

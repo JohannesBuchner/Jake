@@ -1,0 +1,95 @@
+        -------------------
+        Operations
+
+Jake operations
+
+  To understand the "versioning" and conflict mechanism of Jake, we first 
+  have to explain some key concepts.
+
+* Log
+
+   First, there is the log as the fundamental data structure. 
+   This is basically a table of:
+
+*------+-----+-------+------+
+| <<When>> | <<Who>> | <<What>>  | <<Hash>> |
+*------+-----+-------+------+
+| <timestamp> | <userid> | <file> | <85j42h5f378> |
+| ...  | ... | ...   | ...  |
+*------+-----+-------+------+
+The log data structure is a list of all operations that occurred.
+
+~~  TODO: add screenshot of log
+
+   There are two main mechanisms: "LogSync" and "Pull".
+
+* "Announce"
+
+   A user can announce (or commit) a file to state that this is a new version.
+   This adds a new entry to the log. Announce is a local operation.
+   
+* "LogSync"
+   
+   First, whenever possible, a logsync is initialized, where clients send each other their log and complete what the other doesn't have.
+
+* "Pull"
+
+   When a client realizes that a newer version is available, it might do a pull.
+   It can request from the user that issued the log entry, or from someone else.
+
+* What about ... Push?
+   
+   There is no push needed, as in a distributed system, there is no way to enforce a client to write something on their file system.
+   
+   However, there is <Poke>, which tells other users, e.g. after a announce has 
+   been made, that they might want to do a LogSync now.
+
+Synchronization and Conflict resolution
+
+* File synchronization status
+
+  * Locally available -- is in the file system
+
+    The user may do a announce.
+  
+  * Remotely available -- has been announced by someone, but haven't gotten it yet.
+    
+    The user may do a pull.
+  
+  * Locally available and remotely the same -- in sync
+
+  * Locally available and remotely different -- update available
+
+    The user should update with a pull, or resolve the conflict if local changes were made.
+
+* Conflict resolution
+
+  <Summary: A conflict is a differences between a locally modified file and a newer version available that is newer than what my version is based upon. The user decides what the "new" version is.>
+
+  Obviously, two clients could create new file versions, and then there has to 
+  be some method of resolving this conflict.
+  
+  One of the two users will have a earlier time stamp and one a later time stamp.
+  If not, the user id is used as a symmetry breaker.
+  
+  First, both users may do a logsync and get each others log entries.
+  
+  The user that created the later version does not have a conflict.
+  
+  The user that created the earlier version is presented with a conflict dialog.
+  
+  Here, the user can
+  
+     [[a]] Pull the later version and throw away the own version
+     
+     [[b]] Re-announce his/her version
+  
+  To assist this choice, he/she may pull the later version and compare the two files, then either th
+  
+  A conflict is simply the fact that the locally modified and present file
+  is a early version than an incomming log entry.
+  
+  This simple concept is powerful and covers all aspects of distributed versioning.
+
+
+

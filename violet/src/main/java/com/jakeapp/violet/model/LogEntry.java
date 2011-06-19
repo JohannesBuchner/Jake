@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
 
+import org.codehaus.jackson.annotate.JsonTypeInfo;
 import org.mockito.exceptions.misusing.NullInsteadOfMockException;
 
 public class LogEntry {

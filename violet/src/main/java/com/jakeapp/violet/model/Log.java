@@ -16,20 +16,20 @@ public interface Log {
 	 * 
 	 * @throws Exception
 	 */
-	void connect() throws Exception;
+	void connect() throws SQLException;
 
 	/**
 	 * connect to the log. Do this after creating this
 	 * 
 	 * @throws Exception
 	 */
-	void disconnect() throws Exception;
+	void disconnect() throws SQLException;
 
 	void addModificationListener(ILogModificationListener l);
 
 	void removeModificationListener(ILogModificationListener l);
 
-	void add(LogEntry logEntry) throws SQLException;
+	void add(LogEntry logEntry);
 
 	/**
 	 * Retrieve a </code>LogEntry</code>.
@@ -41,7 +41,7 @@ public interface Log {
 	 * @throws SQLException
 	 */
 	LogEntry getById(UUID uuid, boolean includeUnprocessed)
-			throws NoSuchLogEntryException, SQLException;
+		throws NoSuchLogEntryException;
 
 	/**
 	 * change the <code>processed</code> field of a logEntry. Note that the
@@ -52,8 +52,7 @@ public interface Log {
 	 * @throws NoSuchLogEntryException
 	 * @throws SQLException
 	 */
-	void setProcessed(LogEntry logEntry) throws NoSuchLogEntryException,
-			SQLException;
+	void setProcessed(LogEntry logEntry) throws NoSuchLogEntryException;
 
 	/**
 	 * Get all unprocessed <code>LogEntries</code>.
@@ -61,7 +60,7 @@ public interface Log {
 	 * @return all unprocessed LogEntries of the Project
 	 * @throws SQLException
 	 */
-	List<LogEntry> getUnprocessed() throws SQLException;
+	List<LogEntry> getUnprocessed();
 
 	/**
 	 * Get the unprocessed <code>LogEntries</code> for a specific
@@ -71,7 +70,7 @@ public interface Log {
 	 * @return the unprocessed LogEntries of the specific JakeObject
 	 * @throws SQLException
 	 */
-	List<LogEntry> getUnprocessed(JakeObject jakeObject) throws SQLException;
+	List<LogEntry> getUnprocessed(JakeObject jakeObject);
 
 	/**
 	 * Check if a <code>JakeObject</code> has unprocessed
@@ -81,7 +80,7 @@ public interface Log {
 	 * @return Whether unprocessed LogEntries of the JakeObject exist
 	 * @throws SQLException
 	 */
-	boolean hasUnprocessed(JakeObject jakeObject) throws SQLException;
+	boolean hasUnprocessed(JakeObject jakeObject);
 
 	/**
 	 * @return first LogEntry by timestamp that has not been processed yet
@@ -89,7 +88,7 @@ public interface Log {
 	 *             if there is no unprocessed <code>LogEntry</code>.
 	 * @throws SQLException
 	 */
-	LogEntry getNextUnprocessed() throws NoSuchLogEntryException, SQLException;
+	LogEntry getNextUnprocessed() throws NoSuchLogEntryException;
 
 	/**
 	 * Get all LogEntrys stored in the database for one <code>Project</code>.
@@ -99,7 +98,7 @@ public interface Log {
 	 * @return List of LogEntrys
 	 * @throws SQLException
 	 */
-	List<LogEntry> getAll(boolean includeUnprocessed) throws SQLException;
+	List<LogEntry> getAll(boolean includeUnprocessed);
 
 	/**
 	 * Get all LogEntrys stored in the database concerning a specific
@@ -113,7 +112,7 @@ public interface Log {
 	 * @throws SQLException
 	 */
 	List<LogEntry> getAllOfJakeObject(JakeObject jakeObject,
-			boolean includeUnprocessed) throws SQLException;
+		boolean includeUnprocessed);
 
 	/**
 	 * Retrieves the most recent <code>LogEntry</code> of any LogAction for a
@@ -130,8 +129,7 @@ public interface Log {
 	 * @throws SQLException
 	 */
 	LogEntry getLastOfJakeObject(JakeObject jakeObject,
-			boolean includeUnprocessed) throws NoSuchLogEntryException,
-			SQLException;
+		boolean includeUnprocessed) throws NoSuchLogEntryException;
 
 	/**
 	 * @param includeUnprocessed
@@ -140,8 +138,7 @@ public interface Log {
 	 *         {@link LogAction#JAKE_OBJECT_NEW_VERSION} later than that.
 	 * @throws SQLException
 	 */
-	List<JakeObject> getExistingFileObjects(boolean includeUnprocessed)
-			throws SQLException;
+	List<JakeObject> getExistingFileObjects(boolean includeUnprocessed);
 
 	/**
 	 * Gets the first {@link LogEntry}.
@@ -149,8 +146,7 @@ public interface Log {
 	 * @throws NoSuchLogEntryException
 	 * @throws SQLException
 	 */
-	public LogEntry getFirstEntry() throws NoSuchLogEntryException,
-			SQLException;
+	public LogEntry getFirstEntry() throws NoSuchLogEntryException;
 
 	/**
 	 * This methods sets all LogEntries with the same belongsTo object previous
@@ -159,6 +155,6 @@ public interface Log {
 	 * @param logEntry
 	 * @throws SQLException
 	 */
-	public void setAllPreviousProcessed(LogEntry logEntry) throws SQLException;
+	public void setAllPreviousProcessed(LogEntry logEntry);
 
 }

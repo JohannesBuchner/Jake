@@ -1,0 +1,68 @@
+        -------------------
+        Jake and others
+
+Difference between Jake and existing solutions
+
+  First we can make a distinction into
+  
+  [[a]] data replication / mirroring
+         
+         This means backup, copying into one direction. Only one actor is active.
+         
+         Examples for this category: Rsync, Dropbox
+  
+  [[b]] data synchronisation / version control
+  
+         This means multiple actors are active and there might be conflicts between versions.
+         
+         Examples for this category: Mercurial, git
+         
+         Jake is in this category.
+
+Unique to Jake
+
+  Looking for a product that provides version control and is
+  
+  * Secure
+  
+  * Open source
+  
+  * Cross-platform
+  
+  * Server-less
+  
+  What products are out there?
+  
+  We only know complex and clunky ones. 
+  
+  Maybe you know others?
+  
+
+Jake vs. Version control systems like svn, cvs, git, hg, ...
+
+   Jake does not keep old revisions itself, but keeps only a history of who did change what. 
+   Thus it is not as powerful as these tools. 
+   
+   Jake however has zero setup effort, and does not need you to have a central server.
+   
+   Jake is not intended for software developers, but for the average office 
+   computer user of other professions. 
+   
+   Jake intends to be hassle-free, easy to use and obvious.
+
+Jake vs. "Cloud services" such as Dropbox
+
+   Jake is distributed and does not have a central storage. 
+   This solves many security concerns and dependencies.
+   
+   There are privacy concerns attached to putting your data into 
+   someone elses hands. 
+   
+   It is very difficult for a company to prove their
+   systems are secure. This is especially true 
+   when their software is not open source.
+         
+   Jake is safer since the data is not stored on a server, but only at
+   the clients.
+
+

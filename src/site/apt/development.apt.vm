@@ -1,0 +1,80 @@
+        -----------
+        Development
+
+Become a contributer
+
+  Splendid, you would like to contribute!  Welcome to the team. 
+  
+  If you have questions, contact Johannes: {{{mailto:buchner.johannes@gmx.at} via email}} or {{{xmpp:buchner.johannes@amessage.at}via xmpp}} or {{{skype:johannes_buchner}via skype}}.
+  
+  You can also just go ahead and {{{http://jakeapp.git.sourceforge.net/}check out the code}},
+  or fork it on github.
+  
+Architecture
+
+  Jake is seperated into several components.
+  
+* violet
+  
+    Central is the <<violet>> core, the implementation of the synchronisation, the protocol, 
+    the log access, and all the user interactions (use cases).
+
+    Find violet at {{http://jakeapp.sourceforge.net/violet/}}.
+
+* GUI  
+
+    Currently a <<GUI>> based on swing is implemented to access violet. 
+
+    Find the gui at {{http://jakeapp.sourceforge.net/gui/}}.
+  
+    Several frontends are thinkable, for instance you could build a web interface.
+    Another frontend, primarily for testing, but possibly also for headless servers,
+    is the <commander>.
+
+    Find the commander at {{http://jakeapp.sourceforge.net/commander/}}.
+  
+* Libraries / Subprojects
+
+  Violet depends on several internal libraries:
+  
+** FSS 
+
+  FSS is the file-system-service, providing computer-independent
+  addressing of files within a folder. 
+  It also provides hashing, launching files, and watching for changes.
+
+  Find the fss at {{http://jakeapp.sourceforge.net/fss/}}.
+    
+** ICS
+
+  The ICS is a major component that provides low-level communication.
+      You can think of it as an interface to XMPP (the implementation for this 
+      is ICS-XMPP. A good description of the task of the ICS is given on its 
+      project website.
+      
+      Find the ics at {{http://jakeapp.sourceforge.net/ics/}}, and ics-xmpp 
+      at {{http://jakeapp.sourceforge.net/ics-xmpp/}}.
+  
+      It is completely thinkable to implement a, say, ICQ implementation of the 
+      ICS that could be used instead of the XMPP implementation.
+  
+** AvailableLater
+
+  AvailableLater (AVL) is a small library that provides a interface for
+  asynchronous calls.
+      
+  Find availablelater at {{http://jakeapp.sourceforge.net/availablelater/}}.
+  
+* External dependencies
+
+  Violet and the GUI also take advantage on several external libraries:
+  
+    * macwidgets -- for nice GUI widgets
+    
+    * jarsync -- for rsync-like delta transmission
+    
+    * ice4j -- a ICE/STUN NAT traversal library. 
+      This allows peer-to-peer connections through the internet.
+  
+
+

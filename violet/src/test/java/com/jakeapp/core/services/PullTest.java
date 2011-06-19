@@ -37,61 +37,30 @@ import com.jakeapp.jake.ics.impl.sockets.filetransfer.FileTransfer;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.test.SimpleFakeMessageExchanger;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
-import com.jakeapp.violet.actions.project.PullAction;
-import com.jakeapp.violet.actions.project.SimpleUserOrderStrategy;
+import com.jakeapp.violet.actions.global.serve.ProjectRequestListener;
+import com.jakeapp.violet.actions.project.interact.SimpleUserOrderStrategy;
+import com.jakeapp.violet.actions.project.interact.pull.PullAction;
 import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.Log;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
-import com.jakeapp.violet.synchronization.pull.ChangeListener;
-import com.jakeapp.violet.synchronization.request.MessageMarshaller;
-import com.jakeapp.violet.synchronization.request.ProjectRequestListener;
+import com.jakeapp.violet.protocol.msg.IMessageMarshaller;
+import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 
 public class PullTest extends TmpdirEnabledTestCase {
 
-	private final class TracingChangeListener implements ChangeListener {
-
-		@Override
-		public INegotiationSuccessListener beganRequest(JakeObject jo) {
-			tracer.step("beganRequest");
-			return null;
-		}
-
-		@Override
-		public void pullDone(JakeObject jo) {
-			tracer.step("pullDone");
-		}
-
-		@Override
-		public void pullFailed(JakeObject jo, Throwable reason) {
-			tracer.step("pullFailed");
-		}
-
-		@Override
-		public void pullNegotiationDone(JakeObject jo) {
-			tracer.step("pullNegotiationDone");
-		}
-
-		@Override
-		public void pullProgressUpdate(JakeObject jo, Status status,
-				double progress) {
-			tracer.step("pullProgressUpdate");
-		}
-
-	}
-
 	private static final Logger log = Logger.getLogger(PullTest.class);
 
-	private MessageMarshaller messageMarshaller = new MessageMarshaller();
+	private IMessageMarshaller messageMarshaller = new MessageMarshaller();
 
 	private JakeObject fo = new JakeObject("/my/path.txt");
 
 	private User member = new User("a@b");
 
 	private LogEntry le = new LogEntry(null, null, member, fo, "blabla", "bla",
-			true);
+		true);
 
 	@Mock
 	private IFileTransferService fileTransferService;
@@ -113,8 +82,8 @@ public class PullTest extends TmpdirEnabledTestCase {
 		fss.setRootPath(new ProjectDir(tmpdir));
 		when(model.getFss()).thenReturn(fss);
 		ICService icservice = new MockICService();
-		icservice.getStatusService().login(DI.getUserId(member.getUserId()), member.toString(), "foo",
-				0L);
+		icservice.getStatusService().login(DI.getUserId(member.getUserId()),
+			member.toString(), "foo", 0L);
 		when(model.getIcs()).thenReturn(icservice);
 		Log log = mock(Log.class);
 		when(model.getLog()).thenReturn(log);
@@ -133,11 +102,11 @@ public class PullTest extends TmpdirEnabledTestCase {
 		mockTransferMethod = new ITransferMethod() {
 
 			private final Logger log = Logger
-					.getLogger("Mocked ITransferMethod");
+				.getLogger("Mocked ITransferMethod");
 
 			@Override
 			public void request(final FileRequest inrequest,
-					INegotiationSuccessListener nsl) {
+				INegotiationSuccessListener nsl) {
 				log.debug("request: " + inrequest);
 
 				log.debug("declaring success");
@@ -147,7 +116,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 						this.request = inrequest;
 						this.localFile = file;
 						this.request.setData(new AdditionalFileTransferData(
-								this.localFile));
+							this.localFile));
 						this.status = Status.complete;
 						this.amountWritten = inrequest.getFileSize();
 					}
@@ -165,7 +134,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 			@Override
 			public void startServing(IncomingTransferListener l,
-					FileRequestFileMapper mapper) throws NotLoggedInException {
+				FileRequestFileMapper mapper) throws NotLoggedInException {
 
 			}
 
@@ -176,23 +145,24 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 		};
 
-		ITransferMethodFactory transferMethodFactory = new ITransferMethodFactory() {
+		ITransferMethodFactory transferMethodFactory =
+			new ITransferMethodFactory() {
 
-			@Override
-			public ITransferMethod getTransferMethod(
+				@Override
+				public ITransferMethod getTransferMethod(
 					IMsgService negotiationService, UserId user) {
-				return mockTransferMethod;
-			}
+					return mockTransferMethod;
+				}
 
-		};
+			};
 		SimpleFakeMessageExchanger sfme = new SimpleFakeMessageExchanger();
 		MockUserId backendUser = new MockUserId(member.getUserId());
 		model.getIcs().getStatusService()
-				.login(backendUser, backendUser.getUserId(), null, 0);
+			.login(backendUser, backendUser.getUserId(), null, 0);
 		IMsgService msg = sfme.addUser(backendUser);
 		fileTransferService = new FailoverCapableFileTransferService();
 		fileTransferService.addTransferMethod(transferMethodFactory, msg,
-				backendUser);
+			backendUser);
 
 		when(model.getTransfer()).thenReturn(fileTransferService);
 	}
@@ -203,12 +173,12 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 		Assert.assertNotNull(model.getLog().getLastOfJakeObject(fo, false));
 
-		PullAction action = new PullAction(model, fo,
-				new TracingChangeListener(), new SimpleUserOrderStrategy());
+		PullAction action =
+			new PullAction(model, fo, new SimpleUserOrderStrategy());
 		AvailableLaterWaiter.await(action);
 
 		Assert.assertTrue(tracer.await("pullNegotiationDone", 10,
-				TimeUnit.MILLISECONDS));
+			TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 		Assert.assertFalse(model.getFss().fileExists(fo.getRelPath()));
 	}
@@ -227,17 +197,17 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 		Assert.assertNotNull(model.getLog().getLastOfJakeObject(fo, true));
 
-		PullAction action = new PullAction(model, fo,
-				new TracingChangeListener(), new SimpleUserOrderStrategy());
+		PullAction action =
+			new PullAction(model, fo, new SimpleUserOrderStrategy());
 
 		AvailableLaterWaiter.await(action);
 		Assert.assertTrue(tracer.await("pullNegotiationDone", 10,
-				TimeUnit.MILLISECONDS));
+			TimeUnit.MILLISECONDS));
 		Assert.assertTrue(tracer.isDone());
 
 		Assert.assertTrue(model.getFss().fileExists(fo.getRelPath()));
 		Assert.assertEquals(tmpfile.length(),
-				model.getFss().getFileSize(fo.getRelPath()));
+			model.getFss().getFileSize(fo.getRelPath()));
 
 	}
 

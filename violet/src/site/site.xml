@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+	<version position="bottom" />
+	<publishDate position="bottom" />
+	<bannerLeft>
+		<name>${project.name}</name>
+		<href>index.html</href>
+	</bannerLeft>
+
+	<body>
+		<links>
+			<item name="Jake Home" href="http://jakeapp.sourceforge.net/" />
+		</links>
+		<menu name="General">
+			<item name="About Jake" href="index.html" />
+			<item name="Screenshots" href="screenshots.html" />
+			<item name="Download" href="download.html" />
+			<item name="Team" href="team-list.html" />
+		</menu>
+		<menu name="Features">
+			<item name="Features" href="features.html" />
+			<item name="Technical details" href="tech.html" />
+			<item name="Workflow" href="workflow.html" />
+			<item name="Security" href="security.html" />
+		</menu>
+		<menu name="For Developers">
+			<item name="Development" href="development.html" />
+			<item name="Architecture" href="development.html" />
+			<item name="Code Repository" href="development.html" />
+			<item name="License" href="license.html" />
+		</menu>
+	</body>
+</project>
+

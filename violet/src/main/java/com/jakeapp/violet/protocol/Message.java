@@ -3,9 +3,17 @@ package com.jakeapp.violet.protocol;
 import java.util.UUID;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.violet.model.User;
 
+/**
+ * A project-related message
+ */
 public abstract class Message {
+	public Message(UUID projectId, UserId user) {
+		super();
+		this.projectId = projectId;
+		this.user = user;
+	}
+
 	private UUID projectId;
 	private UserId user;
 

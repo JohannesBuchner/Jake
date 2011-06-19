@@ -10,7 +10,7 @@ import com.jakeapp.jake.fss.FSService;
 import com.jakeapp.jake.fss.HashValue;
 import com.jakeapp.jake.fss.ProjectDir;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
-import com.jakeapp.violet.actions.project.AttributedCalculator;
+import com.jakeapp.violet.actions.project.local.AttributedCalculator;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.Log;
 import com.jakeapp.violet.model.LogEntry;

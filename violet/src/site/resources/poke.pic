@@ -1,0 +1,17 @@
+.PS
+down
+C: box "active" fill 0.1 rad 0.25
+"\fB\f4\mkPoke\rt\ul\ul\ul\ul" at C + (2,0.5) 
+S: box "inactive" at C + (4,0) fill 0.1 rad 0.25
+C0: box "announce" at C - (0,1)
+line from C.s to C0.n "makes changes " rjust
+move to C0.s
+arrow
+C1: box "poke"
+S1: box "recv" at S - (0,2.5)
+arrow from C1.e to S1.w dashed "<poke/>" above
+move to S1.s
+arrow
+S2: box "logsync"
+arrow from S2.s to S2 - (4,1) dashed "\fI(see LogSync diagram)" below ljust
+.PE

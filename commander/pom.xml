@@ -6,6 +6,7 @@
 		<groupId>com.jakeapp.jake</groupId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
+	<url>http://jakeapp.sourceforge.net/commander/</url>
 	<artifactId>gui-console</artifactId>
 	<name>JakeCommander</name>
 	<dependencies>

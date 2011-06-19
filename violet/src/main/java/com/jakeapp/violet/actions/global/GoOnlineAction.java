@@ -7,7 +7,7 @@ import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.di.KnownProperty;
 import com.jakeapp.violet.model.User;
-import com.jakeapp.violet.protocol.ProjectInvitationHandler;
+import com.jakeapp.violet.protocol.invites.ProjectInvitationHandler;
 
 /**
  * Announces a <code>List</code> of <code>JakeObject</code>s.

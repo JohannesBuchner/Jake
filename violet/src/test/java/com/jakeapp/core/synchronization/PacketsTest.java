@@ -1,6 +1,6 @@
 package com.jakeapp.core.synchronization;
 
-import java.io.File;
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
@@ -15,16 +15,23 @@ import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.User;
-import com.jakeapp.violet.protocol.PokeMessage;
-import com.jakeapp.violet.protocol.RequestFileMessage;
-import com.jakeapp.violet.protocol.RequestLogsMessage;
-import com.jakeapp.violet.synchronization.request.MessageMarshaller;
+import com.jakeapp.violet.protocol.files.IRequestMarshaller;
+import com.jakeapp.violet.protocol.files.RequestFileMessage;
+import com.jakeapp.violet.protocol.files.RequestMarshaller;
+import com.jakeapp.violet.protocol.msg.ILogEntryMarshaller;
+import com.jakeapp.violet.protocol.msg.IMessageMarshaller;
+import com.jakeapp.violet.protocol.msg.PokeMessage;
+import com.jakeapp.violet.protocol.msg.impl.LogEntryMarshaller;
+import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 
 public class PacketsTest {
 
-	private static final String REQUEST_MSG = "00000000-0000-0015-0000-00000000002a.00000000-0000-002a-0000-000000000015";
+	private static final String REQUEST_MSG =
+		"00000000-0000-0015-0000-00000000002a.file.00000000-0000-002a-0000-000000000015";
 
-	private MessageMarshaller mm = new MessageMarshaller();
+	private IMessageMarshaller mm = new MessageMarshaller();
+	private ILogEntryMarshaller lm = new LogEntryMarshaller();
+	private IRequestMarshaller rm = new RequestMarshaller();
 
 	private UUID projectid = new UUID(21, 42);
 	private UUID leid = new UUID(42, 21);
@@ -45,55 +52,45 @@ public class PacketsTest {
 	}
 
 	@Test
-	public void testPoke() {
-		PokeMessage msg = new PokeMessage();
-		msg.setProjectId(projectid);
-		msg.setUser(userid);
-
-		Assert.assertEquals(
-				"<project>00000000-0000-0015-0000-00000000002a</project><poke/>",
-				mm.serialize(msg));
+	public void testPoke() throws IOException {
+		PokeMessage msg = PokeMessage.createPokeMessage(projectid, userid, le);
+		Assert.assertEquals("00000000-0000-0015-0000-00000000002a.",
+			mm.serialize(msg));
 	}
 
 	@Test
 	public void testRequestLogs() {
-		RequestLogsMessage msg = new RequestLogsMessage();
-		msg.setProjectId(projectid);
-		msg.setUser(userid);
-		Assert.assertEquals(
-				"<project>00000000-0000-0015-0000-00000000002a</project><requestlogs/>",
-				mm.serialize(msg));
+		RequestFileMessage msg =
+			RequestFileMessage.createRequestLogsMessage(projectid, userid);
+		Assert.assertEquals("00000000-0000-0015-0000-00000000002a.logs.",
+			rm.serialize(msg));
 	}
 
 	@Test
 	public void testRequestFile() {
-		RequestFileMessage msg = new RequestFileMessage();
-		msg.setProjectId(projectid);
-		msg.setUser(userid);
-		msg.setLogEntry(le);
-		Assert.assertEquals(REQUEST_MSG, mm.serialize(msg));
+		RequestFileMessage msg =
+			RequestFileMessage.createRequestFileMessage(projectid, userid, le);
+		Assert.assertEquals(REQUEST_MSG, rm.serialize(msg));
 	}
 
 	@Test
 	public void testDecodeUUIDRequestFile() {
-		Assert.assertEquals(le.getId(),
-				mm.getLogEntryUUIDFromRequestMessage(REQUEST_MSG));
+		RequestFileMessage req =
+			rm.decodeRequestFileMessage(REQUEST_MSG, userid);
+		Assert.assertEquals(le.getId(), UUID.fromString(req.getIdentifier()));
 	}
 
 	@Test
 	public void testDecodeProjectUUIDRequestFile() {
-		Assert.assertEquals(projectid,
-				mm.getProjectUUIDFromRequestMessage(REQUEST_MSG));
+		RequestFileMessage req =
+			rm.decodeRequestFileMessage(REQUEST_MSG, userid);
+		Assert.assertEquals(projectid, req.getProjectId());
 	}
 
 	@Test
 	public void testDecodeUUID_InvalidRequestFile() {
-		Assert.assertNull(mm.getLogEntryUUIDFromRequestMessage("blabla"));
-	}
-
-	@Test
-	public void testDecodeProjectUUID_InvalidRequestFile() {
-		Assert.assertNull(mm.getProjectUUIDFromRequestMessage("blabla"));
+		RequestFileMessage req = rm.decodeRequestFileMessage("blabla", userid);
+		Assert.assertNull(req);
 	}
 
 }

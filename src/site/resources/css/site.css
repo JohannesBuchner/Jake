@@ -1,0 +1,130 @@
+/* 
+
+  from http://colorschemedesigner.com/#0040ziyoow0w0
+ 
+ 1 = normal, 
+ 2 = bleak
+ 3 = dark
+ 4 = 5 = light
+
+red, violet, green-brown, green
+ */
+/*$navigationvisitedfg: $navigationfg;*/
+body {
+  color: black;
+  font-family: "Georgia","Times New Roman","Times","serif";
+  background: #171A0F;
+  background: #001100;
+  font-size: large; }
+  body #breadcrumbs {
+    background: #419b41;
+    border: 0; }
+  body #contentBox {
+    background: #001100;
+    margin-right: 0;
+    color: white; }
+
+table {
+  font-size: small; }
+
+a.externalLink {
+  color: #ab70c0; }
+
+a {
+  text-decoration: none;
+  color: white;
+  color: white; }
+
+a:hover {
+  color: #ab70c0; }
+
+a:visited {
+  color: #ab70c0; }
+
+h1, h2, h3, h4 {
+  margin: 0;
+  border-bottom: 1px solid white;
+  margin-bottom: 1em;
+  color: white;
+  background-color: #156515;
+  padding: 0.5em;
+  border: none; }
+
+.section {
+  padding: 1em;
+  padding-top: 0;
+  margin-top: 0;
+  margin-left: 1em; }
+
+h2 {
+  margin-right: 0;
+  background-color: #CCC;
+  background-color: #156515;
+  color: white; }
+
+h2:hover {
+  background-image: url("images/teaser_01.png");
+  background-position: right bottom;
+  background-repeat: no-repeat; }
+
+h3 {
+  color: #6d6d6d;
+  color: white;
+  background-color: #DDD;
+  background-color: #156515; }
+
+h4 {
+  color: white;
+  background-color: #EEE;
+  background-color: #156515; }
+
+#breadcrumbs, #breadcrumbs div {
+  margin: 0 0;
+  padding: 0 0; }
+
+#contentBox {
+  padding: 0; }
+
+.poweredBy {
+  display: none; }
+
+#navcolumn {
+  background-color: #999;
+  background-color: #000600;
+  color: white;
+  colro: white; }
+
+#navcolumn ul {
+  padding: 1em; }
+
+#navcolumn h5 {
+  font-family: "Trebuchet MS";
+  font-weight: bold;
+  font-size: xx-small;
+  font-variant: small-caps;
+  padding: 0;
+  margin-bottom: 0;
+  color: white; }
+
+#navcolumn li {
+  font-family: "Trebuchet MS";
+  font-size: small;
+  font-weight: bold;
+  background-color: #AAA;
+  background-color: #000600;
+  color: #b085c0; }
+
+#navcolumn li a {
+  display: block;
+  color: white; }
+
+#navcolumn li a:hover {
+  background-color: #431354;
+  color: #ab70c0; }
+
+#navcolumn li a:visited {
+  color: #ab70c0;
+  background-color: #000600; }
+
+table {
+  color: black; }

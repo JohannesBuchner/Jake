@@ -35,31 +35,32 @@ public class LogImpl implements Log {
 	}
 
 	@Override
-	public void connect() throws Exception {
+	public void connect() throws SQLException {
 		// open db
 		try {
 			Class.forName("org." + DI.getProperty(KnownProperty.JDBCDB)
-					+ ".Driver");
-			conn = DriverManager.getConnection(
-					"jdbc:" + DI.getProperty(KnownProperty.JDBCDB) + ":"
-							+ file.getAbsolutePath(),
-					DI.getProperty(KnownProperty.JDBCUSER),
-					DI.getProperty(KnownProperty.JDBCPASSWORD));
-			// if it doesn't exist:
-			Statement stmt = conn.createStatement();
-			// create schema of table
-			stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGTABLE));
-
-			stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGINDEXWHEN));
-			// create index on relpath
-			stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGINDEXWHAT));
-		} catch (Exception e) {
-			throw new IllegalStateException("could not initialize db", e);
+				+ ".Driver");
+		} catch (ClassNotFoundException e) {
+			throw new IllegalStateException(e);
 		}
+		conn =
+			DriverManager.getConnection(
+				"jdbc:" + DI.getProperty(KnownProperty.JDBCDB) + ":"
+					+ file.getAbsolutePath(),
+				DI.getProperty(KnownProperty.JDBCUSER),
+				DI.getProperty(KnownProperty.JDBCPASSWORD));
+		// if it doesn't exist:
+		Statement stmt = conn.createStatement();
+		// create schema of table
+		stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGTABLE));
+
+		stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGINDEXWHEN));
+		// create index on relpath
+		stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGINDEXWHAT));
 	}
 
 	@Override
-	public void disconnect() throws Exception {
+	public void disconnect() throws SQLException {
 		if (conn != null)
 			conn.close();
 		conn = null;
@@ -67,61 +68,75 @@ public class LogImpl implements Log {
 	}
 
 	@Override
-	public void add(LogEntry logEntry) throws SQLException {
+	public void add(LogEntry logEntry) {
 		PreparedStatement addStmt = getPrepared(KnownProperty.DB_INSERTLOG);
-		addStmt.setObject(0, logEntry.getId());
-		addStmt.setTimestamp(1, logEntry.getWhen());
-		addStmt.setString(2, logEntry.getWho().getUserId());
-		addStmt.setString(3, logEntry.getWhat().getRelPath());
-		addStmt.setString(4, logEntry.getWhy());
-		addStmt.setString(5, logEntry.getHow());
-		addStmt.setBoolean(6, logEntry.getKnown());
-		addStmt.execute();
+		try {
+			addStmt.setObject(0, logEntry.getId());
+			addStmt.setTimestamp(1, logEntry.getWhen());
+			addStmt.setString(2, logEntry.getWho().getUserId());
+			addStmt.setString(3, logEntry.getWhat().getRelPath());
+			addStmt.setString(4, logEntry.getWhy());
+			addStmt.setString(5, logEntry.getHow());
+			addStmt.setBoolean(6, logEntry.getKnown());
+			addStmt.execute();
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
+		}
 	}
 
 	@Override
 	public LogEntry getById(UUID uuid, boolean includeUnprocessed)
-			throws NoSuchLogEntryException, SQLException {
+		throws NoSuchLogEntryException {
 		PreparedStatement stmt = getPrepared(KnownProperty.DB_GETLOGBYID);
-		stmt.setObject(0, uuid);
-		stmt.setBoolean(1, includeUnprocessed);
-		ResultSet rs = stmt.executeQuery();
-		if (rs.next()) {
-			return resultToLogEntry(rs);
-		} else {
-			throw new NoSuchLogEntryException();
+		try {
+			stmt.setObject(0, uuid);
+			stmt.setBoolean(1, includeUnprocessed);
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				return resultToLogEntry(rs);
+			} else {
+				throw new NoSuchLogEntryException();
+			}
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
 		}
 	}
 
-	private LogEntry resultToLogEntry(ResultSet rs) throws SQLException {
-		return new LogEntry((UUID) rs.getObject(0), rs.getTimestamp(0),
+	private LogEntry resultToLogEntry(ResultSet rs) {
+		try {
+			return new LogEntry((UUID) rs.getObject(0), rs.getTimestamp(0),
 				new User(rs.getString(1)), new JakeObject(rs.getString(2)),
 				rs.getString(3), rs.getString(4), rs.getBoolean(5));
-	}
-
-	@Override
-	public void setProcessed(LogEntry logEntry) throws NoSuchLogEntryException,
-			SQLException {
-		PreparedStatement stmt = getPrepared(KnownProperty.DB_SETPROCESSEDBYID);
-		stmt.setObject(0, logEntry.getId());
-		if (stmt.executeUpdate() == 0) {
-			throw new NoSuchLogEntryException();
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
 		}
 	}
 
 	@Override
-	public List<LogEntry> getUnprocessed() throws SQLException {
+	public void setProcessed(LogEntry logEntry) throws NoSuchLogEntryException {
+		PreparedStatement stmt = getPrepared(KnownProperty.DB_SETPROCESSEDBYID);
+		try {
+			stmt.setObject(0, logEntry.getId());
+			if (stmt.executeUpdate() == 0) {
+				throw new NoSuchLogEntryException();
+			}
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
+		}
+	}
+
+	@Override
+	public List<LogEntry> getUnprocessed() {
 		return getAll(true, false, null);
 	}
 
 	@Override
-	public List<LogEntry> getUnprocessed(JakeObject jakeobject)
-			throws SQLException {
+	public List<LogEntry> getUnprocessed(JakeObject jakeobject) {
 		return getAll(true, false, jakeobject);
 	}
 
 	@Override
-	public boolean hasUnprocessed(JakeObject jakeObject) throws SQLException {
+	public boolean hasUnprocessed(JakeObject jakeObject) {
 		if (getUnprocessed(jakeObject).isEmpty())
 			return false;
 		else
@@ -129,8 +144,7 @@ public class LogImpl implements Log {
 	}
 
 	@Override
-	public LogEntry getNextUnprocessed() throws NoSuchLogEntryException,
-			SQLException {
+	public LogEntry getNextUnprocessed() throws NoSuchLogEntryException {
 		List<LogEntry> unprocessed = getUnprocessed();
 		if (unprocessed.isEmpty())
 			throw new NoSuchLogEntryException();
@@ -139,20 +153,23 @@ public class LogImpl implements Log {
 	}
 
 	private List<LogEntry> getAll(boolean includeUnprocessed,
-			boolean includeProcessed, JakeObject jo) throws SQLException {
-		PreparedStatement stmt = getStatement(includeUnprocessed,
-				includeProcessed, jo);
-		ResultSet rs = stmt.executeQuery();
-		ArrayList<LogEntry> all = new ArrayList<LogEntry>();
-		while (rs.next()) {
-			all.add(resultToLogEntry(rs));
+		boolean includeProcessed, JakeObject jo) {
+		PreparedStatement stmt =
+			getStatement(includeUnprocessed, includeProcessed, jo);
+		try {
+			ResultSet rs = stmt.executeQuery();
+			ArrayList<LogEntry> all = new ArrayList<LogEntry>();
+			while (rs.next()) {
+				all.add(resultToLogEntry(rs));
+			}
+			return all;
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
 		}
-		return all;
 	}
 
 	private LogEntry getLast(boolean includeUnprocessed,
-			boolean includeProcessed, JakeObject jo) throws SQLException,
-			NoSuchLogEntryException {
+		boolean includeProcessed, JakeObject jo) throws NoSuchLogEntryException {
 		List<LogEntry> all = getAll(includeUnprocessed, includeProcessed, jo);
 		if (all.isEmpty())
 			throw new NoSuchLogEntryException();
@@ -160,7 +177,7 @@ public class LogImpl implements Log {
 	}
 
 	private PreparedStatement getStatement(boolean includeUnprocessed,
-			boolean includeProcessed, JakeObject jo) throws SQLException {
+		boolean includeProcessed, JakeObject jo) {
 		PreparedStatement stmt = null;
 		if (jo == null) {
 			if (includeProcessed)
@@ -187,65 +204,70 @@ public class LogImpl implements Log {
 		if (stmt == null) {
 			if (!includeProcessed && !includeUnprocessed) {
 				throw new IllegalArgumentException(
-						"neither processed nor unprocessed? "
-								+ "you are asking for the impossible!");
+					"neither processed nor unprocessed? "
+						+ "you are asking for the impossible!");
 			}
 			throw new IllegalStateException("query not found!");
 		}
 		return stmt;
 	}
 
-	private Map<KnownProperty, PreparedStatement> queries = new HashMap<KnownProperty, PreparedStatement>();
-	private Set<ILogModificationListener> listeners = new HashSet<ILogModificationListener>();
+	private Map<KnownProperty, PreparedStatement> queries =
+		new HashMap<KnownProperty, PreparedStatement>();
+	private Set<ILogModificationListener> listeners =
+		new HashSet<ILogModificationListener>();
 
-	private PreparedStatement getPrepared(KnownProperty key)
-			throws SQLException {
+	private PreparedStatement getPrepared(KnownProperty key) {
 		PreparedStatement q = queries.get(key);
-		if (q == null) {
-			q = conn.prepareStatement(DI.getProperty(key));
-			queries.put(key, q);
+		try {
+			if (q == null) {
+				q = conn.prepareStatement(DI.getProperty(key));
+				queries.put(key, q);
+			}
+			return q;
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
 		}
-		return q;
 	}
 
 	@Override
-	public List<LogEntry> getAll(boolean includeUnprocessed)
-			throws SQLException {
+	public List<LogEntry> getAll(boolean includeUnprocessed) {
 		return getAll(includeUnprocessed, true, null);
 	}
 
 	@Override
 	public List<LogEntry> getAllOfJakeObject(JakeObject jakeObject,
-			boolean includeUnprocessed) throws SQLException {
+		boolean includeUnprocessed) {
 		return getAll(includeUnprocessed, true, jakeObject);
 	}
 
 	@Override
 	public LogEntry getLastOfJakeObject(JakeObject jakeObject,
-			boolean includeUnprocessed) throws NoSuchLogEntryException,
-			SQLException {
+		boolean includeUnprocessed) throws NoSuchLogEntryException {
 		return getLast(includeUnprocessed, true, jakeObject);
 	}
 
 	@Override
-	public List<JakeObject> getExistingFileObjects(boolean includeUnprocessed)
-			throws SQLException {
+	public List<JakeObject> getExistingFileObjects(boolean includeUnprocessed) {
 		PreparedStatement stmt;
 		if (includeUnprocessed)
 			stmt = getPrepared(KnownProperty.DB_GETRELPATHSPROCESSED);
 		else
 			stmt = getPrepared(KnownProperty.DB_GETRELPATHS);
-		ResultSet rs = stmt.executeQuery();
-		ArrayList<JakeObject> all = new ArrayList<JakeObject>();
-		while (rs.next()) {
-			all.add(new JakeObject(rs.getString(0)));
+		try {
+			ResultSet rs = stmt.executeQuery();
+			ArrayList<JakeObject> all = new ArrayList<JakeObject>();
+			while (rs.next()) {
+				all.add(new JakeObject(rs.getString(0)));
+			}
+			return all;
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
 		}
-		return all;
 	}
 
 	@Override
-	public LogEntry getFirstEntry() throws NoSuchLogEntryException,
-			SQLException {
+	public LogEntry getFirstEntry() throws NoSuchLogEntryException {
 		List<LogEntry> all = getAll(true, true, null);
 		if (all.isEmpty())
 			throw new NoSuchLogEntryException();
@@ -253,10 +275,15 @@ public class LogImpl implements Log {
 	}
 
 	@Override
-	public void setAllPreviousProcessed(LogEntry logEntry) throws SQLException {
-		PreparedStatement stmt = getPrepared(KnownProperty.DB_SETPROCESSEDFORWHAT);
-		stmt.setObject(0, logEntry.getWhat());
-		stmt.executeUpdate();
+	public void setAllPreviousProcessed(LogEntry logEntry) {
+		PreparedStatement stmt =
+			getPrepared(KnownProperty.DB_SETPROCESSEDFORWHAT);
+		try {
+			stmt.setObject(0, logEntry.getWhat());
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			throw new IllegalStateException(e);
+		}
 		for (ILogModificationListener l : this.listeners) {
 			l.logModified(logEntry.getWhat(), ModifyActions.MODIFIED);
 		}

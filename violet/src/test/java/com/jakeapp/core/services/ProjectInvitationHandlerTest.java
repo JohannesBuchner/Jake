@@ -15,8 +15,8 @@ import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.impl.xmpp.XmppUserId;
 import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.model.User;
-import com.jakeapp.violet.protocol.IProjectInvitationListener;
-import com.jakeapp.violet.protocol.ProjectInvitationHandler;
+import com.jakeapp.violet.protocol.invites.IProjectInvitationListener;
+import com.jakeapp.violet.protocol.invites.ProjectInvitationHandler;
 
 public class ProjectInvitationHandlerTest {
 	private ProjectInvitationHandler projectInvitationHandler;

@@ -1,0 +1,36 @@
+.PS
+down
+C: box "active" fill 0.1 rad 0.25
+"\fB\f4\mkLogSync\rt\ul\ul\ul\ul\ul\ul\ul\ul\ul" at C + (2,0.5) 
+S: box "inactive" at C + (4,0) fill 0.1 rad 0.25
+C1: box "logsync" at C - (0,1)
+line from C.s to C1.n
+S1: box "recv" at S - (0,1.5)
+arrow from C1.e to S1.w dashed "FileRequest logs" above
+move to S1.s
+arrow
+S2: box "collect logs"
+C2: box "recv" at S2 - (4,0.5)
+arrow from S2.w to C2.e dashed "UUID list request" above
+move to C2.s
+arrow
+C3: box "collect" at C2 - (0,1)
+"collecting relevant" rjust "log entries" rjust \
+	"for each file" rjust "last log entries" rjust "and number of log entries" rjust \
+	at C3  - (0.5,0) 
+S3: box "recv" at C3 + (4,-0.5)
+arrow from C3.e to S3.w dashed "UUID list" above
+move to S3.s
+arrow
+S4: box "collect logs"
+move to S4 + (0.5,0)
+"for each UUID, if also " ljust "have as many log entries " ljust \
+"and the received UUID " ljust "is the last --> ignore" ljust \
+"select all missing logs" ljust
+move to S4.s
+C4: box "recv" at S4 - (4,0.5)
+arrow from S4.w to C4.e dashed "log entries" above
+move to C4.s
+arrow
+C5: box "store"
+.PE

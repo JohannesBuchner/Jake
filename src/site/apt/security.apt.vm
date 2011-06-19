@@ -1,0 +1,47 @@
+        -------------------
+        Security and Safety
+
+Security and Safety
+
+* Data integrity
+
+   We use strong cryptographic hashes to make sure the version that was 
+   announced is the version you pull, even if the file was requested from a 
+   different peer.
+
+* Transfer security
+   
+   Files are transferred either 
+   
+     * Through XMPP in-band (lowest speed). 
+     
+       This is the same mechanism as if you sent a file through your IM client.
+     
+       All XMPP communication is TLS encrypted.
+
+       You may use your own XMPP server to keep your data internal.
+       
+     * If both are in the same local network, directly through TCP sockets. 
+     
+       In this case, the connection is AES encrypted.
+     
+     * Through Peer-to-Peer connections. 
+     
+       In this case, the connection is AES encrypted.
+   
+   These high encryption standards are common place in banking and data encryption.
+   There is no snake oil here, we use well-tested, proven and established mechanisms.
+   
+* File safety
+
+   Just continue to use your current backup mechanism as is to avoid the tears
+   of accidental deletes, pulls, overrides, etc.
+   
+   Also, Jake does not provide disk or file encryption, as this would be a 
+   stupid idea. 
+   There are other programs you can use in combination with Jake to achieve 
+   protection from data theft (e.g. stolen laptop).
+   
+
+
+

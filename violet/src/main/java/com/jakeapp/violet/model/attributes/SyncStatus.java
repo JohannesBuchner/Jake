@@ -3,7 +3,7 @@
  */
 package com.jakeapp.violet.model.attributes;
 
-import com.jakeapp.violet.actions.project.SyncStatusCalculator;
+import com.jakeapp.violet.actions.project.local.SyncStatusCalculator;
 
 public enum SyncStatus {
 	/** no difference **/

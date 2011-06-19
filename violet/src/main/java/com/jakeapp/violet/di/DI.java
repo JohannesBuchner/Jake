@@ -14,7 +14,7 @@ import com.jakeapp.violet.gui.Projects;
 import com.jakeapp.violet.model.JsonProjectPreferences;
 import com.jakeapp.violet.model.ProjectPreferences;
 import com.jakeapp.violet.model.User;
-import com.jakeapp.violet.synchronization.request.MessageMarshaller;
+import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 
 public class DI {
 	private static HashMap<Class, Creator> map = new HashMap<Class, Creator>();

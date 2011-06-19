@@ -1,0 +1,30 @@
+        -------------------
+        Technical Features
+
+Technical features
+  
+  Jake is a client application for collaboratively working on a folder.
+  
+  Here is an indepth explanation of how Jake works.
+
+* Jake communication
+
+** XMPP
+  
+   Jake connects to the XMPP/Google talk server where your account is 
+   and behaves similar to a IM client (but does not try to replace it).
+   
+   The smack library helps us with that.
+
+** Peer-to-Peer File transfers
+
+   File transfers between clients occur peer-to-peer (with the negotiation of IP addresses over XMPP), or, as a last resort.
+
+   The ice4j library helps us with that.
+
+** Smart File transfers
+
+   Jake uses the same mechanisms as <rsync>, to only transmit changes in files. So if you change 1 byte in a 1GB file, only the change will be transmitted.
+
+   The jarsync library helps us with that.
+
