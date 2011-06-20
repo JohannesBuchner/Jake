@@ -78,7 +78,7 @@
 	<distributionManagement>
 		<site>
 			<id>sourceforge</id>
-			<url>scp://shell.sourceforge.net/home/project-web/jakeapp/htdocs/violet</url>
+			<url>scp://shell.sourceforge.net/home/project-web/jakeapp/htdocs/jake</url>
 		</site>
 		<repository>
 			<id>sourceforge</id>
@@ -178,6 +178,9 @@
 						<reports>
 							<report>project-team</report>
 							<report>license</report>
+							<report>scm</report>
+							<report>dependencies</report>
+							<report>summary</report>
 						</reports>
 					</reportSet>
 				</reportSets>

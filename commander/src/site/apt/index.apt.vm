@@ -1,0 +1,16 @@
+          --------------------
+          About the Commander
+          --------------------
+
+About the Commander
+
+  The commander (or gui-console) is a text-based interface to Jake.
+
+  It is meant mainly for testing, demonstration of features and automation.
+  
+  However, it supports all commands of Jake.
+  
+  In the future, it is possible that it can be useful as a headless client
+  for jake, mirroring and re-distributing changes.
+  
+

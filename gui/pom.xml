@@ -2,14 +2,30 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<artifactId>parent</artifactId>
 		<groupId>com.jakeapp.jake</groupId>
+		<artifactId>jake-parent</artifactId>
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>gui-swing</artifactId>
 	<name>jake swing-gui frontend</name>
 	<version>1.0-SNAPSHOT</version>
 	<url>http://jakeapp.sourceforge.net/gui/</url>
+	<repositories>
+		<repository>
+			<id>igetdb</id>
+			<url>http://igetdb.sourceforge.net/maven2-repository/</url>
+		</repository>
+		<repository>
+			<id>jboss</id>
+			<url>http://repository.jboss.org/maven2/</url>
+		</repository>
+	</repositories>
+	<distributionManagement>
+		<site>
+			<id>sourceforge</id>
+			<url>scp://shell.sourceforge.net/home/project-web/jakeapp/htdocs/gui</url>
+		</site>
+	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>com.jakeapp.jake</groupId>
@@ -32,14 +48,15 @@
 			<version>0.9.5</version>
 		</dependency>
 		<dependency>
-			<groupId>org.mobicents.external.appframework</groupId>
+			<!--<groupId>org.mobicents.external.appframework</groupId>-->
+			<groupId>net.java.dev.appframework</groupId>
 			<artifactId>appframework</artifactId>
-			<version>1.0.3</version>
+			<version>1.03</version>
 		</dependency>
 		<dependency>
 			<groupId>com.explodingpixels</groupId>
 			<artifactId>macwidgets</artifactId>
-			<version>r251-jake</version>
+			<version>svn-HEAD-20110620.055304-1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.miglayout</groupId>
@@ -102,18 +119,6 @@
 				</configuration>
 			</plugin>
 			<plugin>
-				<groupId>org.dstovall</groupId>
-				<artifactId>onejar-maven-plugin</artifactId>
-				<version>1.2.3</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>one-jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>exec-maven-plugin</artifactId>
 				<version>1.1</version>
@@ -143,6 +148,24 @@
 					<source>1.6</source>
 					<target>1.6</target>
 				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.2.1</version>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

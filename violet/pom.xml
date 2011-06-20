@@ -20,6 +20,12 @@
 		</license>
 	</licenses>
 	<url>http://jakeapp.sourceforge.net/violet/</url>
+	<distributionManagement>
+		<site>
+			<id>sourceforge</id>
+			<url>scp://shell.sourceforge.net/home/project-web/jakeapp/htdocs/violet</url>
+		</site>
+	</distributionManagement>
 	<dependencies>
 		<dependency>
 			<groupId>com.jakeapp.jake</groupId>
