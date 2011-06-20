@@ -20,7 +20,7 @@ public abstract class Passwords extends Observable implements Model {
 	 *            User id
 	 * @return null if not found
 	 */
-	protected abstract String loadForUser(String user);
+	public abstract String loadForUser(String user);
 
 	/**
 	 * save password
@@ -31,7 +31,7 @@ public abstract class Passwords extends Observable implements Model {
 	 *            Password
 	 * @throws IOException
 	 */
-	protected abstract void storeForUser(String user, String pw)
+	public abstract void storeForUser(String user, String pw)
 			throws IOException;
 
 	/**
@@ -41,6 +41,6 @@ public abstract class Passwords extends Observable implements Model {
 	 *            User id
 	 * @throws IOException
 	 */
-	protected abstract void forgetForUser(String user) throws IOException;
+	public abstract void forgetForUser(String user) throws IOException;
 
 }

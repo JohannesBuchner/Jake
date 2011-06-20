@@ -4,35 +4,107 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterWaiter;
-import com.jakeapp.core.dao.exceptions.NoSuchLogEntryException;
-import com.jakeapp.core.domain.Account;
-import com.jakeapp.core.domain.FileObject;
-import com.jakeapp.core.domain.JakeObject;
-import com.jakeapp.core.domain.LogAction;
-import com.jakeapp.core.domain.NoteObject;
-import com.jakeapp.core.domain.Project;
-import com.jakeapp.core.domain.ProtocolType;
-import com.jakeapp.core.domain.User;
-import com.jakeapp.core.domain.logentries.LogEntry;
-import com.jakeapp.core.services.IFrontendService;
-import com.jakeapp.core.services.IProjectsManagingService;
-import com.jakeapp.core.services.MsgService;
-import com.jakeapp.core.synchronization.IFriendlySyncService;
-import com.jakeapp.core.synchronization.attributes.Attributed;
-import com.jakeapp.core.util.SpringThreadBroker;
 import com.jakeapp.gui.console.commandline.LazyCommand;
-import com.jakeapp.jake.ics.exceptions.NotLoggedInException;
+import com.jakeapp.jake.fss.ProjectDir;
+import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
+import com.jakeapp.violet.actions.global.CreateAccountAction;
+import com.jakeapp.violet.actions.global.CreateDeleteProjectAction;
+import com.jakeapp.violet.actions.global.GetProjectsAction;
+import com.jakeapp.violet.actions.global.GoOnlineAction;
+import com.jakeapp.violet.actions.global.LoginView;
+import com.jakeapp.violet.actions.global.StartProjectAction;
+import com.jakeapp.violet.actions.global.StopProjectAction;
+import com.jakeapp.violet.actions.global.SuggestUsersToInviteAction;
+import com.jakeapp.violet.actions.project.InviteUserAction;
+import com.jakeapp.violet.actions.project.UserInfo;
+import com.jakeapp.violet.actions.project.interact.AnnounceAction;
+import com.jakeapp.violet.actions.project.interact.PokeAction;
+import com.jakeapp.violet.actions.project.interact.SimpleUserOrderStrategy;
+import com.jakeapp.violet.actions.project.interact.UserOrderStrategy;
+import com.jakeapp.violet.actions.project.interact.pull.DownloadAction;
+import com.jakeapp.violet.actions.project.interact.pull.PullAction;
+import com.jakeapp.violet.actions.project.local.FileInfoAction;
+import com.jakeapp.violet.actions.project.local.GetAllLogEntriesAction;
+import com.jakeapp.violet.actions.project.local.GetLogEntriesAction;
+import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.gui.JsonPasswords;
+import com.jakeapp.violet.gui.JsonProjects;
+import com.jakeapp.violet.gui.Passwords;
+import com.jakeapp.violet.gui.Projects;
+import com.jakeapp.violet.model.Context;
+import com.jakeapp.violet.model.JakeObject;
+import com.jakeapp.violet.model.LogEntry;
+import com.jakeapp.violet.model.User;
+import com.jakeapp.violet.model.attributes.Attributed;
 
 /**
  * Test client accepting cli input
  */
 public class JakeCommander extends Commander {
+
+	private Context project;
+
+	private ProjectDir projectDir;
+
+	private User user;
+
+	private String inviteProjectName;
+
+	private UUID inviteProjectId;
+
+	private User inviteProjectUser;
+
+	private UserOrderStrategy userorder = new SimpleUserOrderStrategy();
+
+	private Passwords wallet = new JsonPasswords(new File("jake.passwords"));
+
+	private LoginView loginView = new LoginView() {
+
+		@Override
+		public void invited(User inviter, String name, UUID id) {
+			inviteProjectName = name;
+			inviteProjectId = id;
+			inviteProjectUser = user;
+		}
+
+		@Override
+		public void onlineStatusChanged(UserId userid) {
+			System.out.println("online status of " + userid.getUserId()
+					+ " changed");
+		}
+
+		@Override
+		public void connectionStateChanged(ConnectionState le, Exception ex) {
+			System.out.println("connection state changed to " + le);
+			if (ex != null)
+				ex.printStackTrace();
+		}
+	};
+
+	public static final String jakeName = "Jake";
+
+	@Override
+	protected void onShutdown() {
+		//
+	}
+
+	public static final String namespace = "http://jakeapp.com/protocols/xmpp/versions/2";
+
+	@Override
+	protected void onStartup() {
+		DI.register(Projects.class, new JsonProjects(new File("jake.projects")));
+		DI.register(ICService.class, new XmppICService(namespace, jakeName ));
+	}
+
 
 	public JakeCommander(String[] args) {
 		super(args);
@@ -53,91 +125,53 @@ public class JakeCommander extends Commander {
 	@SuppressWarnings("unused")
 	private final static Logger log = Logger.getLogger(JakeCommander.class);
 
-	@Override
-	protected void onShutdown() {
-		SpringThreadBroker.stopInstance();
-	}
 
-	@Override
-	protected void onStartup() {
-		startupCore();
-	}
+	private abstract class LazyUserCommand extends LazyCommand {
 
-	private String sessionId;
-
-	private IFrontendService frontend;
-
-	private IProjectsManagingService pms;
-
-	private IFriendlySyncService sync;
-
-	@SuppressWarnings("unchecked")
-	private MsgService msg;
-
-	public Project project;
-	public User invitingUser;
-
-	private void startupCore() {
-		SpringThreadBroker.getInstance().loadSpring(
-				new String[] { "/com/jakeapp/core/applicationContext.xml" });
-		frontend = (IFrontendService) SpringThreadBroker.getInstance().getBean(
-				"frontendService");
-
-		try {
-			sessionId = frontend.authenticate(new HashMap<String, String>(), new PrintingChangeListener());
-			pms = frontend.getProjectsManagingService(sessionId);
-			sync = frontend.getSyncService(sessionId);
-
-
-			/* // TODO InvitationListeners are now registered with the corresponding messageService directly.
-			// the core msgServiceManager automatically adds the correct one for the core. the gui adds its
-			 // own after login. do however you want it here..*/
-			/*msg.registerInvitationListener(new IProjectInvitationListener(){
-
-				@Override
-				public void invited(User user, Project p) {
-					System.out.println("got invitation from " + user + " to " + p);
-					JakeCommander.this.project = p;
-					JakeCommander.this.invitingUser = user;
-				}
-
-				@Override
-				public void accepted(User user, Project p) {
-					System.out.println("got accept from " + user + " to " + p);
-				}
-
-				@Override
-				public void rejected(User user, Project p) {
-					System.out.println("got reject from " + user + " to " + p);
-				}
-				
-			});
-			*/
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	private abstract class LazyOtherUserCommand extends LazyCommand {
-		public LazyOtherUserCommand(String command) {
+		public LazyUserCommand(String command) {
 			super(command, command + " <UserID>");
 		}
 
-		public LazyOtherUserCommand(String command, String help) {
+		public LazyUserCommand(String command, String help) {
 			super(command, command + " <UserID>", help);
 		}
 
 		public boolean handleArguments(String[] args) {
-			if(args.length != 2) return false;
-			if(project == null) return false;
+			if (args.length != 2)
+				return false;
+			if (project == null)
+				return false;
 
-			handleArguments(args[1]);
+			handleArguments(new User(args[1]));
 
 			return true;
 		}
 
-		public abstract void handleArguments(String userid);
+		public abstract void handleArguments(User user);
+	}
+
+	private abstract class LazyJakeObjectCommand extends LazyCommand {
+
+		public LazyJakeObjectCommand(String command) {
+			this(command, "");
+		}
+
+		public LazyJakeObjectCommand(String command, String help) {
+			super(command, command + " <file>", help);
+		}
+
+		public boolean handleArguments(String[] args) {
+			if (args.length != 2)
+				return false;
+			if (project == null)
+				return false;
+
+			handleArguments(new JakeObject(args[1]));
+
+			return true;
+		}
+
+		protected abstract void handleArguments(JakeObject jo);
 	}
 
 	private abstract class LazyProjectDirectoryCommand extends LazyCommand {
@@ -155,25 +189,52 @@ public class JakeCommander extends Commander {
 			if (args.length != 2)
 				return false;
 			if (project != null) {
-				System.out.println("this command doesn't work with a project set");
+				System.out
+						.println("this command doesn't work with a project set");
 				return true;
 			}
-			File projectFolder = new File(args[1]);
-			if (!(projectFolder.exists() && projectFolder.isDirectory())) {
-				System.out.println("not a directory");
-				return true;
-			}
+			ProjectDir projectFolder = new ProjectDir(args[1]);
 			handleArguments(projectFolder);
 			return true;
 		}
 
-		protected abstract void handleArguments(File folder);
+		protected abstract void handleArguments(ProjectDir folder);
 
 	}
 
-	private abstract class LazyProjectDirectoryCommandThatDoesNotNeedProject extends LazyCommand {
+	private abstract class LazyNoParamsCommand extends LazyCommand {
 
-		public LazyProjectDirectoryCommandThatDoesNotNeedProject(String command, String help) {
+		public LazyNoParamsCommand(String command, String help) {
+			super(command, command, help);
+		}
+
+		public LazyNoParamsCommand(String command) {
+			super(command, command);
+		}
+
+		@Override
+		final public boolean handleArguments(String[] args) {
+			if (args.length != 1)
+				return false;
+			if (project != null) {
+				System.out
+						.println("this command doesn't work with a project set");
+				return true;
+			}
+			handleArguments();
+			return true;
+		}
+
+		protected abstract void handleArguments();
+
+	}
+
+
+	private abstract class LazyProjectDirectoryCommandThatDoesNotNeedProject
+			extends LazyCommand {
+
+		public LazyProjectDirectoryCommandThatDoesNotNeedProject(
+				String command, String help) {
 			super(command, command + " <Folder>", help);
 		}
 
@@ -198,81 +259,10 @@ public class JakeCommander extends Commander {
 
 	}
 
-	private abstract class LazyJakeObjectCommand extends LazyCommand {
+	class SetLoginCommand extends LazyCommand {
 
-		public LazyJakeObjectCommand(String command, String help) {
-			super(command, command + " <UUID>", "needs Project;" + help);
-		}
-
-		public LazyJakeObjectCommand(String command) {
-			super(command, command + " <UUID>");
-		}
-		
-		@Override
-		final public boolean handleArguments(String[] args) {
-			if (args.length != 2)
-				return false;
-			UUID uuid;
-			try {
-				uuid = UUID.fromString(args[1]);
-			} catch (IllegalArgumentException e) {
-				return false;
-			}
-			if (project == null) {
-				System.out.println("no project");
-				return true;
-			}
-			
-			try {
-				for (NoteObject f : AvailableLaterWaiter.await(pms.getAllProjectNotes(project))) {
-					if (uuid.equals(f.getUuid())) {
-						handleArguments(f);
-						return true;
-					}
-				}
-
-				for (FileObject f : AvailableLaterWaiter.await(pms.getAllProjectFiles(project))) {
-					if (uuid.equals(f.getUuid())) {
-						handleArguments(f);
-						return true;
-					}
-				}
-			} catch (Exception e) {
-				e.printStackTrace(System.err);
-			}
-
-			return true;
-		}
-
-		protected abstract void handleArguments(JakeObject jo);
-	}
-
-	private abstract class LazyNoParamsCommand extends LazyCommand {
-
-		public LazyNoParamsCommand(String command, String help) {
-			super(command, command, help);
-		}
-
-		public LazyNoParamsCommand(String command) {
-			super(command, command);
-		}
-
-		@Override
-		final public boolean handleArguments(String[] args) {
-			if (args.length != 1)
-				return false;
-			handleArguments();
-			return true;
-		}
-
-		protected abstract void handleArguments();
-
-	}
-
-	class CreateAccountCommand extends LazyCommand {
-
-		public CreateAccountCommand() {
-			super("createAccount", "createAccount <xmppid> <password>",
+		public SetLoginCommand() {
+			super("setLogin", "setLogin <xmppid> <password>",
 					"provides a MsgService");
 		}
 
@@ -280,162 +270,82 @@ public class JakeCommander extends Commander {
 		public boolean handleArguments(String[] args) {
 			if (args.length != 3)
 				return false;
+
 			String id = args[1];
 			String password = args[2];
-			Account cred = new Account(id, password,
-					ProtocolType.XMPP);
+
 			try {
-				AvailableLaterWaiter.await(frontend.createAccount(sessionId, cred));
-				System.out.println("got the MsgService");
-			} catch (Exception e) {
+				wallet.storeForUser(id, password);
+				user = new User(id);
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			return true;
 		}
 	}
 
-	class CoreLoginCommand extends LazyCommand {
+	// createProject deleteProject getProjects goOnline startProject stopProject
+	// suggestInvite
 
-		public CoreLoginCommand() {
-			super("coreLogin", "coreLogin <xmppid> <password>", "provides a MsgService");
+	class CreateAccountCommand extends LazyCommand {
+
+		public CreateAccountCommand() {
+			super("createAccount", "createAccount <xmppid>",
+					"provides a MsgService");
 		}
 
 		@Override
 		public boolean handleArguments(String[] args) {
-			if (args.length != 3)
+			if (args.length != 2)
 				return false;
-
 			String id = args[1];
-			String password = args[2];
-			Account cred = new Account(id, password,
-					ProtocolType.XMPP);
+			String password = wallet.loadForUser(id);
 			try {
-				msg = frontend.addAccount(sessionId, cred);
-				System.out.println("got the MsgService");
+				AvailableLaterWaiter.await(new CreateAccountAction(
+						new User(id), password));
+				user = new User(id);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			return true;
-		}
-	}
-
-	class CoreLogoutCommand extends LazyNoParamsCommand {
-
-		public CoreLogoutCommand() {
-			super("coreLogout", "removes the MsgService");
-		}
-
-		@Override
-		public void handleArguments() {
-			try {
-				frontend.logout(sessionId);
-				msg = null;
-				System.out.println("MsgService deleted. use stop now");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	class LoginCommand extends LazyNoParamsCommand {
-
-		public LoginCommand() {
-			super("login", "needs a MsgService");
-		}
-
-		@Override
-		public void handleArguments() {
-			if (msg == null) {
-				System.out.println("do a coreLogin first");
-			}
-			try {
-				System.out.println("logging in ...");
-				Account credentials = new Account();
-				credentials.setProtocol(ProtocolType.XMPP);
-				Boolean result = AvailableLaterWaiter.await(frontend.login(sessionId, msg,
-								credentials, null));
-				if (result) {
-					System.out.println("logged in");
-				} else {
-					System.out.println("login returned false");
-				}
-				System.out.println("logging in done");
-			} catch (Exception e) {
-				System.out.println("logging in failed");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	class LogoutCommand extends LazyNoParamsCommand {
-
-		public LogoutCommand() {
-			super("logout", "needs a MsgService");
-		}
-
-		@Override
-		public void handleArguments() {
-			try {
-				System.out.println("logging out ...");
-				msg.logout();
-				System.out.println("logging out done");
-			} catch (Exception e) {
-				System.out.println("logging out failed");
-				e.printStackTrace();
-			}
 		}
 	}
 
 	class CreateProjectCommand extends LazyProjectDirectoryCommand {
 
 		public CreateProjectCommand() {
-			super("createProject", "needs a MsgService; provides a open project");
+			super("createProject",
+					"needs a MsgService; provides a open project");
 		}
 
 		@Override
-		public void handleArguments(File projectFolder) {
-			if (msg == null) {
-				System.out.println("needs a MsgService!");
-				return;
-			}
+		public void handleArguments(ProjectDir projectFolder) {
 			try {
-				System.out.println("creating project ...");
-				project = pms.createProject(projectFolder.getName(), projectFolder
-						.getAbsolutePath(), msg);
-
-				System.out.println("creating project done");
+				AvailableLaterWaiter.await(new CreateDeleteProjectAction(
+						projectFolder, false));
 			} catch (Exception e) {
-				System.out.println("creating project failed");
 				e.printStackTrace();
 			}
 		}
 	}
 
-	class DeleteProjectCommand extends LazyCommand {
+	class DeleteProjectCommand extends LazyProjectDirectoryCommand {
 
 		public DeleteProjectCommand() {
-			super("deleteProject", "deleteProject [andFiles]",
-					"needs a open project; optionally deletes files in folder");
+			super("deleteProject", "deleteProject");
 		}
 
 		@Override
-		public boolean handleArguments(String[] args) {
-			boolean deleteFiles;
-			if (args.length == 1)
-				deleteFiles = false;
-			else if (args.length == 2 && "andFiles".equals(args[1]))
-				deleteFiles = true;
-			else
-				return false;
+		public void handleArguments(ProjectDir projectFolder) {
 			try {
 				System.out.println("deleting project ...");
-				pms.deleteProject(project, deleteFiles);
+				AvailableLaterWaiter.await(new CreateDeleteProjectAction(
+						projectFolder, false));
 				System.out.println("deleting project done");
 			} catch (Exception e) {
 				System.out.println("deleting project failed");
 				e.printStackTrace();
 			}
-			return true;
 		}
 	}
 
@@ -449,28 +359,104 @@ public class JakeCommander extends Commander {
 		public void handleArguments() {
 			try {
 				System.out.println("closing project ...");
-				pms.closeProject(project);
+				AvailableLaterWaiter.await(new StopProjectAction(project
+						.getModel()));
 				project = null;
 				System.out.println("closing project done");
 			} catch (Exception e) {
-				System.out.println("listing projects failed");
+				System.out.println("closing project failed");
 				e.printStackTrace();
 			}
 		}
 	}
 
-	class OpenProjectCommand extends LazyProjectDirectoryCommand {
+	class OpenProjectCommand extends LazyNoParamsCommand {
 
 		public OpenProjectCommand() {
 			super("openProject", "provides a open project");
 		}
 
 		@Override
-		protected void handleArguments(File folder) {
+		protected void handleArguments() {
 			try {
 				System.out.println("opening project");
-				project = new Project(folder.getName(), UUID.randomUUID(), msg, folder);
-				pms.openProject(project);
+				project = AvailableLaterWaiter.await(new StartProjectAction(
+						projectDir));
+				System.out.println("opening project done");
+			} catch (Exception e) {
+				System.out.println("opening project failed");
+				e.printStackTrace();
+			}
+		}
+	}
+
+	class GoOnlineCommand extends LazyNoParamsCommand {
+
+		public GoOnlineCommand() {
+			super("goOnline", "goes online");
+		}
+
+		@Override
+		protected void handleArguments() {
+			String pw = wallet.loadForUser(user.getUserId());
+			try {
+				AvailableLaterWaiter.await(new GoOnlineAction(user, pw, -1,
+						false, loginView));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	class GoOfflineCommand extends LazyNoParamsCommand {
+
+		public GoOfflineCommand() {
+			super("goOffline", "goes offline");
+		}
+
+		@Override
+		protected void handleArguments() {
+			try {
+				AvailableLaterWaiter.await(new GoOnlineAction(user, null, -1,
+						true, loginView));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	class StartProjectCommand extends LazyNoParamsCommand {
+
+		public StartProjectCommand() {
+			super("startProject", "goes online with the project");
+		}
+
+		@Override
+		protected void handleArguments() {
+			try {
+				System.out.println("opening project");
+				project = AvailableLaterWaiter.await(new StartProjectAction(
+						projectDir));
+				System.out.println("opening project done");
+			} catch (Exception e) {
+				System.out.println("opening project failed");
+				e.printStackTrace();
+			}
+		}
+	}
+
+	class StopProjectCommand extends LazyNoParamsCommand {
+
+		public StopProjectCommand() {
+			super("stopProject", "goes offline with the project");
+		}
+
+		@Override
+		protected void handleArguments() {
+			try {
+				System.out.println("opening project");
+				AvailableLaterWaiter.await(new StopProjectAction(project
+						.getModel()));
 				System.out.println("opening project done");
 			} catch (Exception e) {
 				System.out.println("opening project failed");
@@ -489,7 +475,10 @@ public class JakeCommander extends Commander {
 		public void handleArguments() {
 			try {
 				System.out.println("listing projects:");
-				for (Project p : pms.getProjectList(msg)) {
+				Collection<ProjectDir> list = AvailableLaterWaiter
+						.await(new GetProjectsAction());
+
+				for (ProjectDir p : list) {
 					System.out.println("\t" + p);
 				}
 				System.out.println("listing projects done");
@@ -501,81 +490,59 @@ public class JakeCommander extends Commander {
 	}
 
 	class SelectFirstProjectCommand extends LazyNoParamsCommand {
+
 		public SelectFirstProjectCommand() {
-			super("selectFirstProject", "Selects (\"opens\") the first project that exists" +
-					" locally - sort of like opening, but not really opening. Get it?");
+			super(
+					"selectFirstProject",
+					"Selects (\"opens\") the first project that exists"
+							+ " locally - sort of like opening, but not really opening. Get it?");
 		}
 
 		@Override
 		public void handleArguments() {
 			try {
-				for (Project p : pms.getProjectList(msg)) {
-					project = p;
+				Collection<ProjectDir> list = AvailableLaterWaiter
+						.await(new GetProjectsAction());
+
+				for (ProjectDir p : list) {
+					projectDir = p;
 					break;
 				}
 			} catch (Exception e) {
-				System.err.println("EPIC FAIL trying to load project:");
 				e.printStackTrace(System.err);
 			}
 
-			if(project == null) {
-				System.err.println("THE PROJECT! IT DOES NOT EXIST! THE HUMANITY!");
+			if (project == null) {
+				System.err.println("No project found!");
 				return;
 			}
-
-			System.out.println("Project " + project.getProjectId() + " is now selected!");
+			System.out.println("Project " + projectDir + " is now selected!");
 		}
 	}
 
 	class UnSelectProjectCommand extends LazyNoParamsCommand {
+
 		public UnSelectProjectCommand() {
-			super("unselectProject", "Unselects (\"closes\") the current project");
+			super("unselectProject",
+					"Unselects (\"closes\") the current project");
 		}
 
 		@Override
 		public void handleArguments() {
-			project = null;
-
+			projectDir = null;
 			System.out.println("Project is now null!");
-		}
-	}
-
-	class StartProjectCommand extends LazyNoParamsCommand {
-
-		public StartProjectCommand() {
-			super("startProject", "provides an started project");
-		}
-
-		@Override
-		public void handleArguments() {
-			try {
-				System.out.println("starting project ...");
-				if (project == null) {
-					System.out.println("no project");
-					return;
-				}
-
-				System.out.println("\t" + project);
-				pms.startProject(project);
-				System.out.println("starting project done");
-			} catch (Exception e) {
-				System.out.println("starting project failed");
-				project = null;
-				e.printStackTrace();
-			}
 		}
 	}
 
 	class StatusCommand extends LazyNoParamsCommand {
 
 		public StatusCommand() {
-			super("status", "shows whether a msgservice/project/etc. is opened");
+			super("status", "shows which project/etc. is opened");
 		}
 
 		@Override
 		public void handleArguments() {
 			System.out.println("Project available: " + project);
-			System.out.println("MsgService available: " + msg);
 		}
 	}
 
@@ -594,7 +561,7 @@ public class JakeCommander extends Commander {
 			}
 		}
 	}
-	
+
 	class ListInvitableCommand extends LazyNoParamsCommand {
 
 		public ListInvitableCommand() {
@@ -605,8 +572,12 @@ public class JakeCommander extends Commander {
 		public void handleArguments() {
 			try {
 				System.out.println("listing ...");
-				for(User p : pms.getSuggestedPeopleForInvite(project)) {
-					System.out.println("\t" + p);
+				Collection<UserInfo> users = AvailableLaterWaiter
+						.await(new SuggestUsersToInviteAction(user));
+				for (UserInfo p : users) {
+					System.out.println("\t" + p.getUserid() + " - "
+							+ p.getFirstName() + " " + p.getLastName() + " ("
+							+ p.getNickName() + ")");
 				}
 				System.out.println("listing done");
 			} catch (Exception e) {
@@ -619,7 +590,8 @@ public class JakeCommander extends Commander {
 	class InviteCommand extends LazyCommand {
 
 		public InviteCommand() {
-			super("invite", "invite <xmppid>", "needs MsgService; needs Project");
+			super("invite", "invite <xmppid>",
+					"needs MsgService; needs Project");
 		}
 
 		@Override
@@ -627,9 +599,12 @@ public class JakeCommander extends Commander {
 			if (args.length != 2)
 				return false;
 			try {
-				System.out.println("inviting ...");
-				pms.invite(project, args[1]);
-				System.out.println("inviting done");
+				if (AvailableLaterWaiter.await(new InviteUserAction(project
+						.getModel())))
+					System.out.println("invitation sent");
+				else
+					System.out.println("invitation couldn't be sent");
+
 			} catch (Exception e) {
 				System.out.println("inviting failed");
 				e.printStackTrace();
@@ -638,94 +613,6 @@ public class JakeCommander extends Commander {
 		}
 	}
 
-/*
-	class AcceptInviteCommand extends LazyProjectDirectoryCommandThatDoesNotNeedProject {
-
-		public AcceptInviteCommand() {
-			super("acceptInvite", "needs MsgService; accepts first invited project");
-		}
-
-		@Override
-		public void handleArguments(File projectFolder) {
-			// TODO: this doesn't loop - bug?
-			for (Project p : pms.getProjectList(InvitationState.INVITED)) {
-				project = p;
-				break;
-			}
-			if (project == null) {
-				System.out.println("no projects where we are invited found.");
-				return;
-			}
-			project.setRootPath(projectFolder);
-			try {
-				System.out.println("joining ...");
-				pms.acceptInvitation(new Invitation(project, null), projectFolder); // TODO insert real inviter here.
-				System.out.println("joining done");
-			} catch (Exception e) {
-				System.out.println("joining failed");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	class RejectInviteCommand extends LazyNoParamsCommand {
-
-		public RejectInviteCommand() {
-			super("rejectInvite", "needs MsgService; reject first invited project");
-		}
-
-		@Override
-		public void handleArguments() {
-			for (Project p : pms.getProjectList(InvitationState.INVITED)) {
-				project = p;
-				break;
-			}
-			if (project == null) {
-				System.out.println("no projects where we are invited found.");
-				return;
-			}
-			try {
-				System.out.println("joining ...");
-				pms.rejectInvitation(new Invitation(project, invitingUser));
-			
-				System.out.println("joining done");
-			} catch (Exception e) {
-				System.out.println("joining failed");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	class ListObjectsCommand extends LazyNoParamsCommand {
-
-		public ListObjectsCommand() {
-			super("listObjects", "needs Project");
-		}
-		
-		@Override
-		public void handleArguments() {
-			AvailableLaterObject<Collection<FileObject>> avail;
-			
-			if (project == null) {
-				System.out.println("no project");
-				return;
-			}
-			try {
-				System.out.println("listing objects ...");
-				for (NoteObject f : AvailableLaterWaiter.await(pms.getAllProjectNotes(project))) {
-					System.out.println("\t" + f);
-				}
-				for (FileObject f : AvailableLaterWaiter.await(pms.getAllProjectFiles(project))){
-					System.out.println("\t" + f);
-				}
-				System.out.println("listing objects done");
-			} catch (Exception e) {
-				System.out.println("listing objects failed");
-				e.printStackTrace();
-			}
-		}
-	}
-*/
 	class AnnounceCommand extends LazyJakeObjectCommand {
 
 		public AnnounceCommand() {
@@ -736,8 +623,9 @@ public class JakeCommander extends Commander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("announcing ... ");
-				sync.announce(jo, LogAction.JAKE_OBJECT_NEW_VERSION,
-						"something new, something blue");
+				AvailableLaterWaiter
+						.await(new AnnounceAction(project.getModel(), jo,
+								"something new, something blue", false));
 				System.out.println("announcing done");
 			} catch (Exception e) {
 				System.out.println("announcing failed");
@@ -756,8 +644,8 @@ public class JakeCommander extends Commander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("deleting ... ");
-				sync.announce(jo, LogAction.JAKE_OBJECT_DELETE,
-						"something new, something red");
+				AvailableLaterWaiter.await(new AnnounceAction(project
+						.getModel(), jo, "something new, something red", true));
 				System.out.println("deleting done");
 			} catch (Exception e) {
 				System.out.println("deleting failed");
@@ -766,57 +654,26 @@ public class JakeCommander extends Commander {
 		}
 	}
 
-	class LockCommand extends LazyJakeObjectCommand {
+	class PokeCommand extends LazyUserCommand {
 
-		public LockCommand() {
-			super("lock");
-		}
-
-		@Override
-		public void handleArguments(JakeObject jo) {
-			try {
-				System.out.println("locking ... ");
-				sync
-						.announce(jo, LogAction.JAKE_OBJECT_LOCK,
-								"I'm working on this. Please wait for me to finish or contact me");
-				System.out.println("locking done");
-			} catch (Exception e) {
-				System.out.println("locking failed");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	class UnLockCommand extends LazyJakeObjectCommand {
-
-		public UnLockCommand() {
-			super("unlock");
-		}
-
-		@Override
-		public void handleArguments(JakeObject jo) {
-			try {
-				System.out.println("unlocking ... ");
-				sync.announce(jo, LogAction.JAKE_OBJECT_UNLOCK,
-						"I'm done working on this.");
-				System.out.println("unlocking done");
-			} catch (Exception e) {
-				System.out.println("unlocking failed");
-				e.printStackTrace();
-			}
-		}
-	}
-
-	class PokeCommand extends LazyOtherUserCommand {
 		public PokeCommand() {
-			super("poke", "Poke another user (inform them that it would be a good time to fetch our logs). " +
-					"Needs an open project.");
+			super(
+					"poke",
+					"Poke another user (inform them that it would be a good time to fetch our logs). "
+							+ "Needs an open project.");
 		}
 
 		@Override
-		public void handleArguments(String userid) {
-			System.out.println("Poking " + userid + "...");
-			sync.poke(project, new User(ProtocolType.XMPP, userid));
+		public void handleArguments(User other) {
+			try {
+				System.out.println("Poking " + other + "...");
+				AvailableLaterWaiter.await(new PokeAction(project.getModel(),
+						other));
+				System.out.println("poking done");
+			} catch (Exception e) {
+				System.out.println("poking failed");
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -830,7 +687,9 @@ public class JakeCommander extends Commander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("listing log ... ");
-				for (LogEntry<?> le : pms.getLog(jo)) {
+				Collection<LogEntry> list = AvailableLaterWaiter
+						.await(new GetLogEntriesAction(project.getModel(), jo));
+				for (LogEntry le : list) {
 					System.out.println("\t" + le);
 				}
 				System.out.println("listing log done");
@@ -852,10 +711,11 @@ public class JakeCommander extends Commander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("getting JakeObject status ... ");
-				Attributed status = sync.getJakeObjectSyncStatus(jo);
+				Attributed status = AvailableLaterWaiter.await(
+						new FileInfoAction(project.getModel(), Arrays
+								.asList(jo))).get(0);
 				System.out.println("\t" + jo);
 				System.out.println("\t\t" + status);
-				System.out.println("\t\t" + sync.getLock(jo));
 				System.out.println("getting JakeObject status done");
 			} catch (Exception e) {
 				System.out.println("getting JakeObject status failed");
@@ -874,15 +734,10 @@ public class JakeCommander extends Commander {
 		public void handleArguments(JakeObject jo) {
 			try {
 				System.out.println("modifying the JakeObject ... ");
-				if (jo instanceof NoteObject) {
-					NoteObject no = (NoteObject) jo;
-					no.setContent(no.getContent() + "\n" + "more content ...");
-					pms.saveNote(no);
-				} else {
-					FileWriter fw = new FileWriter(sync.getFile((FileObject) jo), true);
-					fw.append('.');
-					fw.close();
-				}
+				FileWriter fw = new FileWriter(project.getModel().getFss()
+						.getFullpath(jo.getRelPath()), true);
+				fw.append('.');
+				fw.close();
 				System.out.println("modifying the JakeObject done");
 			} catch (Exception e) {
 				System.out.println("modifying the JakeObject failed");
@@ -901,7 +756,9 @@ public class JakeCommander extends Commander {
 		public void handleArguments() {
 			try {
 				System.out.println("listing project log ... ");
-				for (LogEntry<?> le : pms.getLog(project)) {
+				Collection<LogEntry> list = AvailableLaterWaiter
+						.await(new GetAllLogEntriesAction(project.getModel()));
+				for (LogEntry le : list) {
 					System.out.println("\t" + le);
 				}
 				System.out.println("listing project log done");
@@ -915,22 +772,44 @@ public class JakeCommander extends Commander {
 	class PullCommand extends LazyJakeObjectCommand {
 
 		public PullCommand() {
-			super("pull", "Pulls a JakeObject (duh!)");
+			super("pull", "Pulls a JakeObject");
 		}
 
 		@Override
 		protected void handleArguments(JakeObject jo) {
 			System.out.println("Starting to pull...");
 			try {
-				sync.pullObject(jo);
-				System.out.println("Finished pulling...");
-			} catch (NoSuchLogEntryException e) {
-				System.out.println("FAILED to pull!");
-				e.printStackTrace();
-			} catch (NotLoggedInException e) {
-				System.out.println("FAILED to pull!");
+				AvailableLaterWaiter.await(new PullAction(project.getModel(),
+						jo, userorder));
+				System.out.println("pull succeeded...");
+			} catch (Exception e) {
+				System.out.println("pull failed!");
 				e.printStackTrace();
 			}
 		}
 	}
+
+
+	class DownloadCommand extends LazyJakeObjectCommand {
+
+		public DownloadCommand() {
+			super("download",
+					"Downloads a JakeObject without storing it in the project folder");
+		}
+
+		@Override
+		protected void handleArguments(JakeObject jo) {
+			System.out.println("Starting to download...");
+			try {
+				File f = AvailableLaterWaiter.await(new DownloadAction(project
+						.getModel(), jo, userorder));
+				System.out.println("downloaded succeeded... file provided at "
+						+ f.getAbsolutePath());
+			} catch (Exception e) {
+				System.out.println("download failed!");
+				e.printStackTrace();
+			}
+		}
+	}
+
 }

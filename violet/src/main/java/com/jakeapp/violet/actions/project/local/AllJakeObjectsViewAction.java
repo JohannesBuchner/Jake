@@ -1,7 +1,6 @@
 package com.jakeapp.violet.actions.project.local;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +34,7 @@ public class AllJakeObjectsViewAction extends
 
 	public AllJakeObjectsViewAction(ProjectModel model) {
 		this.model = model;
-		this.view = new AllJakeObjectsView(model, objects);
+		this.view = new AllJakeObjectsView(objects);
 		this.model.getFss().addModificationListener(this);
 		this.model.getLog().addModificationListener(this);
 	}

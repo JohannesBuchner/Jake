@@ -35,20 +35,20 @@ public class JsonPasswords extends Passwords {
 	}
 
 	@Override
-	protected String loadForUser(String user) {
+	public String loadForUser(String user) {
 		Map<String, String> map = load();
 		return map.get(user);
 	}
 
 	@Override
-	protected void storeForUser(String user, String pw) throws IOException {
+	public void storeForUser(String user, String pw) throws IOException {
 		Map<String, String> map = load();
 		map.put(user, pw);
 		store(map);
 	}
 
 	@Override
-	protected void forgetForUser(String user) throws IOException {
+	public void forgetForUser(String user) throws IOException {
 		Map<String, String> map = load();
 		map.remove(user);
 		store(map);

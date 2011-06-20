@@ -22,7 +22,7 @@ public class AllJakeObjectsView {
 
 	private HashSet<IJakeObjectModificationListener> listeners = new HashSet<IJakeObjectModificationListener>();
 
-	public AllJakeObjectsView(ProjectModel model, Set<JakeObject> initial) {
+	public AllJakeObjectsView(Set<JakeObject> initial) {
 		this.objects = initial;
 	}
 
