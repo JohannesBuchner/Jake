@@ -11,6 +11,29 @@ About the Commander
   However, it supports all commands of Jake.
   
   In the future, it is possible that it can be useful as a headless client
-  for jake, mirroring and re-distributing changes.
+  for jake, mirroring and re-distributing changes to aid availability of files
+  and connectivity between users.
   
+  
+        Implementation Notes:
+        
+        The standard commander should suffice and be extended to support these 
+        functions. Automatically doing log-syncs on startup and login/logout,
+        auto-pull, etc. are options that should be supported.
 
+
+  A modified version of the commander ("Archiver") could fetch all versions and keep them,
+  e.g. allowing a delivery of the archive through the web.
+  
+  
+        Implementation Notes:
+        
+        A modified commander would be necessary: 
+        On every logsync, when changes come in, the log should be written
+        as a html file. The hash then links to a directory, where all files
+        are stored under their hash name.
+        Incoming changes and changes whose file is not in that directory
+        are downloaded from the client and stored.
+        
+        
+        
