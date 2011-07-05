@@ -2,11 +2,12 @@ package com.jakeapp.violet.actions.global;
 
 import java.util.Collection;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.ProjectDir;
-import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.gui.Projects;
 
 /**
@@ -18,7 +19,8 @@ public class GetProjectsAction extends
 
 	private static final Logger log = Logger.getLogger(GetProjectsAction.class);
 
-	private Projects projects = DI.getImpl(Projects.class);
+	@Inject
+	private Projects projects;
 
 	public GetProjectsAction() {
 		super();

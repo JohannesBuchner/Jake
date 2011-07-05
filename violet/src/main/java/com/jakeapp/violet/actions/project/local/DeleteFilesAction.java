@@ -2,6 +2,9 @@ package com.jakeapp.violet.actions.project.local;
 
 import java.util.Collection;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
@@ -9,10 +12,7 @@ import com.jakeapp.availablelater.AvailableLaterWaiter;
 import com.jakeapp.availablelater.StatusUpdate;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.violet.actions.project.interact.AnnounceAction;
-import com.jakeapp.violet.di.DI;
-import com.jakeapp.violet.di.KnownProperty;
 import com.jakeapp.violet.model.JakeObject;
-import com.jakeapp.violet.model.Log;
 import com.jakeapp.violet.model.ProjectModel;
 
 /**
@@ -26,13 +26,15 @@ public class DeleteFilesAction extends AvailableLaterObject<Void> {
 
 	private ProjectModel model;
 
-	private boolean trash;
-
 	private int totalSteps;
 
 	private int stepsDone;
 
 	private String why;
+
+	@Named("use trash")
+	@Inject
+	private boolean useTrash;
 
 	public DeleteFilesAction(ProjectModel model,
 			Collection<JakeObject> toDelete, String why) {
@@ -42,9 +44,6 @@ public class DeleteFilesAction extends AvailableLaterObject<Void> {
 		totalSteps = toDelete.size() + 1;
 		stepsDone = 1;
 		this.setStatus(new StatusUpdate(totalSteps * 1. / stepsDone, "init"));
-		this.trash = true;
-		if ("false".equals(DI.getProperty(KnownProperty.USE_TRASH)))
-			this.trash = false;
 	}
 
 	/**
@@ -58,7 +57,7 @@ public class DeleteFilesAction extends AvailableLaterObject<Void> {
 			AvailableLaterWaiter
 					.await(new AnnounceAction(model, fo, why, true));
 
-			if (trash) {
+			if (useTrash) {
 				fss.trashFile(fo.getRelPath());
 			} else {
 				fss.deleteFile(fo.getRelPath());

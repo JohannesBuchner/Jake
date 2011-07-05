@@ -9,7 +9,6 @@ import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
 import com.jakeapp.jake.ics.status.IStatusService;
-import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.model.User;
 
 public class CreateAccountActionTest {
@@ -19,6 +18,8 @@ public class CreateAccountActionTest {
 	private User user = new User("me@localhost");
 
 	private CreateAccountAction action;
+
+	private MockUserIdFactory userids = new MockUserIdFactory();
 
 	@Before
 	public void setUp() throws Exception {
@@ -30,12 +31,12 @@ public class CreateAccountActionTest {
 		IStatusService status = Mockito.mock(IStatusService.class);
 		Mockito.when(ics.getStatusService()).thenReturn(status);
 
-		DI.register(ICService.class, ics);
 		action = new CreateAccountAction(user, pw);
+		action.setIcs(ics);
+		action.setUserids(userids);
 
 		AvailableLaterWaiter.await(action);
-		Mockito.verify(status)
-				.createAccount(DI.getUserId(user.getUserId()), pw);
+		Mockito.verify(status).createAccount(userids.get(user.getUserId()), pw);
 		Mockito.verifyNoMoreInteractions(status);
 	}
 
@@ -48,8 +49,9 @@ public class CreateAccountActionTest {
 				.createAccount((UserId) Mockito.any(), Mockito.eq(pw));
 		Mockito.when(ics.getStatusService()).thenReturn(status);
 
-		DI.register(ICService.class, ics);
 		action = new CreateAccountAction(user, pw);
+		action.setIcs(ics);
+		action.setUserids(userids);
 
 		AvailableLaterWaiter.await(action);
 		Mockito.verifyNoMoreInteractions(status);

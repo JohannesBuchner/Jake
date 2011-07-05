@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.actions.global.MockUserIdFactory;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.User;
@@ -28,9 +28,9 @@ public class PacketsTest {
 
 	private static final String REQUEST_MSG = "00000000-0000-0015-0000-00000000002a.file.00000000-0000-002a-0000-000000000015";
 
-	private IMessageMarshaller mm = new MessageMarshaller();
-
 	private ILogEntryMarshaller lm = new LogEntryMarshaller();
+
+	private IMessageMarshaller mm = new MessageMarshaller(lm);
 
 	private IRequestMarshaller rm = new RequestMarshaller();
 
@@ -55,7 +55,7 @@ public class PacketsTest {
 	@Before
 	public void setup() {
 		le = new LogEntry(leid, time, user, fo, commitmsg, hash, true);
-		userid = DI.getUserId(user.getUserId());
+		userid = new MockUserIdFactory().get(user.getUserId());
 	}
 
 	@Test

@@ -12,8 +12,7 @@ import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
 import com.jakeapp.violet.actions.project.UserInfo;
-import com.jakeapp.violet.di.DI;
-import com.jakeapp.violet.model.User;
+import com.jakeapp.violet.model.ProjectModel;
 
 /**
  * Announces a <code>List</code> of <code>JakeObject</code>s.
@@ -24,12 +23,11 @@ public class SuggestUsersToInviteAction extends
 	private static final Logger log = Logger
 			.getLogger(SuggestUsersToInviteAction.class);
 
-	private User user;
 
-	private ICService ics;
+	private ProjectModel model;
 
-	public SuggestUsersToInviteAction(User user) {
-		this.user = user;
+	public SuggestUsersToInviteAction(ProjectModel model) {
+		this.model = model;
 	}
 
 	/**
@@ -37,7 +35,7 @@ public class SuggestUsersToInviteAction extends
 	 */
 	@Override
 	public Collection<UserInfo> calculate() throws Exception {
-		this.ics = DI.getICService(user);
+		ICService ics = model.getIcs();
 		IUsersService users = ics.getUsersService();
 		IStatusService status = ics.getStatusService();
 		List<UserInfo> infos = new ArrayList<UserInfo>();

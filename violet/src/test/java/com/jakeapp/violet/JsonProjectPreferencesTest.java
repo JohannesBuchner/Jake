@@ -8,21 +8,10 @@ import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
-import com.jakeapp.availablelater.AvailableLaterWaiter;
-import com.jakeapp.jake.ics.ICService;
-import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
-import com.jakeapp.violet.actions.global.CreateAccountAction;
-import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.model.JsonProjectPreferences;
-import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.ProjectModelImpl;
-import com.jakeapp.violet.model.ProjectPreferences;
-import com.jakeapp.violet.model.User;
 
 public class JsonProjectPreferencesTest extends TmpdirEnabledTestCase {
 

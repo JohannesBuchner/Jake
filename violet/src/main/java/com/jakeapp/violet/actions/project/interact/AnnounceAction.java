@@ -1,25 +1,18 @@
 package com.jakeapp.violet.actions.project.interact;
 
-import java.io.IOException;
-import java.sql.Timestamp;
-import java.util.UUID;
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.HashValue;
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.exceptions.NoSuchUseridException;
-import com.jakeapp.jake.ics.exceptions.OtherUserOfflineException;
-import com.jakeapp.jake.ics.exceptions.TimeoutException;
-import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.IUserIdFactory;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.protocol.msg.IMessageMarshaller;
 import com.jakeapp.violet.protocol.msg.PokeMessage;
-import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 
 /**
  * Announces a <code>List</code> of <code>JakeObject</code>s.
@@ -36,8 +29,11 @@ public class AnnounceAction extends AvailableLaterObject<Void> {
 
 	private boolean delete;
 
-	private IMessageMarshaller messageMarshaller = DI
-			.getImpl(IMessageMarshaller.class);
+	@Inject
+	private IMessageMarshaller messageMarshaller;
+
+	@Inject
+	private IUserIdFactory userids;
 
 	public AnnounceAction(ProjectModel model, JakeObject what, String why,
 			boolean delete) {
@@ -67,7 +63,7 @@ public class AnnounceAction extends AvailableLaterObject<Void> {
 
 	private void notifyUser(LogEntry le, UserId u) {
 		PokeMessage msg = PokeMessage.createPokeMessage(model.getProjectid(),
-				DI.getUserId(model.getUserid()), le);
+				userids.get(model.getUserid()), le);
 		try {
 			model.getIcs().getMsgService()
 					.sendMessage(u, messageMarshaller.serialize(msg));

@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.jakeapp.jake.fss.ProjectDir;
@@ -15,15 +19,28 @@ import com.jakeapp.jake.fss.ProjectDir;
  */
 public class JsonProjects extends Projects {
 
+	private static final Logger log = Logger.getLogger(JsonProjects.class);
+
 	private File f;
 
 	private ObjectMapper objectMapper = new ObjectMapper();
+
+	@Inject
+	public JsonProjects(@Named("Global_Settings dir") File d,
+			@Named("Projects Json file") String f) {
+		this(new File(d, f));
+	}
 
 	public JsonProjects(File f) {
 		super();
 		if (f == null)
 			throw new NullPointerException();
 		this.f = f;
+		try {
+			load();
+		} catch (IOException e) {
+			log.info("could not load existing projects (may be first run).", e);
+		}
 	}
 
 	@Override

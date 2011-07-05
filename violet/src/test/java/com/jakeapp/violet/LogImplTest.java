@@ -1,10 +1,8 @@
 package com.jakeapp.violet;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.UUID;
 
 import junit.framework.Assert;
@@ -13,13 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
-import com.jakeapp.violet.di.DI;
-import com.jakeapp.violet.di.KnownProperty;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.Log;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.LogImpl;
-import com.jakeapp.violet.model.ProjectModelImpl;
 import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.model.exceptions.NoSuchLogEntryException;
 
@@ -53,10 +48,8 @@ public class LogImplTest extends TmpdirEnabledTestCase {
 	public void setUp() throws Exception {
 		super.setup();
 
-		String filename = DI.getProperty(KnownProperty.PROJECT_FILENAMES_LOG);
-
-		f = new File(tmpdir, filename);
-		LogImpl log = new LogImpl();
+		f = new File(tmpdir, "test.db");
+		LogImpl log = new LogImpl(f);
 		log.setFile(tmpdir);
 		Assert.assertFalse(f.exists());
 		this.log = log;

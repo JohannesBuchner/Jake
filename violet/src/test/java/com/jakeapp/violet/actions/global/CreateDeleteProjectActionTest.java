@@ -6,13 +6,7 @@ import org.mockito.Mockito;
 
 import com.jakeapp.availablelater.AvailableLaterWaiter;
 import com.jakeapp.jake.fss.ProjectDir;
-import com.jakeapp.jake.ics.ICService;
-import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.jake.ics.status.IStatusService;
-import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.gui.Projects;
-import com.jakeapp.violet.model.User;
 
 public class CreateDeleteProjectActionTest {
 
@@ -28,8 +22,8 @@ public class CreateDeleteProjectActionTest {
 	public void testCreate() throws Exception {
 		Projects projects = Mockito.mock(Projects.class);
 
-		DI.register(Projects.class, projects);
 		action = new CreateDeleteProjectAction(dir, false);
+		action.setProjects(projects);
 
 		AvailableLaterWaiter.await(action);
 		Mockito.verify(projects).add(dir);
@@ -40,8 +34,8 @@ public class CreateDeleteProjectActionTest {
 	public void testDelete() throws Exception {
 		Projects projects = Mockito.mock(Projects.class);
 
-		DI.register(Projects.class, projects);
 		action = new CreateDeleteProjectAction(dir, true);
+		action.setProjects(projects);
 
 		AvailableLaterWaiter.await(action);
 		Mockito.verify(projects).remove(dir);

@@ -1,5 +1,6 @@
 package com.jakeapp.core.synchronization;
 
+import java.io.File;
 import java.sql.SQLException;
 
 import org.junit.After;
@@ -45,9 +46,7 @@ public class TestSyncService extends TmpdirEnabledTestCase {
 
 		fss = new FSService();
 		fss.setRootPath(new ProjectDir(tmpdir));
-		LogImpl log = new LogImpl();
-		log.setFile(tmpdir);
-		this.log = log;
+		this.log = new LogImpl(new File(tmpdir, "test.db"));
 	}
 
 	@After

@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.jake.ics.UserId;
-import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.protocol.msg.ILogEntryMarshaller;
 import com.jakeapp.violet.protocol.msg.IMessageMarshaller;
@@ -24,8 +23,11 @@ public class MessageMarshaller implements IMessageMarshaller {
 
 	private static Logger log = Logger.getLogger(MessageMarshaller.class);
 
-	private ILogEntryMarshaller logEntryMarshaller = DI
-			.getImpl(LogEntryMarshaller.class);
+	private ILogEntryMarshaller logEntryMarshaller;
+
+	public MessageMarshaller(ILogEntryMarshaller logEntryMarshaller) {
+		this.logEntryMarshaller = logEntryMarshaller;
+	}
 
 	/*
 	 * (non-Javadoc)

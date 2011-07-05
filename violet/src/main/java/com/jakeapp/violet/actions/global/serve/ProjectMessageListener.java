@@ -1,22 +1,22 @@
 package com.jakeapp.violet.actions.global.serve;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.protocol.Message;
 import com.jakeapp.violet.protocol.msg.IMessageMarshaller;
 import com.jakeapp.violet.protocol.msg.PokeMessage;
-import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 
 public class ProjectMessageListener implements IMessageReceiveListener {
 
 	private static Logger log = Logger.getLogger(ProjectMessageListener.class);
 
-	private IMessageMarshaller messageMarshaller = DI
-			.getImpl(IMessageMarshaller.class);
+	@Inject
+	private IMessageMarshaller messageMarshaller;
 
 	private ProjectModel model;
 
@@ -24,7 +24,6 @@ public class ProjectMessageListener implements IMessageReceiveListener {
 
 	public ProjectMessageListener(ProjectModel model, ISyncListener listener) {
 		this.listener = listener;
-		this.messageMarshaller = DI.getImpl(MessageMarshaller.class);
 		this.model = model;
 	}
 

@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.concurrent.Semaphore;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 import org.metastatic.rsync.Rdiff;
 
@@ -21,7 +23,7 @@ import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
-import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.IUserIdFactory;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.ProjectModel;
@@ -50,8 +52,11 @@ class FileRequestAction extends AvailableLaterObject<File> {
 
 	protected IFileTransfer fileTransfer;
 
-	private IRequestMarshaller requestMarshaller = DI
-			.getImpl(IRequestMarshaller.class);
+	@Inject
+	private IRequestMarshaller requestMarshaller;
+
+	@Inject
+	private IUserIdFactory userids;
 
 	private LogEntry logEntry;
 
@@ -127,7 +132,7 @@ class FileRequestAction extends AvailableLaterObject<File> {
 
 	@Override
 	public File calculate() throws Exception {
-		UserId user = DI.getUserId(peer.getUserId());
+		UserId user = userids.get(peer.getUserId());
 
 		if (model.getFss().fileExists(jo.getRelPath())) {
 			log.debug("requesting a delta");

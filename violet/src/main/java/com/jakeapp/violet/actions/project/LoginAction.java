@@ -1,5 +1,7 @@
 package com.jakeapp.violet.actions.project;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
@@ -8,8 +10,7 @@ import com.jakeapp.violet.actions.global.LoginView;
 import com.jakeapp.violet.actions.global.serve.ISyncListener;
 import com.jakeapp.violet.actions.global.serve.ProjectMessageListener;
 import com.jakeapp.violet.actions.global.serve.ProjectRequestListener;
-import com.jakeapp.violet.di.DI;
-import com.jakeapp.violet.di.KnownProperty;
+import com.jakeapp.violet.di.IUserIdFactory;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.protocol.invites.ProjectInvitationHandler;
@@ -27,17 +28,27 @@ public class LoginAction extends AvailableLaterObject<Void> {
 
 	private String pw;
 
+	private String host;
+
 	private LoginView view;
 
 	private long port;
 
 	private ISyncListener requests;
 
-	public LoginAction(User user, String pw, long port, LoginView view,
-			ISyncListener requests) {
+	@Inject
+	private IUserIdFactory userids;
+
+	public void setUserids(IUserIdFactory userids) {
+		this.userids = userids;
+	}
+
+	public LoginAction(User user, String pw, String host, long port,
+			LoginView view, ISyncListener requests) {
 		this.pw = pw;
 		this.user = user;
 		this.port = port;
+		this.host = host;
 		this.view = view;
 		this.requests = requests;
 	}
@@ -60,11 +71,8 @@ public class LoginAction extends AvailableLaterObject<Void> {
 		model.getIcs().getMsgService().registerReceiveMessageListener(pml);
 		model.getTransfer().startServing(prl, prl);
 
-		ics.getStatusService().login(
-				DI.getUserId(user.getUserId()),
-				pw,
-				DI.getProperty(KnownProperty.ICS_RESOURCE_PROJECT_PREFIX)
-						+ model.getProjectid().toString(), port);
+		ics.getStatusService().login(userids.get(user.getUserId()), pw, host,
+				port);
 		return null;
 	}
 }

@@ -22,14 +22,6 @@ public abstract class Projects extends Observable implements Model {
 
 	private final static Logger log = Logger.getLogger(Projects.class);
 
-	public Projects() {
-		try {
-			load();
-		} catch (IOException e) {
-			log.warn(e);
-		}
-	}
-
 	protected abstract void load() throws IOException;
 
 	protected abstract void store() throws JsonGenerationException,

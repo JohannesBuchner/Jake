@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 import org.metastatic.rsync.ChecksumPair;
 import org.metastatic.rsync.Rdiff;
@@ -25,7 +27,6 @@ import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
 import com.jakeapp.violet.actions.project.local.AttributedCalculator;
-import com.jakeapp.violet.di.DI;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.ProjectModel;
@@ -42,11 +43,11 @@ public class ProjectRequestListener implements IncomingTransferListener,
 
 	private static Logger log = Logger.getLogger(ProjectRequestListener.class);
 
-	private IRequestMarshaller requestMarshaller = DI
-			.getImpl(IRequestMarshaller.class);
+	@Inject
+	private IRequestMarshaller requestMarshaller;
 
-	private ILogEntryMarshaller logEntryMarshaller = DI
-			.getImpl(ILogEntryMarshaller.class);
+	@Inject
+	private ILogEntryMarshaller logEntryMarshaller;
 
 	private ProjectModel model;
 

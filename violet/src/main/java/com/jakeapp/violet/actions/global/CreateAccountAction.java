@@ -1,10 +1,13 @@
 package com.jakeapp.violet.actions.global;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.exceptions.NetworkException;
-import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.IUserIdFactory;
 import com.jakeapp.violet.model.User;
 
 /**
@@ -17,10 +20,24 @@ public class CreateAccountAction extends AvailableLaterObject<Void> {
 
 	private UserId user;
 
-	private ICService ics = DI.getImpl(ICService.class);
+	@Named("global ics")
+	@Inject
+	private ICService ics;
+
+	@Inject
+	private IUserIdFactory userids;
+
+
+	public void setIcs(ICService ics) {
+		this.ics = ics;
+	}
+
+	public void setUserids(IUserIdFactory userids) {
+		this.userids = userids;
+	}
 
 	public CreateAccountAction(User user, String pw) {
-		this.user = DI.getUserId(user.getUserId());
+		this.user = userids.get(user.getUserId());
 		this.pw = pw;
 	}
 

@@ -1,12 +1,10 @@
 package com.jakeapp.violet.model;
 
-import java.io.File;
 import java.util.UUID;
 
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
-import com.jakeapp.violet.di.DI;
 
 /**
  * Data the Views and actions may want to access. Allows access to everything

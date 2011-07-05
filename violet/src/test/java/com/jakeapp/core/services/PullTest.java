@@ -37,23 +37,28 @@ import com.jakeapp.jake.ics.impl.sockets.filetransfer.FileTransfer;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
 import com.jakeapp.jake.test.SimpleFakeMessageExchanger;
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
+import com.jakeapp.violet.actions.global.MockUserIdFactory;
 import com.jakeapp.violet.actions.global.serve.ProjectRequestListener;
 import com.jakeapp.violet.actions.project.interact.SimpleUserOrderStrategy;
 import com.jakeapp.violet.actions.project.interact.pull.PullAction;
-import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.IUserIdFactory;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.Log;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
+import com.jakeapp.violet.protocol.msg.ILogEntryMarshaller;
 import com.jakeapp.violet.protocol.msg.IMessageMarshaller;
+import com.jakeapp.violet.protocol.msg.impl.LogEntryMarshaller;
 import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 
 public class PullTest extends TmpdirEnabledTestCase {
 
 	private static final Logger log = Logger.getLogger(PullTest.class);
 
-	private IMessageMarshaller messageMarshaller = new MessageMarshaller();
+	private ILogEntryMarshaller lm = new LogEntryMarshaller();
+
+	private IMessageMarshaller messageMarshaller = new MessageMarshaller(lm);
 
 	private JakeObject fo = new JakeObject("/my/path.txt");
 
@@ -75,6 +80,8 @@ public class PullTest extends TmpdirEnabledTestCase {
 
 	ProjectRequestListener prl;
 
+	private IUserIdFactory userids = new MockUserIdFactory();
+
 	@Before
 	public void setup() throws Exception {
 		super.setup();
@@ -83,7 +90,7 @@ public class PullTest extends TmpdirEnabledTestCase {
 		fss.setRootPath(new ProjectDir(tmpdir));
 		when(model.getFss()).thenReturn(fss);
 		ICService icservice = new MockICService();
-		icservice.getStatusService().login(DI.getUserId(member.getUserId()),
+		icservice.getStatusService().login(userids.get(member.getUserId()),
 				member.toString(), "foo", 0L);
 		when(model.getIcs()).thenReturn(icservice);
 		Log log = mock(Log.class);

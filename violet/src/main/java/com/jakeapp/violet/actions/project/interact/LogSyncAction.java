@@ -5,13 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.inject.Inject;
+
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.violet.actions.global.serve.BlockingFileTransfer;
-import com.jakeapp.violet.di.DI;
+import com.jakeapp.violet.di.IUserIdFactory;
 import com.jakeapp.violet.model.LogEntry;
 import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
@@ -21,7 +23,6 @@ import com.jakeapp.violet.protocol.files.RequestFileMessage;
 import com.jakeapp.violet.protocol.msg.ILogEntryMarshaller;
 import com.jakeapp.violet.protocol.msg.IMessageMarshaller;
 import com.jakeapp.violet.protocol.msg.PokeMessage;
-import com.jakeapp.violet.protocol.msg.impl.MessageMarshaller;
 
 /**
  * <code>AvailableLaterObject</code> deleting some <code>FileObject</code>
@@ -34,11 +35,14 @@ public class LogSyncAction extends AvailableLaterObject<Boolean> {
 
 	private User user;
 
-	private IRequestMarshaller requestMarshaller = DI
-			.getImpl(IRequestMarshaller.class);
-
-	private ILogEntryMarshaller logEntryMarshaller = DI
-			.getImpl(ILogEntryMarshaller.class);
+	@Inject
+	private IRequestMarshaller requestMarshaller;
+	@Inject
+	private IMessageMarshaller messageMarshaller;
+	@Inject
+	private ILogEntryMarshaller logEntryMarshaller;
+	@Inject
+	private IUserIdFactory userids;
 
 	private INegotiationSuccessListener listener;
 
@@ -54,7 +58,7 @@ public class LogSyncAction extends AvailableLaterObject<Boolean> {
 	 */
 	@Override
 	public Boolean calculate() throws Exception {
-		UserId peer = DI.getUserId(user.getUserId());
+		UserId peer = userids.get(user.getUserId());
 		RequestFileMessage msg = RequestFileMessage.createRequestLogsMessage(
 				model.getProjectid(), peer);
 		requestMarshaller.serialize(msg);
@@ -91,11 +95,9 @@ public class LogSyncAction extends AvailableLaterObject<Boolean> {
 			if (!uuids.contains(le.getId())) {
 				count++;
 				try {
-					IMessageMarshaller messageMarshaller = DI
-							.getImpl(MessageMarshaller.class);
 					PokeMessage msg = PokeMessage.createPokeMessage(
 							model.getProjectid(),
-							DI.getUserId(user.getUserId()), null);
+							userids.get(user.getUserId()), null);
 
 					String message = messageMarshaller.serialize(msg);
 					log.debug("Sending message: \"" + message + "\"");

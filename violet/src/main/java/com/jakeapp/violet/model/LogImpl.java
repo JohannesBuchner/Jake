@@ -15,8 +15,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import com.jakeapp.violet.di.DI;
-import com.jakeapp.violet.di.KnownProperty;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import com.jakeapp.violet.di.DBQueries;
 import com.jakeapp.violet.model.ILogModificationListener.ModifyActions;
 import com.jakeapp.violet.model.exceptions.NoSuchLogEntryException;
 
@@ -32,6 +34,31 @@ public class LogImpl implements Log {
 
 	private File file;
 
+	public LogImpl(@Named("database") File f) {
+		setFile(f);
+	}
+
+	@Inject
+	private String dbDriver;
+
+	@Inject
+	private String dbUsername;
+
+	@Inject
+	private String dbPassword;
+
+	public void setDbDriver(String dbDriver) {
+		this.dbDriver = dbDriver;
+	}
+
+	public void setDbPassword(String dbPassword) {
+		this.dbPassword = dbPassword;
+	}
+
+	public void setDbUsername(String dbUsername) {
+		this.dbUsername = dbUsername;
+	}
+
 	public void setFile(File file) {
 		this.file = file;
 	}
@@ -40,24 +67,21 @@ public class LogImpl implements Log {
 	public void connect() throws SQLException {
 		// open db
 		try {
-			Class.forName("org." + DI.getProperty(KnownProperty.JDBCDB)
-					+ ".Driver");
+			Class.forName("org." + dbDriver + ".Driver");
 		} catch (ClassNotFoundException e) {
 			throw new IllegalStateException(e);
 		}
 		conn = DriverManager.getConnection(
-				"jdbc:" + DI.getProperty(KnownProperty.JDBCDB) + ":"
-						+ file.getAbsolutePath(),
-				DI.getProperty(KnownProperty.JDBCUSER),
-				DI.getProperty(KnownProperty.JDBCPASSWORD));
+				"jdbc:" + dbDriver + ":" + file.getAbsolutePath(), dbUsername,
+				dbPassword);
 		// if it doesn't exist:
 		Statement stmt = conn.createStatement();
 		// create schema of table
-		stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGTABLE));
+		stmt.execute(DBQueries.DB_CREATELOGTABLE);
 
-		stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGINDEXWHEN));
+		stmt.execute(DBQueries.DB_CREATELOGINDEXWHEN);
 		// create index on relpath
-		stmt.execute(DI.getProperty(KnownProperty.DB_CREATELOGINDEXWHAT));
+		stmt.execute(DBQueries.DB_CREATELOGINDEXWHAT);
 	}
 
 	@Override
@@ -70,7 +94,7 @@ public class LogImpl implements Log {
 
 	@Override
 	public void add(LogEntry logEntry) {
-		PreparedStatement addStmt = getPrepared(KnownProperty.DB_INSERTLOG);
+		PreparedStatement addStmt = getPrepared(DBQueries.DB_INSERTLOG);
 		try {
 			addStmt.setObject(0, logEntry.getId());
 			addStmt.setTimestamp(1, logEntry.getWhen());
@@ -88,7 +112,7 @@ public class LogImpl implements Log {
 	@Override
 	public LogEntry getById(UUID uuid, boolean includeUnprocessed)
 			throws NoSuchLogEntryException {
-		PreparedStatement stmt = getPrepared(KnownProperty.DB_GETLOGBYID);
+		PreparedStatement stmt = getPrepared(DBQueries.DB_GETLOGBYID);
 		try {
 			stmt.setObject(0, uuid);
 			stmt.setBoolean(1, includeUnprocessed);
@@ -115,7 +139,7 @@ public class LogImpl implements Log {
 
 	@Override
 	public void setProcessed(LogEntry logEntry) throws NoSuchLogEntryException {
-		PreparedStatement stmt = getPrepared(KnownProperty.DB_SETPROCESSEDBYID);
+		PreparedStatement stmt = getPrepared(DBQueries.DB_SETPROCESSEDBYID);
 		try {
 			stmt.setObject(0, logEntry.getId());
 			if (stmt.executeUpdate() == 0) {
@@ -185,23 +209,23 @@ public class LogImpl implements Log {
 			if (includeProcessed)
 				// for getAll() calls
 				if (includeUnprocessed)
-					stmt = getPrepared(KnownProperty.DB_GETALL);
+					stmt = getPrepared(DBQueries.DB_GETALL);
 				else
-					stmt = getPrepared(KnownProperty.DB_GETPROCESSED);
+					stmt = getPrepared(DBQueries.DB_GETPROCESSED);
 			else if (includeUnprocessed)
 				// for getUnprocessed calls
-				stmt = getPrepared(KnownProperty.DB_GETUNPROCESSED);
+				stmt = getPrepared(DBQueries.DB_GETUNPROCESSED);
 		} else {
 			if (includeUnprocessed)
 				if (includeProcessed)
 					// for getAllOfJakeObject(jo) calls
-					stmt = getPrepared(KnownProperty.DB_GETALLFORWHAT);
+					stmt = getPrepared(DBQueries.DB_GETALLFORWHAT);
 				else
 					// for getUnprocessed(jo) calls
-					stmt = getPrepared(KnownProperty.DB_GETUNPROCESSEDFORWHAT);
+					stmt = getPrepared(DBQueries.DB_GETUNPROCESSEDFORWHAT);
 			else if (includeProcessed)
 				// for getAllOfJakeObject(jo) calls
-				stmt = getPrepared(KnownProperty.DB_GETPROCESSEDFORWHAT);
+				stmt = getPrepared(DBQueries.DB_GETPROCESSEDFORWHAT);
 		}
 		if (stmt == null) {
 			if (!includeProcessed && !includeUnprocessed) {
@@ -214,16 +238,16 @@ public class LogImpl implements Log {
 		return stmt;
 	}
 
-	private Map<KnownProperty, PreparedStatement> queries = new HashMap<KnownProperty, PreparedStatement>();
+	private Map<String, PreparedStatement> queries = new HashMap<String, PreparedStatement>();
 
 	private Set<ILogModificationListener> listeners = new HashSet<ILogModificationListener>();
 
-	private PreparedStatement getPrepared(KnownProperty key) {
-		PreparedStatement q = queries.get(key);
+	private PreparedStatement getPrepared(String query) {
+		PreparedStatement q = queries.get(query);
 		try {
 			if (q == null) {
-				q = conn.prepareStatement(DI.getProperty(key));
-				queries.put(key, q);
+				q = conn.prepareStatement(query);
+				queries.put(query, q);
 			}
 			return q;
 		} catch (SQLException e) {
@@ -252,9 +276,9 @@ public class LogImpl implements Log {
 	public List<JakeObject> getExistingFileObjects(boolean includeUnprocessed) {
 		PreparedStatement stmt;
 		if (includeUnprocessed)
-			stmt = getPrepared(KnownProperty.DB_GETRELPATHSPROCESSED);
+			stmt = getPrepared(DBQueries.DB_GETRELPATHSPROCESSED);
 		else
-			stmt = getPrepared(KnownProperty.DB_GETRELPATHS);
+			stmt = getPrepared(DBQueries.DB_GETRELPATHS);
 		try {
 			ResultSet rs = stmt.executeQuery();
 			ArrayList<JakeObject> all = new ArrayList<JakeObject>();
@@ -277,7 +301,7 @@ public class LogImpl implements Log {
 
 	@Override
 	public void setAllPreviousProcessed(LogEntry logEntry) {
-		PreparedStatement stmt = getPrepared(KnownProperty.DB_SETPROCESSEDFORWHAT);
+		PreparedStatement stmt = getPrepared(DBQueries.DB_SETPROCESSEDFORWHAT);
 		try {
 			stmt.setObject(0, logEntry.getWhat());
 			stmt.executeUpdate();
