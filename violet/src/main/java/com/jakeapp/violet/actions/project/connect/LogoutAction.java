@@ -1,9 +1,9 @@
-package com.jakeapp.violet.actions.project;
+package com.jakeapp.violet.actions.project.connect;
 
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
-import com.jakeapp.violet.model.ProjectModel;
+import com.jakeapp.violet.context.ProjectModel;
 
 /**
  * Logs the project out

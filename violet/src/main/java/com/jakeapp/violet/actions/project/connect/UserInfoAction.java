@@ -1,4 +1,4 @@
-package com.jakeapp.violet.actions.project;
+package com.jakeapp.violet.actions.project.connect;
 
 import org.apache.log4j.Logger;
 
@@ -8,7 +8,7 @@ import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
 import com.jakeapp.violet.actions.global.LoginView;
 import com.jakeapp.violet.actions.global.UsersView;
-import com.jakeapp.violet.model.ProjectModel;
+import com.jakeapp.violet.context.ProjectModel;
 
 /**
  * Announces a <code>List</code> of <code>JakeObject</code>s.

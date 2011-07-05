@@ -6,8 +6,8 @@ import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.ICService;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.di.IUserIdFactory;
-import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.protocol.msg.IMessageMarshaller;
 import com.jakeapp.violet.protocol.msg.PokeMessage;

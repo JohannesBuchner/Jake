@@ -5,9 +5,9 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.LogEntry;
-import com.jakeapp.violet.model.ProjectModel;
 
 /**
  * Gets the log of this {@link JakeObject}
@@ -19,9 +19,9 @@ public class GetLogEntriesAction extends
 
 	private static Logger log = Logger.getLogger(GetLogEntriesAction.class);
 
-	private ProjectModel model;
+	private final ProjectModel model;
 
-	private JakeObject jo;
+	private final JakeObject jo;
 
 	public GetLogEntriesAction(ProjectModel model, JakeObject jo) {
 		this.model = model;

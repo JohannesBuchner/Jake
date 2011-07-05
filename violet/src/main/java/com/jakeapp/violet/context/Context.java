@@ -1,6 +1,5 @@
-package com.jakeapp.violet.model;
+package com.jakeapp.violet.context;
 
-import com.jakeapp.violet.actions.Actions;
 
 /**
  * MVC-like pattern.
@@ -32,9 +31,9 @@ public class Context {
 
 	private final ProjectModel model;
 
-	private final Actions actions;
+	private final ProjectActions actions;
 
-	public Context(ProjectModel model, Actions actions) {
+	public Context(ProjectModel model, ProjectActions actions) {
 		if (model == null)
 			throw new NullPointerException();
 		if (actions == null)
@@ -47,7 +46,7 @@ public class Context {
 		return model;
 	}
 
-	public Actions getActions() {
+	public ProjectActions getActions() {
 		return actions;
 	}
 }

@@ -5,9 +5,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.model.IJakeObjectModificationListener;
 import com.jakeapp.violet.model.JakeObject;
-import com.jakeapp.violet.model.ProjectModel;
 
 /**
  * A view of all JakeObjects. Notification on changes.

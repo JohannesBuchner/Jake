@@ -1,4 +1,4 @@
-package com.jakeapp.violet.actions.project;
+package com.jakeapp.violet.actions.project.connect;
 
 import javax.inject.Inject;
 
@@ -10,8 +10,8 @@ import com.jakeapp.violet.actions.global.LoginView;
 import com.jakeapp.violet.actions.global.serve.ISyncListener;
 import com.jakeapp.violet.actions.global.serve.ProjectMessageListener;
 import com.jakeapp.violet.actions.global.serve.ProjectRequestListener;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.di.IUserIdFactory;
-import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.protocol.invites.ProjectInvitationHandler;
 

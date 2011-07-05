@@ -10,8 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.jakeapp.jake.test.TmpdirEnabledTestCase;
+import com.jakeapp.violet.context.MockProjectModel;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.model.JsonProjectPreferences;
-import com.jakeapp.violet.model.ProjectModelImpl;
 
 public class JsonProjectPreferencesTest extends TmpdirEnabledTestCase {
 
@@ -19,35 +20,27 @@ public class JsonProjectPreferencesTest extends TmpdirEnabledTestCase {
 
 	private JsonProjectPreferences prefs;
 
-	private String key1 = "my!#@^!@Key";
+	private final String key1 = "my!#@^!@Key";
 
-	private String value1 = "myT$%!HJU^value";
+	private final String value1 = "myT$%!HJU^value";
 
-	private String key_bool = "foo";
+	private final String key_bool = "foo";
 
-	private String value_boole = "true";
+	private final String value_boole = "true";
 
-	private String key_id = "id";
+	private final String key_id = ProjectModel.PROJECT_ID_PROPERTY_KEY;
 
-	private UUID projectid = new UUID(12, 41);
+	private final UUID projectid = new UUID(12, 41);
 
-	private String value_id = projectid.toString();
+	private final String value_id = projectid.toString();
 
-	private String key_name = "name";
+	private final String key_name = "name";
 
-	private String value_name = "my awesome project";
+	private final String value_name = "my awesome project";
 
-	private String key_user = "user";
+	private final String key_user = ProjectModel.USERID_PROPERTY_KEY;
 
-	private String value_user = "me@localhost";
-
-	@Before
-	public void setUp() throws Exception {
-		super.setup();
-
-		f = new File(tmpdir, "myprefs");
-		prefs = new JsonProjectPreferences(f);
-	}
+	private final String value_user = "me@localhost";
 
 	@Test
 	public void run() throws IOException {
@@ -68,11 +61,18 @@ public class JsonProjectPreferencesTest extends TmpdirEnabledTestCase {
 		prefs.set(key1, value1);
 		prefs.set(key_user, value_user);
 
-		ProjectModelImpl model = new ProjectModelImpl();
-		model.setPreferences(prefs);
+		ProjectModel model = new MockProjectModel(null, null, prefs, null, null);
 		Assert.assertEquals(projectid, model.getProjectid());
 		Assert.assertEquals(value_user, model.getUser().getUserId());
 		Assert.assertEquals(value_user, model.getUserid());
 		Assert.assertEquals(value_name, model.getProjectname());
+	}
+
+	@Before
+	public void setUp() throws Exception {
+		super.setup();
+
+		f = new File(tmpdir, "myprefs");
+		prefs = new JsonProjectPreferences(f);
 	}
 }

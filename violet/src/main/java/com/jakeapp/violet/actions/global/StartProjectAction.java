@@ -1,20 +1,25 @@
 package com.jakeapp.violet.actions.global;
 
+import java.util.UUID;
+
 import javax.inject.Inject;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.jake.fss.ProjectDir;
 import com.jakeapp.jake.ics.ICService;
-import com.jakeapp.violet.actions.Actions;
+import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
+import com.jakeapp.violet.context.Context;
+import com.jakeapp.violet.context.ContextFactory;
+import com.jakeapp.violet.context.ProjectActions;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.di.ICSFactory;
 import com.jakeapp.violet.di.ILogFactory;
 import com.jakeapp.violet.di.IProjectPreferencesFactory;
 import com.jakeapp.violet.di.IUserIdFactory;
-import com.jakeapp.violet.model.Context;
-import com.jakeapp.violet.model.ProjectModel;
-import com.jakeapp.violet.model.ProjectModelImpl;
+import com.jakeapp.violet.model.Log;
 import com.jakeapp.violet.model.ProjectPreferences;
+import com.jakeapp.violet.model.User;
 
 /**
  * <code>AvailableLaterObject</code> which is responsible for starting or
@@ -22,7 +27,7 @@ import com.jakeapp.violet.model.ProjectPreferences;
  */
 public class StartProjectAction extends AvailableLaterObject<Context> {
 
-	private ProjectDir dir;
+	private final ProjectDir dir;
 
 	@Inject
 	private IUserIdFactory userids;
@@ -39,6 +44,9 @@ public class StartProjectAction extends AvailableLaterObject<Context> {
 	@Inject
 	private ILogFactory logFactory;
 
+	@Inject
+	private ContextFactory contextFactory;
+
 
 	public StartProjectAction(ProjectDir dir) {
 		this.dir = dir;
@@ -49,22 +57,21 @@ public class StartProjectAction extends AvailableLaterObject<Context> {
 	 */
 	@Override
 	public Context calculate() throws Exception {
-		ProjectModelImpl model = new ProjectModelImpl();
-
 		fss.setRootPath(dir);
-		model.setFss(fss);
 		ProjectPreferences prefs = projectPreferencesFactory.get(dir);
-		model.setPreferences(prefs);
-		ICService ics = icsFactory.getICS(model.getProjectid());
-		model.setIcs(ics);
+		UUID projectid = UUID.fromString(prefs
+				.get(ProjectModel.PROJECT_ID_PROPERTY_KEY));
+		User userId = new User(prefs.get(ProjectModel.USERID_PROPERTY_KEY));
+		ICService ics = icsFactory.getICS(projectid);
 
-		model.setTransfer(icsFactory.getFileTransferService(
-				ics.getMsgService(), userids.get(model.getUserid()), ics));
+		IFileTransferService transfer = icsFactory.getFileTransferService(
+				ics.getMsgService(), userids.get(userId.getUserId()), ics);
 
-		model.setLog(logFactory.getLog(dir));
+		Log db = logFactory.getLog(dir);
 
-		Actions actions = new Actions(model);
-
-		return new Context(model, actions);
+		ProjectModel model = contextFactory.createProjectModel(fss, db, prefs,
+				ics, transfer);
+		ProjectActions actions = contextFactory.createProjectActions();
+		return contextFactory.createContext(model, actions);
 	}
 }

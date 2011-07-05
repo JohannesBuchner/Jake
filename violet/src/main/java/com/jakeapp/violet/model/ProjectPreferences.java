@@ -12,19 +12,11 @@ public abstract class ProjectPreferences extends Observable implements Model {
 
 	protected Map<String, String> preferences = new HashMap<String, String>();
 
-	public ProjectPreferences() {
-		load();
+	public String get(String key) {
+		return preferences.get(key);
 	}
 
 	protected abstract void load();
-
-	protected abstract void store() throws IOException;
-
-	public void set(String key, String value) throws IOException {
-		preferences.put(key, value);
-		store();
-		setChanged();
-	}
 
 	public void remove(String key) throws IOException {
 		preferences.remove(key);
@@ -32,7 +24,11 @@ public abstract class ProjectPreferences extends Observable implements Model {
 		setChanged();
 	}
 
-	public String get(String key) {
-		return preferences.get(key);
+	public void set(String key, String value) throws IOException {
+		preferences.put(key, value);
+		store();
+		setChanged();
 	}
+
+	protected abstract void store() throws IOException;
 }

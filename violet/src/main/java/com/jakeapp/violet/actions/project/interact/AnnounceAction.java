@@ -7,10 +7,10 @@ import org.apache.log4j.Logger;
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.HashValue;
 import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.di.IUserIdFactory;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.LogEntry;
-import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.protocol.msg.IMessageMarshaller;
 import com.jakeapp.violet.protocol.msg.PokeMessage;
 

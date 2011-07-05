@@ -1,8 +1,8 @@
 package com.jakeapp.violet.actions.project.local;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.model.JakeObject;
-import com.jakeapp.violet.model.ProjectModel;
 
 /**
  * <code>AvailableLaterObject</code> launching/opening a file.

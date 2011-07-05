@@ -5,7 +5,7 @@ import javax.inject.Inject;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.jake.ics.msgservice.IMessageReceiveListener;
-import com.jakeapp.violet.model.ProjectModel;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.model.User;
 import com.jakeapp.violet.protocol.Message;
 import com.jakeapp.violet.protocol.msg.IMessageMarshaller;

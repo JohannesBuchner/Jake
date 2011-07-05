@@ -1,4 +1,4 @@
-package com.jakeapp.violet.actions.project;
+package com.jakeapp.violet.actions.project.connect;
 
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.violet.model.User;

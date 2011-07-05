@@ -9,6 +9,8 @@ import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.filetransfer.FailoverCapableFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
+import com.jakeapp.jake.ics.impl.ice.filetransfer.icedjava.IceUdtFileTransferMethod;
+import com.jakeapp.jake.ics.impl.ice.filetransfer.icedjava.IceUdtTransferFactory;
 import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFactory;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
@@ -63,11 +65,13 @@ public class XMPPICSFactory implements ICSFactory {
 		IFileTransferService fcfts;
 		fcfts = new FailoverCapableFileTransferService();
 		if (useSockets) {
-			fcfts.addTransferMethod(new SimpleSocketFileTransferFactory(), msg,
-					user);
-			// TODO: replace by ICE/UDT
+			// fcfts.addTransferMethod(new SimpleSocketFileTransferFactory(),
+			// msg,
+			// user);
+			fcfts.addTransferMethod(new IceUdtTransferFactory(), msg, user);
 		}
 
+		// TODO: maybe only allow inband after 10 fails
 		ITransferMethodFactory inbandMethod = ics.getTransferMethodFactory();
 		if (inbandMethod != null) {
 			fcfts.addTransferMethod(inbandMethod, msg, user);

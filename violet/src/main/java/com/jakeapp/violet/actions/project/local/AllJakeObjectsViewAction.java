@@ -9,9 +9,9 @@ import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.fss.IFileModificationListener;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.model.ILogModificationListener;
 import com.jakeapp.violet.model.JakeObject;
-import com.jakeapp.violet.model.ProjectModel;
 
 /**
  * Gets all JakeObject that ever were in the log (including remote-only,

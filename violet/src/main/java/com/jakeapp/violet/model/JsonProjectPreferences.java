@@ -12,23 +12,25 @@ import org.codehaus.jackson.map.ObjectMapper;
  */
 public class JsonProjectPreferences extends ProjectPreferences {
 
-	private File f;
+	private final File f;
 
 	private static final Logger log = Logger
 			.getLogger(JsonProjectPreferences.class);
 
-	private ObjectMapper mapper = new ObjectMapper();
+	private final ObjectMapper mapper = new ObjectMapper();
 
 	public JsonProjectPreferences(File f) {
 		this.f = f;
+		load();
 	}
 
 	@Override
 	protected void load() {
-		this.preferences.clear();
+		preferences.clear();
 		try {
-			if (f.exists())
-				this.preferences.putAll(mapper.readValue(f, Map.class));
+			if (f.exists()) {
+				preferences.putAll(mapper.readValue(f, Map.class));
+			}
 		} catch (IOException e) {
 			log.info(e);
 		}
@@ -36,6 +38,6 @@ public class JsonProjectPreferences extends ProjectPreferences {
 
 	@Override
 	protected void store() throws IOException {
-		mapper.writeValue(f, this.preferences);
+		mapper.writeValue(f, preferences);
 	}
 }

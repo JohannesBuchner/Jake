@@ -1,4 +1,4 @@
-package com.jakeapp.violet.actions.project;
+package com.jakeapp.violet.actions.project.connect;
 
 import javax.inject.Inject;
 
@@ -7,8 +7,8 @@ import org.apache.log4j.Logger;
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.UserId;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.di.IUserIdFactory;
-import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.protocol.invites.ProjectInvitationHandler;
 
 /**

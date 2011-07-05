@@ -5,8 +5,8 @@ import org.apache.log4j.Logger;
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.availablelater.AvailableLaterWaiter;
 import com.jakeapp.violet.actions.project.interact.UserOrderStrategy;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.model.JakeObject;
-import com.jakeapp.violet.model.ProjectModel;
 
 /**
  * <code>AvailableLaterObject</code> downloading (<code>Pull</code>ing) a
@@ -17,11 +17,11 @@ public class PullAction extends AvailableLaterObject<Void> {
 
 	private static final Logger log = Logger.getLogger(PullAction.class);
 
-	private ProjectModel model;
+	private final ProjectModel model;
 
-	private JakeObject jakeObject;
+	private final JakeObject jakeObject;
 
-	private UserOrderStrategy strategy;
+	private final UserOrderStrategy strategy;
 
 	public PullAction(ProjectModel model, JakeObject jakeObject,
 			UserOrderStrategy strategy) {

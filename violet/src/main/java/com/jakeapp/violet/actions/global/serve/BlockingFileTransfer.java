@@ -19,7 +19,7 @@ import com.jakeapp.jake.ics.filetransfer.negotiate.FileRequest;
 import com.jakeapp.jake.ics.filetransfer.negotiate.INegotiationSuccessListener;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.IFileTransfer;
 import com.jakeapp.jake.ics.filetransfer.runningtransfer.Status;
-import com.jakeapp.violet.model.ProjectModel;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.protocol.files.IRequestMarshaller;
 import com.jakeapp.violet.protocol.files.RequestFileMessage;
 

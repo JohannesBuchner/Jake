@@ -3,7 +3,7 @@ package com.jakeapp.violet.actions.project.local;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
-import com.jakeapp.violet.model.ProjectModel;
+import com.jakeapp.violet.context.ProjectModel;
 
 /**
  * Modify a property of the project
@@ -13,26 +13,27 @@ public class ChangePropertyAction extends AvailableLaterObject<Void> {
 	private static final Logger log = Logger
 			.getLogger(ChangePropertyAction.class);
 
-	private ProjectModel model;
-
-	private String value;
-
-	private String key;
-
-	public static String getProjectNameKey() {
-		return "name";
+	public static String getBooleanString(Boolean b) {
+		if (b) {
+			return "true";
+		} else {
+			return "false";
+		}
 	}
 
 	public static String getProjectIdKey() {
 		return "id";
 	}
 
-	public static String getBooleanString(Boolean b) {
-		if (b)
-			return "true";
-		else
-			return "false";
+	public static String getProjectNameKey() {
+		return "name";
 	}
+
+	private final ProjectModel model;
+
+	private final String value;
+
+	private final String key;
 
 	/**
 	 * 
@@ -53,7 +54,7 @@ public class ChangePropertyAction extends AvailableLaterObject<Void> {
 	@Override
 	public Void calculate() throws Exception {
 		log.info("updating property: " + key + " = " + value);
-		this.model.getPreferences().set(key, value);
+		model.getPreferences().set(key, value);
 		return null;
 	}
 }

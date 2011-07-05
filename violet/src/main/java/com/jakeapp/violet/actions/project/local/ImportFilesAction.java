@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.availablelater.StatusUpdate;
 import com.jakeapp.jake.fss.IFSService;
-import com.jakeapp.violet.model.ProjectModel;
+import com.jakeapp.violet.context.ProjectModel;
 
 /**
  * <code>AvailableLaterObject</code> importing a <code>List</code> of
@@ -19,13 +19,13 @@ public class ImportFilesAction extends AvailableLaterObject<Void> {
 
 	private static final Logger log = Logger.getLogger(ImportFilesAction.class);
 
-	private ProjectModel model;
+	private final ProjectModel model;
 
-	private List<File> files;
+	private final List<File> files;
 
-	private String destFolderRelPath;
+	private final String destFolderRelPath;
 
-	private int nsteps;
+	private final int nsteps;
 
 	private int steps;
 
@@ -36,18 +36,18 @@ public class ImportFilesAction extends AvailableLaterObject<Void> {
 		nsteps = files.size() + 1;
 		steps = 1;
 		this.destFolderRelPath = destFolderRelPath;
-		this.setStatus(new StatusUpdate(nsteps * 1. / steps, "init"));
+		setStatus(new StatusUpdate(nsteps * 1. / steps, "init"));
 	}
 
 	@Override
 	public Void calculate() throws Exception {
 		log.debug("importing n files, n=" + files.size());
-		IFSService fss = this.model.getFss();
+		IFSService fss = model.getFss();
 		for (File file : files) {
 			log.debug("Importing a file!");
 			fss.importFile(file, destFolderRelPath);
 			steps++;
-			this.setStatus(new StatusUpdate(nsteps * 1. / steps, "importing"));
+			setStatus(new StatusUpdate(nsteps * 1. / steps, "importing"));
 		}
 		return null;
 	}

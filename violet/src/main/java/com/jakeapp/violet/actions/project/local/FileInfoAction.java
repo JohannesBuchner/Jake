@@ -1,8 +1,5 @@
 package com.jakeapp.violet.actions.project.local;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -12,15 +9,10 @@ import org.apache.log4j.Logger;
 import com.jakeapp.availablelater.AvailableLaterObject;
 import com.jakeapp.availablelater.StatusUpdate;
 import com.jakeapp.jake.fss.IFSService;
-import com.jakeapp.jake.fss.exceptions.InvalidFilenameException;
-import com.jakeapp.jake.fss.exceptions.NotAFileException;
-import com.jakeapp.jake.fss.exceptions.NotAReadableFileException;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.model.JakeObject;
 import com.jakeapp.violet.model.Log;
-import com.jakeapp.violet.model.LogEntry;
-import com.jakeapp.violet.model.ProjectModel;
 import com.jakeapp.violet.model.attributes.Attributed;
-import com.jakeapp.violet.model.exceptions.NoSuchLogEntryException;
 
 /**
  * <code>AvailableLaterObject</code> fetching information about some
@@ -30,11 +22,11 @@ public class FileInfoAction extends AvailableLaterObject<List<Attributed>> {
 
 	private static final Logger log = Logger.getLogger(FileInfoAction.class);
 
-	private Collection<JakeObject> files;
+	private final Collection<JakeObject> files;
 
-	private ProjectModel model;
+	private final ProjectModel model;
 
-	private int totalSteps;
+	private final int totalSteps;
 
 	private int stepsDone;
 
@@ -43,7 +35,7 @@ public class FileInfoAction extends AvailableLaterObject<List<Attributed>> {
 		this.files = files;
 		stepsDone = 1;
 		totalSteps = files.size() + 1;
-		this.setStatus(new StatusUpdate(totalSteps * 1. / stepsDone, "init"));
+		setStatus(new StatusUpdate(totalSteps * 1. / stepsDone, "init"));
 	}
 
 	/**
@@ -51,8 +43,8 @@ public class FileInfoAction extends AvailableLaterObject<List<Attributed>> {
 	 */
 	@Override
 	public List<Attributed> calculate() throws Exception {
-		IFSService fss = this.model.getFss();
-		Log log = this.model.getLog();
+		IFSService fss = model.getFss();
+		Log log = model.getLog();
 		List<Attributed> attributed = new ArrayList<Attributed>();
 
 		for (JakeObject fo : files) {
@@ -60,8 +52,7 @@ public class FileInfoAction extends AvailableLaterObject<List<Attributed>> {
 					fo));
 
 			stepsDone++;
-			this.setStatus(new StatusUpdate(totalSteps * 1. / stepsDone,
-					"working"));
+			setStatus(new StatusUpdate(totalSteps * 1. / stepsDone, "working"));
 		}
 
 		return attributed;

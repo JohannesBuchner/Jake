@@ -5,8 +5,8 @@ import java.util.Collection;
 import org.apache.log4j.Logger;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.model.LogEntry;
-import com.jakeapp.violet.model.ProjectModel;
 
 /**
  * Gets the full log
@@ -18,7 +18,7 @@ public class GetAllLogEntriesAction extends
 
 	private static Logger log = Logger.getLogger(GetAllLogEntriesAction.class);
 
-	private ProjectModel model;
+	private final ProjectModel model;
 
 	public GetAllLogEntriesAction(ProjectModel model) {
 		this.model = model;

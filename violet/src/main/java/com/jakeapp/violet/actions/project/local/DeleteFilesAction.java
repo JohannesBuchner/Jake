@@ -12,8 +12,8 @@ import com.jakeapp.availablelater.AvailableLaterWaiter;
 import com.jakeapp.availablelater.StatusUpdate;
 import com.jakeapp.jake.fss.IFSService;
 import com.jakeapp.violet.actions.project.interact.AnnounceAction;
+import com.jakeapp.violet.context.ProjectModel;
 import com.jakeapp.violet.model.JakeObject;
-import com.jakeapp.violet.model.ProjectModel;
 
 /**
  * <code>AvailableLaterObject</code> deleting some <code>FileObject</code>

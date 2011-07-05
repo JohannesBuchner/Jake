@@ -1,7 +1,7 @@
 package com.jakeapp.violet.actions.global;
 
 import com.jakeapp.availablelater.AvailableLaterObject;
-import com.jakeapp.violet.model.ProjectModel;
+import com.jakeapp.violet.context.ProjectModel;
 
 /**
  * <code>AvailableLaterObject</code> which is responsible for starting or

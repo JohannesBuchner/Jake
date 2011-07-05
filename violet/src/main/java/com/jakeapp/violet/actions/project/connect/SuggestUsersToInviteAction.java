@@ -1,4 +1,4 @@
-package com.jakeapp.violet.actions.global;
+package com.jakeapp.violet.actions.project.connect;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,8 +11,7 @@ import com.jakeapp.jake.ics.ICService;
 import com.jakeapp.jake.ics.UserId;
 import com.jakeapp.jake.ics.status.IStatusService;
 import com.jakeapp.jake.ics.users.IUsersService;
-import com.jakeapp.violet.actions.project.UserInfo;
-import com.jakeapp.violet.model.ProjectModel;
+import com.jakeapp.violet.context.ProjectModel;
 
 /**
  * Announces a <code>List</code> of <code>JakeObject</code>s.
