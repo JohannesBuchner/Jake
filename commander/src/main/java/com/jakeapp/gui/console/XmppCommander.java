@@ -117,9 +117,7 @@ public class XmppCommander extends Commander {
             try {
                 XmppCommander.this.ics.getMsgService().sendMessage(recipient, message);
             } catch (NetworkException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (OtherUserOfflineException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                e.printStackTrace();
             }
 
             return true;

@@ -11,6 +11,7 @@ import com.jakeapp.jake.ics.filetransfer.IFileTransferService;
 import com.jakeapp.jake.ics.filetransfer.methods.ITransferMethodFactory;
 import com.jakeapp.jake.ics.impl.ice.filetransfer.icedjava.IceUdtFileTransferMethod;
 import com.jakeapp.jake.ics.impl.ice.filetransfer.icedjava.IceUdtTransferFactory;
+import com.jakeapp.jake.ics.impl.ice.filetransfer.icedjava.UdtOverIceAddressesConnect;
 import com.jakeapp.jake.ics.impl.sockets.filetransfer.SimpleSocketFileTransferFactory;
 import com.jakeapp.jake.ics.impl.xmpp.XmppICService;
 import com.jakeapp.jake.ics.msgservice.IMsgService;
@@ -68,7 +69,10 @@ public class XMPPICSFactory implements ICSFactory {
 			// fcfts.addTransferMethod(new SimpleSocketFileTransferFactory(),
 			// msg,
 			// user);
-			fcfts.addTransferMethod(new IceUdtTransferFactory(), msg, user);
+			ITransferMethodFactory icefactory = new IceUdtTransferFactory(
+					new UdtOverIceAddressesConnect(),
+					IceUdtTransferFactory.DEFAULT_MAXIMAL_REQUEST_AGE_SECONDS);
+			fcfts.addTransferMethod(icefactory, msg, user);
 		}
 
 		// TODO: maybe only allow inband after 10 fails
