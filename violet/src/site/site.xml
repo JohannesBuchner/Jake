@@ -6,6 +6,12 @@
 		<name>${project.name}</name>
 		<href>index.html</href>
 	</bannerLeft>
+	<poweredBy>
+		<logo img="http://sflogo.sourceforge.net/sflogo.php?group_id=555884&amp;type=11" 
+			width="120" height="30" 
+			alt="Get jakeapp at SourceForge.net. Fast, secure and Free Open Source software downloads" 
+			href="http://sourceforge.net/projects/jakeapp" />
+	</poweredBy>
 
 	<body>
 		<links>
